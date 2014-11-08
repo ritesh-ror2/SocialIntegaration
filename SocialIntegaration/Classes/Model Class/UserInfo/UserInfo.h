@@ -10,4 +10,13 @@
 
 @interface UserInfo : NSObject
 
+@property (nonatomic, strong) NSString *strUserImg;
+@property (nonatomic, strong) NSString *strPostImg;
+@property (nonatomic, strong) NSString *strUserName;
+@property (nonatomic, strong) NSString *strUserSocialType;
+@property (nonatomic, strong) NSString *strUserPost;
+@property (nonatomic, strong) NSString *struserTime;
+@property (nonatomic, strong) NSString *fromId;
+@property (nonatomic, strong) NSString *type;
+
 @end

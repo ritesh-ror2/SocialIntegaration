@@ -5,6 +5,7 @@
 //
 
 #import <Availability.h>
+#import "AppDelegate.h"
 
 #ifndef __IPHONE_5_0
 #warning "This project uses features only available in iOS SDK 5.0 and later."
@@ -13,4 +14,21 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
+
+#define ALERT_OK                @"OK"
+#define ERROR_FB                @"There was an error getting the news feed. Please try again."
+#define ERROR_CONNECTING        @"Connection Error"
+#define ERROR_TWITTER           @"To see twittes of Twitter from this app, the accounts must be setup under settings."
+
+//Twitter url
+#define TWITTER_TIMELINE_URL    @"https://api.twitter.com/1/statuses/home_timeline.json"
+#define TWITTER_MENTION_URL     @"https://api.twitter.com/1.1/statuses/mentions_timeline.json"
+
+#define DatabaseDateFormate @"YYYY-MM-dd HH:mm:ss"
+#define TWEETERDATEFORMATE  @"dd MMM yyyy HH:mm:ss"
+
+#define APP_ID @"b8d2f232eddb4593b9f333ddfe8bb876"
+
+#define sharedAppDelegate ((AppDelegate*)[[UIApplication sharedApplication] delegate])
+
 #endif

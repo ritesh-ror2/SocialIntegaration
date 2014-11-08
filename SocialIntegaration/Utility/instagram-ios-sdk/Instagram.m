@@ -117,6 +117,10 @@ static void *finishedContext            = @"finishedContext";
     return [NSString stringWithFormat:@"ig%@://authorize", self.clientId];
 }
 
+//- (NSString *)getOwnBaseUrl {
+//    return [NSString stringWithFormat:@"http://www.google.com"];
+//}
+
 /**
  * A private function for opening the authorization dialog.
  */

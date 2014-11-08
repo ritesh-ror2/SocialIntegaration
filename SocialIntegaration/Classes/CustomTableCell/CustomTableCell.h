@@ -7,7 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UserInfo.h"
 
-@interface CustomTableCell : UITableViewCell
+@interface CustomTableCell : UITableViewCell {
+
+    IBOutlet UILabel *lblName;
+    IBOutlet UILabel *lblSocialType;
+    IBOutlet UILabel *lblText;
+    IBOutlet UILabel *lblTime;
+    IBOutlet UIImageView *imgVwOfUserProfile;
+    IBOutlet UIImageView *imgVwPostImg;
+    IBOutlet UIButton *btnPlay;
+    IBOutlet UITextView *txtVwMessage;
+}
+
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo;
 
 @end

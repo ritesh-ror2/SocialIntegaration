@@ -10,4 +10,6 @@
 
 @implementation UserInfo
 
+@synthesize strUserImg, strPostImg , strUserName, strUserPost, strUserSocialType, struserTime, type;
+
 @end

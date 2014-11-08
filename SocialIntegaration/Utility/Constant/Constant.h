@@ -10,4 +10,12 @@
 
 @interface Constant : NSObject
 
++ (UIImage*)maskImage:(UIImage *)image withMask:(UIImage *)maskImage;
++ (void)showAlert:(NSString *)title forMessage:(NSString *)message;
+
++ (NSString *)convertDateOFFB:(NSString*)strdate;
++ (NSString *)convertDateOFTweeter:(NSString*)strdate;
++ (NSString *)convertDateOFInstagram:(NSDate*)date;
+
++ (NSString *)calculateTimesBetweenTwoDates:(NSString *)strGivenDate;
 @end
