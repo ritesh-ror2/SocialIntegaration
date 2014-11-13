@@ -16,13 +16,16 @@
     #import <Foundation/Foundation.h>
 
 #define ALERT_OK                @"OK"
-#define ERROR_FB                @"There was an error getting the news feed. Please try again."
+#define ERROR_FB                @"To see post of Facebook from this app, the accounts must be setup under settings."
 #define ERROR_CONNECTING        @"Connection Error"
 #define ERROR_TWITTER           @"To see twittes of Twitter from this app, the accounts must be setup under settings."
-
+#define ERROR_AUTHEN            @"There is some authentication problem."
 //Twitter url
 #define TWITTER_TIMELINE_URL    @"https://api.twitter.com/1/statuses/home_timeline.json"
 #define TWITTER_MENTION_URL     @"https://api.twitter.com/1.1/statuses/mentions_timeline.json"
+#define TWITTER_USER_PROFILE    @"https://api.twitter.com/1.1/account/verify_credentials.json"
+#define TWITTER_USER_OWN_STATUS @"https://api.twitter.com/1.1/statuses/user_timeline.json"
+
 
 #define DatabaseDateFormate @"YYYY-MM-dd HH:mm:ss"
 #define TWEETERDATEFORMATE  @"dd MMM yyyy HH:mm:ss"

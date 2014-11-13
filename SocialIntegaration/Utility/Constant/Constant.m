@@ -9,7 +9,7 @@
 #import "Constant.h"
 #import "NSDate+Helper.h"
 
-#define DATE_COMPONENTS (NSDayCalendarUnit|NSMinuteCalendarUnit| NSHourCalendarUnit | NSDayCalendarUnit| NSWeekOfMonthCalendarUnit|NSWeekOfYearCalendarUnit)
+#define DATE_COMPONENTS (NSMinuteCalendarUnit| NSHourCalendarUnit | NSDayCalendarUnit| NSWeekOfMonthCalendarUnit|NSWeekOfYearCalendarUnit)
 
 @implementation Constant
 
@@ -58,13 +58,15 @@
     NSDate *toDate = [NSDate dateFromString:strDate];
 
     NSDate *fromDate = [NSDate dateFromString:strGivenDate];
+    NSLog(@"%@  from %@", toDate, fromDate);
 
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *components = [gregorianCalendar components:DATE_COMPONENTS
                                                         fromDate:fromDate toDate:toDate options:0];
     long diffInDate = components.minute;
-    NSString *strDiff;
 
+    NSString *strDiff;
+    NSLog(@"%i", components.hour);
     if (components.hour == 0) {
 
         strDiff = [NSString stringWithFormat:@"%ld m", diffInDate];
@@ -76,11 +78,11 @@
 
         diffInDate = components.day;
         strDiff = [NSString stringWithFormat:@"%ld d", diffInDate];
-    } else if (components.day != 0) {
+    } else if (components.month != 0) {
 
         diffInDate = components.month;
         strDiff = [NSString stringWithFormat:@"%ld m", diffInDate];
-    } else if (components.day != 0) {
+    } else if (components.year != 0) {
 
         diffInDate = components.year;
         strDiff = [NSString stringWithFormat:@"%ld y", diffInDate];

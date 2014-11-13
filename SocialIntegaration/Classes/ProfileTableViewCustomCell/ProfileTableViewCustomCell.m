@@ -1,34 +1,43 @@
 //
-//  CustomTableCell.m
+//  ProfileTableViewCustomCell.m
 //  SocialIntegaration
 //
-//  Created by GrepRuby on 06/11/14.
+//  Created by GrepRuby on 10/11/14.
 //  Copyright (c) 2014 GrepRuby. All rights reserved.
 //
 
-#import "CustomTableCell.h"
+#import "ProfileTableViewCustomCell.h"
 #import "Constant.h"
 
-@implementation CustomTableCell
+@implementation ProfileTableViewCustomCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        // Initialization code
+    }
+    return self;
+}
 
 - (void)awakeFromNib {
+
     // Initialization code
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
 }
 
-#pragma mark - Set value in table view
+#pragma mark - set value in table view
 
 - (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo  {
 
     lblName.text = objUserInfo.strUserName;
     lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserInfo.struserTime];
-
-    NSLog(@"%@", lblTime.text);
 
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
@@ -36,7 +45,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
                                        context:nil];
 
-    lblText.frame = CGRectMake(63, 53, 250, rect.size.height);
+    lblText.frame = CGRectMake(63, 53, 250, rect.size.height+2);
     lblText.text = objUserInfo.strUserPost;
 
     lblSocialType.text = objUserInfo.strUserSocialType;
@@ -48,19 +57,25 @@
     } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
 
         lblSocialType.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
-        [self setProfileImageOfTwitterAndInstagram:objUserInfo];
+        [self setProfileImageOfTwitter:objUserInfo];
     } else {
         lblSocialType.textColor = [UIColor colorWithRed:93/256.0f green:122/256.0f blue:154/256.0f alpha:1.0];
-        [self setProfileImageOfTwitterAndInstagram:objUserInfo];
+        [self setProfileImageOfTwitter:objUserInfo];
     }
+    btnPlay.hidden = YES;
 
-    if (objUserInfo.strPostImg.length != 0) { //set post image
+    if (objUserInfo.strPostImg.length != 0) {
 
+//        if (imgVwPostImg.image != nil) {
+//            imgVwPostImg.image = nil;
+//        }
         imgVwPostImg.frame = CGRectMake(imgVwPostImg.frame.origin.x,  lblText.frame.size.height + lblText.frame.origin.y, 250, 100);
         imgVwPostImg.hidden = NO;
         btnPlay.frame = imgVwPostImg.frame;
         
-        [self setPostImage:objUserInfo];
+        [self setPostImageAndOfFB:objUserInfo];
+    } else {
+        imgVwPostImg.hidden = YES;
     }
 
     if ([objUserInfo.type isEqualToString:@"video"]) {
@@ -68,9 +83,7 @@
     }
 }
 
-#pragma mark - Set profile image of twitter and Instagram
-
-- (void)setProfileImageOfTwitterAndInstagram:(UserInfo *)objUserInfo {
+- (void)setProfileImageOfTwitter:(UserInfo *)objUserInfo {
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{
@@ -85,14 +98,10 @@
     });
 }
 
-#pragma mark - Set post image
+- (void)setPostImageAndOfFB:(UserInfo *)objUserInfo {
 
-- (void)setPostImage:(UserInfo *)objUserInfo {
-
-    imgVwPostImg.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
+     imgVwPostImg.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
 }
-
-#pragma mark - Set User profile images
 
 - (void)uploadProfileImage:(UserInfo *)objUserInfo {
 
@@ -100,10 +109,8 @@
 	NSURL *jsonURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?redirect=false&type=normal&width=110&height=110", objUserInfo.fromId]];
 	dispatch_queue_t profileURLQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 	dispatch_async(profileURLQueue, ^{
-
-        NSData *result = [NSData dataWithContentsOfURL:jsonURL];
-
-        if (result) {
+		NSData *result = [NSData dataWithContentsOfURL:jsonURL];
+		if (result) {
 
 			NSDictionary *resultDict = [NSJSONSerialization JSONObjectWithData:result
 																	   options:NSJSONReadingMutableContainers
@@ -127,7 +134,7 @@
 
                     UIImage *img = [UIImage imageWithData:image];
                     UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"list-mask.png"]];
-
+                    
                     imgVwOfUserProfile.image = imgProfile;
                 });
             });

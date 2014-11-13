@@ -1,8 +1,8 @@
 //
-//  CustomTableCell.h
+//  ProfileTableViewCustomCell.h
 //  SocialIntegaration
 //
-//  Created by GrepRuby on 06/11/14.
+//  Created by GrepRuby on 10/11/14.
 //  Copyright (c) 2014 GrepRuby. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 #import "UserInfo.h"
 #import "AsyncImageView.h"
 
-@interface CustomTableCell : UITableViewCell {
+@interface ProfileTableViewCustomCell : UITableViewCell {
 
     IBOutlet UILabel *lblName;
     IBOutlet UILabel *lblSocialType;
@@ -19,7 +19,7 @@
     IBOutlet UIImageView *imgVwOfUserProfile;
     IBOutlet AsyncImageView *imgVwPostImg;
     IBOutlet UIButton *btnPlay;
-        //IBOutlet UITextView *txtVwMessage;
+    IBOutlet UITextView *txtVwMessage;
 }
 
 - (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo;

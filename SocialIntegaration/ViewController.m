@@ -13,28 +13,25 @@
 #import "AppDelegate.h"
 
 #import <Social/Social.h>
-#import <FacebookSDK/FacebookSDK.h>
 
 NSString *const kSocialServices = @"SocialServices";
 NSString *const kFBSetup = @"FBSetup";
 
 @interface ViewController () <UIAlertViewDelegate> {
 
-    UIActivityIndicatorView *activityIndicator;
+    BOOL isInstagramOpen;
 }
 
 @property (strong, nonatomic) NSMutableArray *arryOfFBNewsFeed;
 @property (strong, nonatomic) NSMutableArray *arryOfTwittes;
 @property (strong, nonatomic) NSMutableArray *arryOfAllFeeds;
 @property (strong, nonatomic) NSMutableArray *arryOfInstagrame;
-@property (strong) FBSession *fbSession;
 
 @end
 
 @implementation ViewController
 
 BOOL hasTwitter = NO;
-BOOL hasFacebook = NO;
 
 #pragma mark - View life cycle
 
@@ -56,18 +53,8 @@ BOOL hasFacebook = NO;
     self.arryOfAllFeeds = [[NSMutableArray alloc]init];
 
     [self makeCustomViewForNavigationTitle];
-    [self showFacebookPost];
-        // [self demoData];
-    [self getTweetFromTwitter];
 
-    activityIndicator = [[UIActivityIndicatorView alloc]init];
-    activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-    activityIndicator.tintColor = [UIColor blackColor];
-    activityIndicator.center = self.view.center;
-    [activityIndicator startAnimating ];
-    [self.view addSubview:activityIndicator];
-
-    [self.view bringSubviewToFront:activityIndicator];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -77,6 +64,36 @@ BOOL hasFacebook = NO;
 	[self.tbleVwPostList reloadData];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+
+    [self appIsInForeground:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
+- (void)appIsInForeground:(id)sender {
+
+    if (self.arryOfAllFeeds.count == 0) {
+
+        [self.view addSubview:sharedAppDelegate.spinner];
+        [self.view bringSubviewToFront:sharedAppDelegate.spinner];
+        [sharedAppDelegate.spinner show:YES];
+    }
+
+    if (isInstagramOpen == YES) { //if it only get data from instagram
+
+        isInstagramOpen = NO;
+        return;
+    }
+
+    [self showFacebookPost];
+}
+
 #pragma mark - Check session of facebook
 
 - (void) showFacebookPost {
@@ -84,16 +101,24 @@ BOOL hasFacebook = NO;
     if (![SLComposeViewController
           isAvailableForServiceType:SLServiceTypeFacebook]) {
 
-        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-        [self getInstagrameIntegration];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [sharedAppDelegate.spinner hide:YES];
+            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+            [self.arryOfAllFeeds removeAllObjects];
+
+            [self getTweetFromTwitter];// getInstagrameIntegration];
+        });
         return;
     } else {
-        if (FBSession.activeSession.state == FBSessionStateOpen ||
-            FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
 
-            self.fbSession = FBSession.activeSession;
-            hasFacebook = YES;
-        }
+        [FBSettings setDefaultAppID:@"357620804394305"];
+        [FBAppEvents activateApp];
+
+        if (FBSession.activeSession.state == FBSessionStateOpen ||
+		    FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
+			sharedAppDelegate.fbSession = FBSession.activeSession;
+			sharedAppDelegate.hasFacebook = YES;
+		}
     }
 	[self updatePosts];
 }
@@ -102,18 +127,25 @@ BOOL hasFacebook = NO;
 
 - (void)loginFacebook {
 
-    [FBSession openActiveSessionWithReadPermissions:@[ @"basic_info",  @"read_stream"]  allowLoginUI:YES
+    [FBSession openActiveSessionWithReadPermissions:@[
+                                                      @"basic_info",
+                                                      @"read_stream", @"email"
+                                                      ]
+                                       allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
-	                                                  FBSessionState state,
-	                                                  NSError *error) {
+                                                      FBSessionState state,
+                                                      NSError *error) {
                                       if (error) {
-                                          hasFacebook = NO;
+
+                                          sharedAppDelegate.hasFacebook = NO;
+                                          [sharedAppDelegate.spinner hide:YES];
                                       } else {
-                                          self.fbSession = session;
-                                          hasFacebook = YES;
+
+                                          sharedAppDelegate.fbSession = session;
+                                          sharedAppDelegate.hasFacebook = YES;
                                           [self updatePosts];
                                       }
-		                          }];
+                                  }];
 }
 
 #pragma mark - get posts
@@ -127,18 +159,25 @@ BOOL hasFacebook = NO;
 
 - (void)getNewsfeedOfFB {
 
-    if (!hasFacebook) {
+    if (! sharedAppDelegate.hasFacebook) {
 		[self loginFacebook];
 		return;
 	}
 
+    [self.arryOfAllFeeds removeAllObjects];
+
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-	parameters[@"access_token"] = self.fbSession.accessTokenData;
+	parameters[@"access_token"] = sharedAppDelegate.fbSession.accessTokenData;
 
 	FBRequest *request = [FBRequest requestForGraphPath:@"me/home"];
+    [FBSession setActiveSession:sharedAppDelegate.fbSession];
+
 	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        NSLog(@"%@", [error description]);
 		if (error) {
-            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+            [Constant showAlert:ERROR_CONNECTING forMessage:@"Feeds is not comming"];
+            [sharedAppDelegate.spinner hide:YES];
+            [self getTweetFromTwitter];
 		} else {
 			NSArray *arryPost = [result objectForKey:@"data"];
 
@@ -151,9 +190,12 @@ BOOL hasFacebook = NO;
 
 - (void)convertDataOfFBIntoModel:(NSArray *)arryPost {
 
-    for (NSDictionary *dictData in arryPost) {
+    if (arryPost.count != 0) {
 
-        NSLog(@"**%@", dictData);
+        [self.arryOfAllFeeds removeObject:self.arryOfFBNewsFeed];
+        [self.arryOfFBNewsFeed removeAllObjects];
+    }
+    for (NSDictionary *dictData in arryPost) {
 
         NSDictionary *fromUser = [dictData objectForKey:@"from"];
 
@@ -167,10 +209,10 @@ BOOL hasFacebook = NO;
         [self.arryOfFBNewsFeed addObject:userInfo];
         userInfo.strPostImg = [dictData valueForKey:@"picture"];
 
-        NSLog(@"%@", self.arryOfFBNewsFeed);
+        NSLog(@"%@", userInfo.struserTime);
     }
     [self.arryOfAllFeeds addObjectsFromArray:self.arryOfFBNewsFeed];
-    [self getInstagrameIntegration];
+    [self getTweetFromTwitter];// getInstagrameIntegration];
 }
 
 #pragma mark - View to add image at left side
@@ -191,7 +233,16 @@ BOOL hasFacebook = NO;
     if (![SLComposeViewController
           isAvailableForServiceType:SLServiceTypeTwitter]) {
 
-        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+        NSLog(@"%@", self.tabBarController.selectedViewController);
+
+        if (self.tabBarController.selectedViewController == self.navigationController) { //if this view controller is currently tapped
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+            });
+        }
+        [self.arryOfAllFeeds removeObject:self.arryOfTwittes];
+        [self getInstagrameIntegration];
+        [sharedAppDelegate.spinner hide:YES];
         return;
     } else {
 
@@ -233,6 +284,13 @@ BOOL hasFacebook = NO;
 
                               [self convertDataOfTwitterIntoModel: arryTwitte];//convert into model class
                           });
+                      } else {
+                          dispatch_async(dispatch_get_main_queue(), ^{
+
+                              [sharedAppDelegate.spinner hide:YES];
+                              [Constant showAlert:@"Message" forMessage:@"No Tweet in your account."];
+                          });
+                           [self getInstagrameIntegration];
                       }
                     }];
                  }
@@ -247,6 +305,11 @@ BOOL hasFacebook = NO;
 
 - (void)convertDataOfTwitterIntoModel:(NSArray *)arryPost {
 
+    if (arryPost.count != 0) {
+
+        [self.arryOfAllFeeds removeObject:self.arryOfTwittes];
+        [self.arryOfTwittes removeAllObjects];
+    }
     for (NSDictionary *dictData in arryPost) {
 
         NSLog(@"**%@", dictData);
@@ -273,6 +336,7 @@ BOOL hasFacebook = NO;
         NSLog(@"%@", self.arryOfTwittes);
     }
     [self.arryOfAllFeeds addObjectsFromArray:self.arryOfTwittes];
+    [self getInstagrameIntegration];
 }
 
 #pragma mark - Convert date of twitter
@@ -298,7 +362,7 @@ BOOL hasFacebook = NO;
 
 - (void)shortArryOfAllFeeds {
 
-    [activityIndicator stopAnimating];
+    [sharedAppDelegate.spinner hide:YES];
 
     NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"struserTime" ascending:NO];//give key name
     NSArray *sortDescriptors = [NSArray arrayWithObject:descriptor];
@@ -306,6 +370,13 @@ BOOL hasFacebook = NO;
     NSArray *sortedArray = [self.arryOfAllFeeds sortedArrayUsingDescriptors:sortDescriptors];
     [self.arryOfAllFeeds removeAllObjects];
     self.arryOfAllFeeds = [sortedArray mutableCopy];
+
+    for (int i=0; i<self.arryOfAllFeeds.count; i++) {
+
+        UserInfo *info = [self.arryOfAllFeeds objectAtIndex:i];
+        NSLog(@"***%@***", info.struserTime);
+    }
+
     [self.tbleVwPostList reloadData];
 }
 
@@ -313,7 +384,7 @@ BOOL hasFacebook = NO;
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    NSLog(@"%@", self.arryOfAllFeeds);
+    NSLog(@" ** count %icount ", self.arryOfAllFeeds.count);
     return [self.arryOfAllFeeds count];
 }
 
@@ -379,7 +450,7 @@ BOOL hasFacebook = NO;
     // here i can set accessToken received on previous login
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     sharedAppDelegate.instagram.sessionDelegate = self;
-
+    [sharedAppDelegate.spinner hide:YES];
     if ([sharedAppDelegate.instagram isSessionValid]) {
 
         NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"users/self/feed", @"method", nil]; //fetch feed
@@ -387,15 +458,26 @@ BOOL hasFacebook = NO;
                                         delegate:self];
     } else {
 
-        UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
-        [alertVw show];
+        if (self.tabBarController.selectedViewController == self.navigationController) {
+
+            UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
+            [alertVw show];
+        }
     }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
 
+    if ([alertView.title isEqualToString:@"Facebook"]) {
+
+    }
     if (buttonIndex == 0) {
+
         [sharedAppDelegate.instagram authorize:[NSArray arrayWithObjects:@"comments", @"likes", nil]];
+        isInstagramOpen = YES;
+    } else {
+
+        [self shortArryOfAllFeeds];
     }
 }
 
@@ -439,6 +521,7 @@ BOOL hasFacebook = NO;
         // remove the accessToken
     [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"accessToken"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
+    isInstagramOpen = NO;
 }
 
 - (void)igSessionInvalidated {
@@ -471,6 +554,9 @@ BOOL hasFacebook = NO;
 
 - (void)convertDataOfInstagramIntoModelClass:(NSArray *)arryOfInstagrame {
 
+    if (arryOfInstagrame.count != 0) {
+        [self.arryOfInstagrame removeAllObjects];
+    }
     for (NSDictionary *dictData in arryOfInstagrame) {
 
         NSLog(@" instagrame %@", dictData);
@@ -482,6 +568,7 @@ BOOL hasFacebook = NO;
         NSDictionary *dictUserInfo = [postUserDetailDict objectForKey:@"from"];
         userInfo.strUserName = [dictUserInfo valueForKey:@"username"];
         userInfo.fromId = [dictUserInfo valueForKey:@"id"];
+        sharedAppDelegate.InstagramId = userInfo.fromId;
         userInfo.strUserImg = [dictUserInfo valueForKey:@"profile_picture"];
 
         userInfo.strUserPost = [postUserDetailDict valueForKey:@"text"];

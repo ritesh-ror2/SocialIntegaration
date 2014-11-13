@@ -8,10 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "Instagram.h"
+#import "MBProgressHUD.h"
+#import <FacebookSDK/FacebookSDK.h>
+
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) Instagram *instagram;
+@property (nonatomic, strong) UIWindow *window;
+@property (nonatomic, strong) FBSession *fbSession;
+@property (nonatomic) BOOL hasFacebook;
+@property (nonatomic, strong) MBProgressHUD *spinner;
+@property (nonatomic, strong) Instagram *instagram;
+@property (nonatomic, strong) NSString *InstagramId;
 
 @end
