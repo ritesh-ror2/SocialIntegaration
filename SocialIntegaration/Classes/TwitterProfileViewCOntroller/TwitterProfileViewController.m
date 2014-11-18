@@ -13,6 +13,7 @@
 #import "UserProfile.h"
 #import <Social/Social.h>
 #import "Constant.h"
+#import "UserProfile+DatabaseHelper.h"
 #import "ProfileTableViewCustomCell.h"
 
 @interface TwitterProfileViewController ()
@@ -39,14 +40,7 @@
     [super viewDidLoad];
 
     self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:89/256.0f green:157/256.0f blue:247/256.0f alpha:1.0];
-
     self.arryTweeterProfileInfo = [[NSMutableArray alloc]init];
-    [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
-
-    [self getUserInfoFromTwitter];
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -63,6 +57,11 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
+    [self.view addSubview:sharedAppDelegate.spinner];
+    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
+    [sharedAppDelegate.spinner show:YES];
+
+    [self getUserInfoFromTwitter];
 }
 
 #pragma mark - Request to get user info
@@ -82,125 +81,93 @@
         return;
     }
 
-
-    if (![SLComposeViewController
-          isAvailableForServiceType:SLServiceTypeTwitter]) {
+    BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    if (isTwitterUserLogin == NO) {
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
         [sharedAppDelegate.spinner hide:YES];
         return;
     } else {
 
-        ACAccountStore *account = [[ACAccountStore alloc] init];
-        ACAccountType *accountType = [account
-                                      accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+        UserProfile *userProfile = [UserProfile getProfile:@"Twitter"];
+        [self showProfile:userProfile];
+        [self getUserTweets:userProfile.userId];
 
-        [account requestAccessToAccountsWithType:accountType
-                                         options:nil completion:^(BOOL granted, NSError *error)
-         {
-           if (granted == YES) {
-               NSArray *arrayOfAccounts = [account
-                                           accountsWithAccountType:accountType];
-
-               if ([arrayOfAccounts count] > 0)
-                 {
-                   self.twitterAccount = [arrayOfAccounts lastObject];
-
-                   NSURL *requestURL = [NSURL URLWithString:TWITTER_USER_PROFILE];
-                   SLRequest *timelineRequest = [SLRequest
-                                                 requestForServiceType:SLServiceTypeTwitter
-                                                 requestMethod:SLRequestMethodGET
-                                                 URL:requestURL parameters:nil];
-
-                   timelineRequest.account = self.twitterAccount;
-
-                   [timelineRequest performRequestWithHandler:
-                    ^(NSData *responseData, NSHTTPURLResponse
-                      *urlResponse, NSError *error) {
-
-                        if (error) {
-
-                            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
-                            return ;
-                        } else {
-
-                            NSArray *arryTwitte = [NSJSONSerialization
-                                                 JSONObjectWithData:responseData
-                                                 options:NSJSONReadingMutableLeaves
-                                                 error:&error];
-
-                            if (arryTwitte.count != 0) {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    NSDictionary *dictInfo = (NSDictionary *)arryTwitte;
-                                    [self convertProfileInfo:dictInfo];
-                                });
-                            }
-                        }
-                    }];
-                 }
-           } else {
-
-               [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
-           }
-         }];
     }
 }
 
 #pragma mark - Convert profile info into user profile
-
-- (void)convertProfileInfo:(NSDictionary *)dictData {
-
-    UserProfile *userProfile = [[UserProfile alloc]init];
-
-    userProfile.strUserName = [dictData valueForKey:@"screen_name"];
-    userProfile.urlUserImg = [NSURL URLWithString:[dictData valueForKey:@"profile_image_url"] ];
-    userProfile.following = [dictData valueForKey:@"friends_count"];
-    userProfile.tweet = [dictData valueForKey:@"statuses_count"];
-    userProfile.followers = [dictData valueForKey:@"followers_count"];
-    userProfile.status = [[dictData valueForKey:@"status"]valueForKey:@"text"];
-    userProfile.userId  =  [NSString stringWithFormat:@"%lf",[[[dictData valueForKey:@"status"]valueForKey:@"id"] doubleValue]];
-
-    [self getUserTweets:userProfile.userId];
-    [self showProfile:userProfile];
-}
+//
+//- (void)convertProfileInfo:(NSDictionary *)dictData {
+//
+//    UserProfile *userProfile = [[UserProfile alloc]init];
+//
+//    userProfile.userName = [dictData valueForKey:@"screen_name"];
+//    userProfile.userImg = [dictData valueForKey:@"profile_image_url"];
+//    userProfile.following = [dictData valueForKey:@"friends_count"];
+//    userProfile.tweet = [dictData valueForKey:@"statuses_count"];
+//    userProfile.followers = [dictData valueForKey:@"followers_count"];
+//    userProfile.type = [[dictData valueForKey:@"status"]valueForKey:@"text"];
+//    userProfile.userId  =  [NSString stringWithFormat:@"%lf",[[[dictData valueForKey:@"status"]valueForKey:@"id"] doubleValue]];
+//
+//    [self getUserTweets:userProfile.userId];
+//    [self showProfile:userProfile];
+//}
 
 #pragma mark - Request to get user own tweet
 
 - (void)getUserTweets:(NSString*) userId{
 
-    NSString *strRequest = [NSString stringWithFormat:TWITTER_USER_OWN_STATUS];
+    ACAccountStore *account = [[ACAccountStore alloc] init];
+    ACAccountType *accountType = [account
+                                  accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
 
-    NSURL *requestURL = [NSURL URLWithString:strRequest];
-    SLRequest *timelineRequest1 = [SLRequest
-                                  requestForServiceType:SLServiceTypeTwitter
-                                  requestMethod:SLRequestMethodGET
-                                  URL:requestURL parameters:nil];
+    [account requestAccessToAccountsWithType:accountType
+                                     options:nil completion:^(BOOL granted, NSError *error) {
 
-    timelineRequest1.account = self.twitterAccount;
+    if (granted == YES) {
+        NSArray *arrayOfAccounts = [account
+                                       accountsWithAccountType:accountType];
 
-    [timelineRequest1 performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error) {
+    if ([arrayOfAccounts count] > 0) {
 
-         if (error) {
+        self.twitterAccount = [arrayOfAccounts lastObject];
+        NSString *strRequest = [NSString stringWithFormat:TWITTER_USER_OWN_STATUS];
 
-             [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
-             return ;
-         } else {
+        NSURL *requestURL = [NSURL URLWithString:strRequest];
+        SLRequest *timelineRequest1 = [SLRequest
+                                      requestForServiceType:SLServiceTypeTwitter
+                                      requestMethod:SLRequestMethodGET
+                                      URL:requestURL parameters:nil];
 
-             NSLog(@"%@ !#" , [error description]);
-             NSArray *arryTwitte = [NSJSONSerialization
-                                    JSONObjectWithData:responseData
-                                    options:NSJSONReadingMutableLeaves
-                                    error:&error];
+        timelineRequest1.account = self.twitterAccount;
 
-             if (arryTwitte.count != 0) {
+        [timelineRequest1 performRequestWithHandler:
+         ^(NSData *responseData, NSHTTPURLResponse
+           *urlResponse, NSError *error) {
 
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     [self convertDataOfTwitterIntoModel:arryTwitte];
-                 });
-             }
-         }
+             if (error) {
+
+                 [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
+                 return ;
+             } else {
+
+                 NSLog(@"%@ !#" , [error description]);
+                 NSArray *arryTwitte = [NSJSONSerialization
+                                        JSONObjectWithData:responseData
+                                        options:NSJSONReadingMutableLeaves
+                                        error:&error];
+
+                 if (arryTwitte.count != 0) {
+
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [self convertDataOfTwitterIntoModel:arryTwitte];
+                     });
+                }
+                }
+                }];
+            }
+        }
      }];
 }
 
@@ -208,19 +175,17 @@
 
 - (void)showProfile:(UserProfile *)userProfile {
 
-    [sharedAppDelegate.spinner hide:YES];
-
-    self.lblUserName.text = userProfile.strUserName;
-    self.lblUserTweet.text = [NSString stringWithFormat:@"%i", userProfile.tweet.intValue];
-    self.lblUserFollowes.text = [NSString stringWithFormat:@"%i", userProfile.followers.intValue];
-    self.lblUserFollowing.text = [NSString stringWithFormat:@"%i", userProfile.following.intValue];
+    self.lblUserName.text = userProfile.userName;
+    self.lblUserTweet.text = userProfile.tweet;
+    self.lblUserFollowes.text =  userProfile.followers;
+    self.lblUserFollowing.text = userProfile.following;
     self.lblStatus.text = userProfile.status;
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
     dispatch_async(postImageQueue, ^{
 
-        NSData *image = [[NSData alloc] initWithContentsOfURL:userProfile.urlUserImg];
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -256,29 +221,33 @@
 
     [self.arryTweeterProfileInfo removeAllObjects];
 
-    for (NSDictionary *dictData in arryPost) {
+    @autoreleasepool  {
 
-        NSLog(@"**%@", dictData);
+        for (NSDictionary *dictData in arryPost) {
 
-        NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
+            NSLog(@"**%@", dictData);
 
-        UserInfo *userInfo =[[UserInfo alloc]init];
-        userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
-        userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
-        userInfo.strUserImg = [postUserDetailDict valueForKey:@"profile_image_url"];
+            NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
 
-        NSArray *arryMedia = [[dictData objectForKey:@"extended_entities"] objectForKey:@"media"];
+            UserInfo *userInfo =[[UserInfo alloc]init];
+            userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
+            userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
+            userInfo.strUserImg = [postUserDetailDict valueForKey:@"profile_image_url"];
 
-        if (arryMedia.count>0) {
-            userInfo.strPostImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
+            NSArray *arryMedia = [[dictData objectForKey:@"extended_entities"] objectForKey:@"media"];
+
+            if (arryMedia.count>0) {
+                userInfo.strPostImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
+            }
+            userInfo.strUserPost = [dictData valueForKey:@"text"];
+            userInfo.strUserSocialType = @"Twitter";
+            userInfo.type = [dictData objectForKey:@"type"];
+            NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
+            userInfo.struserTime = [Constant convertDateOFTweeter:strDate];
+            [self.arryTweeterProfileInfo addObject:userInfo];
         }
-        userInfo.strUserPost = [dictData valueForKey:@"text"];
-        userInfo.strUserSocialType = @"Twitter";
-        userInfo.type = [dictData objectForKey:@"type"];
-        NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
-        userInfo.struserTime = [Constant convertDateOFTweeter:strDate];
-        [self.arryTweeterProfileInfo addObject:userInfo];
     }
+    [sharedAppDelegate.spinner hide:YES];
     [self.tbleVwTweeterFeeds reloadData];
 }
 
@@ -297,7 +266,6 @@
     ProfileTableViewCustomCell *cell;
 
     cell = (ProfileTableViewCustomCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-
     [cell setValueInSocialTableViewCustomCell: [self.arryTweeterProfileInfo objectAtIndex:indexPath.row]];
 
     return cell;

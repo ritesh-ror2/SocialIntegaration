@@ -8,10 +8,12 @@
 
 #import "AppDelegate.h"
 #import "StatrtPageControllViewController.h"
+#import "FeedPagesViewController.h"
 
 @implementation AppDelegate
 
 @synthesize fbSession,hasFacebook,instagram,InstagramId,undoManager,window;
+@synthesize arryOfInstagrame, arryOfFBNewsFeed, arryOfTwittes, arryOfAllFeeds;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
@@ -25,9 +27,11 @@
     [self.window addSubview:self.spinner];
     [self.window bringSubviewToFront:self.spinner];
 
-    UIPageControl *pageControl = [UIPageControl appearanceWhenContainedIn:[StatrtPageControllViewController class], nil];
-    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-    pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
+    // allocate all three array
+    self.arryOfFBNewsFeed = [[NSMutableArray alloc]init];
+    self.arryOfTwittes = [[NSMutableArray alloc]init];
+    self.arryOfInstagrame = [[NSMutableArray alloc]init];
+    self.arryOfAllFeeds = [[NSMutableArray alloc]init];
 
     return YES;
 }

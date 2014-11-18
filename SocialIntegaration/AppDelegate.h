@@ -10,6 +10,7 @@
 #import "Instagram.h"
 #import "MBProgressHUD.h"
 #import <FacebookSDK/FacebookSDK.h>
+#import <Accounts/Accounts.h>
 
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
@@ -20,5 +21,12 @@
 @property (nonatomic, strong) MBProgressHUD *spinner;
 @property (nonatomic, strong) Instagram *instagram;
 @property (nonatomic, strong) NSString *InstagramId;
+@property (nonatomic, strong) ACAccount *twitterAccount;
+
+@property (strong, nonatomic) NSMutableArray *arryOfFBNewsFeed;
+@property (strong, nonatomic) NSMutableArray *arryOfInstagrame;
+@property (strong, nonatomic) NSMutableArray *arryOfTwittes;
+@property (strong, nonatomic) NSMutableArray *arryOfAllFeeds;
+
 
 @end

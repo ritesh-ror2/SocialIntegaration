@@ -16,9 +16,13 @@
     #import <Foundation/Foundation.h>
 
 #define ALERT_OK                @"OK"
-#define ERROR_FB                @"To see post of Facebook from this app, the accounts must be setup under settings."
+#define ERROR_FB                @"To see post of Facebook from this app, the accounts must be setup under settings of app."
+#define ERROR_FB_SETTING        @"The accounts must be setup under settings. After login from settings again tapped this button to connect through Facebook via app."
+
 #define ERROR_CONNECTING        @"Connection Error"
-#define ERROR_TWITTER           @"To see twittes of Twitter from this app, the accounts must be setup under settings."
+#define ERROR_TWITTER           @"To see twittes of Twitter from this app, the accounts must be setup under settings of app."
+#define ERROR_TWITTER_SETTING        @"The accounts must be setup under settings. After login from settings again tapped this button to connect through Twitter via app."
+#define ERROR_INSTAGRAM         @"To see post of Instagram from this app, the accounts must be setup under settings of app."
 #define ERROR_AUTHEN            @"There is some authentication problem."
 //Twitter url
 #define TWITTER_TIMELINE_URL    @"https://api.twitter.com/1/statuses/home_timeline.json"
@@ -26,6 +30,9 @@
 #define TWITTER_USER_PROFILE    @"https://api.twitter.com/1.1/account/verify_credentials.json"
 #define TWITTER_USER_OWN_STATUS @"https://api.twitter.com/1.1/statuses/user_timeline.json"
 
+#define ISFBLOGIN       @"FacebookLogin"
+#define ISTWITTERLOGIN  @"TwitterLogin"
+#define ISINSTAGRAMLOGIN  @"InstagramLogin"
 
 #define DatabaseDateFormate @"YYYY-MM-dd HH:mm:ss"
 #define TWEETERDATEFORMATE  @"dd MMM yyyy HH:mm:ss"

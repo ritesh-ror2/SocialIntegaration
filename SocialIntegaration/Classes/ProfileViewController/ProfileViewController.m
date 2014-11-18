@@ -11,6 +11,7 @@
 #import "Constant.h"
 #import "UserInfo.h"
 #import "UserProfile.h"
+#import "UserProfile+DatabaseHelper.h"
 #import "ProfileTableViewCustomCell.h"
 #import <Social/Social.h>
 #import <Accounts/Accounts.h>
@@ -41,12 +42,6 @@
 
     self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:70/256.0f green:106/256.0f blue:181/256.0f alpha:1.0];
     self.arryOfFBUserFeed = [[NSMutableArray alloc]init];
-
-    [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
-
-    [self getFBUserInfo];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,15 +50,22 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+
+    [super viewWillDisappear:animated];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
 
-}
+    [self.view addSubview:sharedAppDelegate.spinner];
+    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
+    [sharedAppDelegate.spinner show:YES];
 
-- (void)viewWillDisappear:(BOOL)animated {
-
-    [self.arryOfFBUserFeed removeAllObjects];
+    [self getFBUserInfo];
+    UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
+    [self setFBUserInfo:userProfile];
 }
 
 #pragma mark - Get FB User Info
@@ -86,8 +88,8 @@
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
     [sharedAppDelegate.spinner show:YES];
 
-    if (![SLComposeViewController
-          isAvailableForServiceType:SLServiceTypeFacebook]) {
+    BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    if (isFbUserLogin == NO) {
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
         [sharedAppDelegate.spinner hide:YES];
@@ -126,45 +128,9 @@
 
 - (void)getProfileOfFB {
 
-    if (!sharedAppDelegate.hasFacebook) {
-		[self loginFacebook];
-		return;
-	}
+    [self getUserStatus];
+    [self getFriendList];
 
-	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-	parameters[@"access_token"] = sharedAppDelegate.fbSession.accessTokenData;
-
-	FBRequest *request = [FBRequest requestForGraphPath:@"me"];
-	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-		if (error) {
-
-            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-		} else {
-
-            NSDictionary *dictInfo = (NSDictionary *)result;
-            [self getUserStatus];
-            [self getFriendList];
-            [self getProfileImg:dictInfo];
-		}
-	}];
-}
-
-#pragma mark - Get Profile image
-
-- (void)getProfileImg:(NSDictionary *)userInfo {
-
-    FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=picture"];
-
-	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-		if (error) {
-            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-		} else {
-
-            NSDictionary *dictInfo = (NSDictionary *)result;
-            NSString *strProfileImg = [[[dictInfo objectForKey:@"picture"] objectForKey:@"data"]objectForKey:@"url"];
-            [self convertFBUserInfoInModel:userInfo withProfileImg:strProfileImg];
-		}
-	}];
 }
 
 #pragma mark - Get friend list
@@ -182,8 +148,7 @@
                                   NSString *strFriendCount = [[dictResult valueForKey:@"summary"]valueForKey:@"total_count"];
                                   self.lblUserFrdList.text = [NSString stringWithFormat:@"%@ friends", strFriendCount];
                               }
-                              
-                          }];
+                        }];
 }
 
 #pragma mark-  Get user own post
@@ -210,46 +175,48 @@
 - (void)convertDataOfFBIntoModel:(NSArray *)arryPost {
 
     [self.arryOfFBUserFeed removeAllObjects];
-    for (NSDictionary *dictData in arryPost) {
+    @autoreleasepool {
 
-        NSDictionary *fromUser = [dictData objectForKey:@"from"];
+        for (NSDictionary *dictData in arryPost) {
 
-        UserInfo *userInfo =[[UserInfo alloc]init];
-        userInfo.strUserName = [fromUser valueForKey:@"name"];
-        userInfo.fromId = [fromUser valueForKey:@"id"];
-        userInfo.strUserPost = [dictData valueForKey:@"message"];
-        userInfo.strUserSocialType = @"Facebook";
-        userInfo.type = [dictData objectForKey:@"type"];
-        userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-        userInfo.strPostImg = [dictData valueForKey:@"picture"];
-        [self.arryOfFBUserFeed addObject:userInfo];
+            NSDictionary *fromUser = [dictData objectForKey:@"from"];
 
-        [self.tbleVwFeeds reloadData];
+            UserInfo *userInfo =[[UserInfo alloc]init];
+            userInfo.strUserName = [fromUser valueForKey:@"name"];
+            userInfo.fromId = [fromUser valueForKey:@"id"];
+            userInfo.strUserPost = [dictData valueForKey:@"message"];
+            userInfo.strUserSocialType = @"Facebook";
+            userInfo.type = [dictData objectForKey:@"type"];
+            userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+            userInfo.strPostImg = [dictData valueForKey:@"picture"];
+            [self.arryOfFBUserFeed addObject:userInfo];
+        }
     }
+    [sharedAppDelegate.spinner hide:YES];
+
+     [self.tbleVwFeeds reloadData];
 }
 
-#pragma mark - Convert profile into model class object
-
-- (void)convertFBUserInfoInModel:(NSDictionary *)dictInfo withProfileImg:(NSString *)strProfileImg {
-
-    UserProfile *userProfile = [[UserProfile alloc]init];
-    userProfile.strUserName = [dictInfo objectForKey:@"name"];
-    userProfile.urlUserImg = [NSURL URLWithString:strProfileImg];
-
-    [self setFBUserInfo:userProfile];
-}
+//#pragma mark - Convert profile into model class object
+//
+//- (void)convertFBUserInfoInModel:(NSDictionary *)dictInfo withProfileImg:(NSString *)strProfileImg {
+//
+//    UserProfile *userProfile = [[UserProfile alloc]init];
+//    userProfile.userName = [dictInfo objectForKey:@"name"];
+//    userProfile.userImg = [NSURL URLWithString:strProfileImg];
+//
+//    [self setFBUserInfo:userProfile];
+//}
 
 #pragma mark - Show user profilr info
 
 - (void)setFBUserInfo:(UserProfile*)userProfile {
 
-    [sharedAppDelegate.spinner hide:YES];
-
-    self.lblUserName.text = userProfile.strUserName;
+    self.lblUserName.text = userProfile.userName;
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{
-        NSData *image = [[NSData alloc] initWithContentsOfURL:userProfile.urlUserImg];
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
 

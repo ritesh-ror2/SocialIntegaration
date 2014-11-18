@@ -9,6 +9,7 @@
 #import "InstagramProfileViewController.h"
 #import "ProfileTableViewCustomCell.h"
 #import "UserProfile.h"
+#import "UserProfile+DatabaseHelper.h"
 #import "Reachability.h"
 #import "Constant.h"
 
@@ -33,10 +34,6 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-
-    self.arryOfInstagrame = [[NSMutableArray alloc]init];
-    self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:66/256.0f green:106/256.0f blue:151/256.0f alpha:1.0];
-    [self getInstagrameIntegration];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -48,6 +45,14 @@
 - (void)viewWillDisappear:(BOOL)animated {
 
     [self.arryOfInstagrame removeAllObjects];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+
+    [super viewDidAppear:animated];
+    self.arryOfInstagrame = [[NSMutableArray alloc]init];
+    self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:66/256.0f green:106/256.0f blue:151/256.0f alpha:1.0];
+    [self getInstagrameIntegration];
 }
 
 #pragma mark - Integrate instagrame
@@ -73,26 +78,22 @@
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     sharedAppDelegate.instagram.sessionDelegate = self;
 
-    if ([sharedAppDelegate.instagram isSessionValid]) {
+    BOOL isInstagramUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
 
-        if (sharedAppDelegate.InstagramId.length != 0) {
-
-
-            NSString *strInstagrameUserId = [NSString stringWithFormat:@"users/%@",sharedAppDelegate.InstagramId];
-            NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strInstagrameUserId, @"method", nil]; //fetch feed
-            [sharedAppDelegate.instagram requestWithParams:params
-                                                  delegate:self];
-
-            return;
-        }
-        NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"users/self/feed", @"method", nil]; //fetch feed
-        [sharedAppDelegate.instagram requestWithParams:params
-                                              delegate:self];
-    } else {
+    if (isInstagramUserLogin == NO) {
 
         [sharedAppDelegate.spinner hide:YES];
         UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
         [alertVw show];
+    } else {
+
+        UserProfile *userProfile = [UserProfile getProfile:@"Instagram"];
+        [self showProfileData:userProfile];
+
+        NSString *strMethod = [NSString stringWithFormat:@"users/%@/media/recent/",userProfile.userId];
+        NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strMethod, @"method", nil]; //fetch feed
+        [sharedAppDelegate.instagram requestWithParams:params
+                                              delegate:self];
     }
 }
 
@@ -169,26 +170,10 @@
 
 - (void)request:(IGRequest *)request didLoad:(id)result {
 
-    NSLog(@"Instagram did load: %@", result);
+    if ([[result objectForKey:@"data"] isKindOfClass:[NSArray class]]) {
 
-    if (sharedAppDelegate.InstagramId.length == 0) {
-
-        NSArray *arry = [result objectForKey:@"data"];
-
-        NSString *strInstagrameId = [NSString stringWithFormat:@"%@", [[[[arry objectAtIndex:0] valueForKey:@"caption"]valueForKey:@"from"]valueForKey:@"id"]];
-        sharedAppDelegate.InstagramId = strInstagrameId;
-        NSString *strInstagrameUserId = [NSString stringWithFormat:@"users/%@",sharedAppDelegate.InstagramId];
-        NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strInstagrameUserId, @"method", nil]; //fetch feed
-        [sharedAppDelegate.instagram requestWithParams:params
-                                              delegate:self];
-    } else {
-
-        if ([[result objectForKey:@"data"] isKindOfClass:[NSArray class]]) {
-
-            [self convertUserPostIntoModel:[result objectForKey:@"data"]];
-            return;
-        }
-        [self convertProfileData:[result objectForKey:@"data"]];
+        [self convertUserPostIntoModel:[result objectForKey:@"data"]];
+        return;
     }
 }
 
@@ -197,83 +182,59 @@
 - (void)convertUserPostIntoModel:(NSArray *)arryOfInstagrame {
 
     [self.arryOfInstagrame removeAllObjects];
-    for (NSDictionary *dictData in arryOfInstagrame) {
 
-        NSLog(@" instagrame %@", dictData);
-        UserInfo *userInfo =[[UserInfo alloc]init];
+    @autoreleasepool {
 
-        NSDictionary *postUserDetailDict = [dictData objectForKey:@"caption"];
+        for (NSDictionary *dictData in arryOfInstagrame) {
 
-        NSDictionary *dictUserInfo = [postUserDetailDict objectForKey:@"from"];
-        userInfo.strUserName = [dictUserInfo valueForKey:@"username"];
-        userInfo.fromId = [dictUserInfo valueForKey:@"id"];
-        sharedAppDelegate.InstagramId = userInfo.fromId;
-        userInfo.strUserImg = [dictUserInfo valueForKey:@"profile_picture"];
+            NSLog(@" instagrame %@", dictData);
+            UserInfo *userInfo =[[UserInfo alloc]init];
 
-        userInfo.strUserPost = [postUserDetailDict valueForKey:@"text"];
-        NSString *strDate = [postUserDetailDict objectForKey:@"created_time"];
+            NSDictionary *postUserDetailDict = [dictData objectForKey:@"caption"];
 
-        NSTimeInterval interval = strDate.doubleValue;
-        NSDate *convertedDate = [NSDate dateWithTimeIntervalSince1970: interval];
-        userInfo.struserTime = [Constant convertDateOFInstagram:convertedDate];
+            NSDictionary *dictUserInfo = [postUserDetailDict objectForKey:@"from"];
+            userInfo.strUserName = [dictUserInfo valueForKey:@"username"];
+            userInfo.fromId = [dictUserInfo valueForKey:@"id"];
+            sharedAppDelegate.InstagramId = userInfo.fromId;
+            userInfo.strUserImg = [dictUserInfo valueForKey:@"profile_picture"];
 
-        NSDictionary *dictImage = [dictData objectForKey:@"images"];
-        userInfo.strPostImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
+            userInfo.strUserPost = [postUserDetailDict valueForKey:@"text"];
+            NSString *strDate = [postUserDetailDict objectForKey:@"created_time"];
 
-        userInfo.type = [dictData objectForKey:@"type"];
-        userInfo.strUserSocialType = @"Instagram";
-        [self.arryOfInstagrame addObject:userInfo];
+            NSTimeInterval interval = strDate.doubleValue;
+            NSDate *convertedDate = [NSDate dateWithTimeIntervalSince1970: interval];
+            userInfo.struserTime = [Constant convertDateOFInstagram:convertedDate];
 
-        NSLog(@"%@", self.arryOfInstagrame);
+            NSDictionary *dictImage = [dictData objectForKey:@"images"];
+            userInfo.strPostImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
+
+            userInfo.type = [dictData objectForKey:@"type"];
+            userInfo.strUserSocialType = @"Instagram";
+            [self.arryOfInstagrame addObject:userInfo];
+
+            NSLog(@"%@", self.arryOfInstagrame);
+        }
     }
+    [sharedAppDelegate.spinner hide:YES];
+
     [self.tbleVwInstagramPost reloadData];
-}
-
-#pragma mark - Convert profile Info
-
-- (void)convertProfileData:(NSDictionary *)dictInfo {
-
-    UserProfile *userProfile = [[UserProfile alloc]init];
-    if ([dictInfo isKindOfClass: [NSDictionary class]]) {
-
-        NSDictionary *dictCounts = [dictInfo objectForKey:@"counts"];
-        userProfile.followers = [dictCounts valueForKey:@"followed_by"];
-        userProfile.following = [dictCounts valueForKey:@"follows"];
-        userProfile.post = [dictCounts valueForKey:@"media"];
-        userProfile.userId = [dictInfo valueForKey:@"id"];
-        userProfile.urlUserImg = [NSURL URLWithString:[dictInfo valueForKey:@"profile_picture"]];
-        userProfile.strUserName = [dictInfo valueForKey:@"full_name"];
-        [self getPostOfUser:userProfile.userId];
-        [self showProfileData:userProfile];
-    }
-}
-
-#pragma mark - Request to get user own post
-
-- (void)getPostOfUser:(NSString *)strUerId {
-
-    NSString *strMethod = [NSString stringWithFormat:@"users/%@/media/recent/",strUerId];
-    NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strMethod, @"method", nil]; //fetch feed
-    [sharedAppDelegate.instagram requestWithParams:params
-                                          delegate:self];
 }
 
 #pragma mark - Show Profile data
 
 - (void)showProfileData:(UserProfile *)userProfile {
 
-    [sharedAppDelegate.spinner hide:YES];
-    self.lblUserName.text = userProfile.strUserName;
-    self.lblUserPost.text = [NSString stringWithFormat:@"%i", userProfile.post.intValue];
-    self.lblUserFollowes.text = [NSString stringWithFormat:@"%i", userProfile.followers.intValue];
-    self.lblUserFollowing.text = [NSString stringWithFormat:@"%i", userProfile.following.intValue];
+    self.lblUserName.text = userProfile.userName;
+    self.lblUserPost.text = userProfile.post;
+    self.lblUserFollowes.text = userProfile.followers;
+    self.lblUserFollowing.text = userProfile.following;
     self.lblStatus.text = userProfile.status;
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
     dispatch_async(postImageQueue, ^{
 
-        NSData *image = [[NSData alloc] initWithContentsOfURL:userProfile.urlUserImg];
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
 

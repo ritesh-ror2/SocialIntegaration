@@ -10,13 +10,14 @@
 
 @interface UserProfile : NSObject
 
-@property (nonatomic, strong) NSURL *urlUserImg;
-@property (nonatomic, strong) NSString *strUserName;
+@property (nonatomic, strong) NSString *userImg;
+@property (nonatomic, strong) NSString *userName;
 @property (nonatomic, strong) NSString *followers;
 @property (nonatomic, strong) NSString *tweet;
 @property (nonatomic, strong) NSString *post;
 @property (nonatomic, strong) NSString *following;
 @property (nonatomic, strong) NSString *status;
 @property (nonatomic, strong) NSString *userId;
+@property (nonatomic, strong) NSString *type;
 
 @end

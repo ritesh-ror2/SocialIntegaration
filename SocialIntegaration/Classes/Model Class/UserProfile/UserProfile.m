@@ -10,6 +10,6 @@
 
 @implementation UserProfile
 
-@synthesize urlUserImg, strUserName, status, followers, following, tweet, userId;
+@synthesize userImg, userName, status, followers, following, tweet, post, userId, type;
 
 @end

@@ -7,8 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CustomTableCell.h"
 
-@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, IGSessionDelegate, IGRequestDelegate>
+@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, IGSessionDelegate, IGRequestDelegate, CustomTableCellDelegate>
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwPostList;
+
+@property (nonatomic) NSUInteger index;
+@property (strong, nonatomic) UINavigationItem *navItem;
+@property (strong, nonatomic) UINavigationController *navController;
+@property (nonatomic)BOOL isAlreadyTapped;
+
 @end

@@ -18,5 +18,7 @@
 @property (nonatomic, strong) NSString *struserTime;
 @property (nonatomic, strong) NSString *fromId;
 @property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) NSString *objectIdFB;
+@property (nonatomic, strong) NSString *statusId;
 
 @end

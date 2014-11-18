@@ -8,25 +8,24 @@
 
 #import "ViewController.h"
 #import "UserInfo.h"
-#import "CustomTableCell.h"
 #import "Constant.h"
+#import "FeedPagesViewController.h"
 #import "AppDelegate.h"
-
+#import "UserProfile.h"
+#import "UserProfile+DatabaseHelper.h"
+#import "CommentViewController.h"
 #import <Social/Social.h>
 
 NSString *const kSocialServices = @"SocialServices";
 NSString *const kFBSetup = @"FBSetup";
 
-@interface ViewController () <UIAlertViewDelegate> {
+@interface ViewController () {
 
     BOOL isInstagramOpen;
 }
 
-@property (strong, nonatomic) NSMutableArray *arryOfFBNewsFeed;
-@property (strong, nonatomic) NSMutableArray *arryOfTwittes;
-@property (strong, nonatomic) NSMutableArray *arryOfAllFeeds;
-@property (strong, nonatomic) NSMutableArray *arryOfInstagrame;
-
+@property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
+@property (nonatomic, strong) NSMutableArray *arryTappedCell;
 @end
 
 @implementation ViewController
@@ -41,27 +40,24 @@ BOOL hasTwitter = NO;
 
     //right button
     UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:nil];
-    self.navigationItem.rightBarButtonItem = barBtnEdit;
+    self.navItem.rightBarButtonItem = barBtnEdit;
 
     //left button
     UIBarButtonItem *barBtnProfile = [[UIBarButtonItem alloc]initWithCustomView:[self addUserImgAtRight]];
-    self.navigationItem.leftBarButtonItem = barBtnProfile;
+   self.navItem.leftBarButtonItem = barBtnProfile;
 
-    self.arryOfFBNewsFeed = [[NSMutableArray alloc]init];
-    self.arryOfTwittes = [[NSMutableArray alloc]init];
-    self.arryOfInstagrame = [[NSMutableArray alloc]init];
-    self.arryOfAllFeeds = [[NSMutableArray alloc]init];
+    self.navigationController.navigationBar.translucent = NO;
 
-    [self makeCustomViewForNavigationTitle];
-
+    self.navController.navigationBar.translucent = NO;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+
+    self.arrySelectedIndex = [[NSMutableArray alloc]init];
+    self.arryTappedCell = [[NSMutableArray alloc]init];
 }
 
 - (void)didReceiveMemoryWarning {
 
     [super didReceiveMemoryWarning];
-    self.arryOfFBNewsFeed = nil;
-	[self.tbleVwPostList reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -69,28 +65,59 @@ BOOL hasTwitter = NO;
     [super viewWillAppear:animated];
 
     [self appIsInForeground:nil];
+    self.navController.navigationBarHidden = NO;
+}
+- (void)viewDidAppear:(BOOL)animated {
+
+    [super viewDidAppear:animated];
+    self.navItem.title = @"Timeline";
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
 
+    [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter]removeObserver:self];
+    [self.arrySelectedIndex removeAllObjects];
+}
+
+- (UIImageView *)addUserImgAtRight {
+
+        //add mask image
+    UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
+
+    if (userProfile != nil) {
+
+            NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
+            UIImage *img = [UIImage imageWithData:image];
+            UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"list-mask.png"]];
+            UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
+            imgVwProile.frame = CGRectMake(0, 0, 35, 35);
+            return imgVwProile;
+    }
+    UIImage *imgProfile = [Constant maskImage:[UIImage imageNamed: @"user-selected.png"] withMask:[UIImage imageNamed:@"list-mask.png"]];
+    UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
+    imgVwProile.frame = CGRectMake(0, 0, 35, 35);
+    return imgVwProile;
 }
 
 - (void)appIsInForeground:(id)sender {
 
-    if (self.arryOfAllFeeds.count == 0) {
+    NSLog(@"%i %i, %i ", sharedAppDelegate.arryOfAllFeeds.count , sharedAppDelegate.arryOfInstagrame.count, sharedAppDelegate.arryOfFBNewsFeed.count);
+    if (sharedAppDelegate.arryOfAllFeeds.count == 0) {
 
         [self.view addSubview:sharedAppDelegate.spinner];
         [self.view bringSubviewToFront:sharedAppDelegate.spinner];
         [sharedAppDelegate.spinner show:YES];
     }
 
-    if (isInstagramOpen == YES) { //if it only get data from instagram
+    UIApplication* app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = YES;
 
+    if (isInstagramOpen == YES) { //if it only get data from instagram
         isInstagramOpen = NO;
-        return;
     }
 
+        // [self getInstagrameIntegration];
     [self showFacebookPost];
 }
 
@@ -98,13 +125,15 @@ BOOL hasTwitter = NO;
 
 - (void) showFacebookPost {
 
-    if (![SLComposeViewController
-          isAvailableForServiceType:SLServiceTypeFacebook]) {
+    BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    if (isFbUserLogin == NO) {
 
         dispatch_async(dispatch_get_main_queue(), ^{
+
             [sharedAppDelegate.spinner hide:YES];
-            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-            [self.arryOfAllFeeds removeAllObjects];
+            [sharedAppDelegate.arryOfFBNewsFeed removeAllObjects];
+
+            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB ];
 
             [self getTweetFromTwitter];// getInstagrameIntegration];
         });
@@ -164,8 +193,6 @@ BOOL hasTwitter = NO;
 		return;
 	}
 
-    [self.arryOfAllFeeds removeAllObjects];
-
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	parameters[@"access_token"] = sharedAppDelegate.fbSession.accessTokenData;
 
@@ -190,57 +217,51 @@ BOOL hasTwitter = NO;
 
 - (void)convertDataOfFBIntoModel:(NSArray *)arryPost {
 
-    if (arryPost.count != 0) {
+    [sharedAppDelegate.arryOfFBNewsFeed removeAllObjects];
+    @autoreleasepool {
 
-        [self.arryOfAllFeeds removeObject:self.arryOfFBNewsFeed];
-        [self.arryOfFBNewsFeed removeAllObjects];
+        for (NSDictionary *dictData in arryPost) {
+
+            NSDictionary *fromUser = [dictData objectForKey:@"from"];
+
+            UserInfo *userInfo =[[UserInfo alloc]init];
+            userInfo.strUserName = [fromUser valueForKey:@"name"];
+            userInfo.fromId = [fromUser valueForKey:@"id"];
+            userInfo.strUserPost = [dictData valueForKey:@"message"];
+            userInfo.strUserSocialType = @"Facebook";
+            userInfo.type = [dictData objectForKey:@"type"];
+            userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+            [sharedAppDelegate.arryOfFBNewsFeed addObject:userInfo];
+            userInfo.strPostImg = [dictData valueForKey:@"picture"];
+            userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
+
+            NSLog(@"%@", userInfo.struserTime);
+        }
     }
-    for (NSDictionary *dictData in arryPost) {
-
-        NSDictionary *fromUser = [dictData objectForKey:@"from"];
-
-        UserInfo *userInfo =[[UserInfo alloc]init];
-        userInfo.strUserName = [fromUser valueForKey:@"name"];
-        userInfo.fromId = [fromUser valueForKey:@"id"];
-        userInfo.strUserPost = [dictData valueForKey:@"message"];
-        userInfo.strUserSocialType = @"Facebook";
-        userInfo.type = [dictData objectForKey:@"type"];
-        userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-        [self.arryOfFBNewsFeed addObject:userInfo];
-        userInfo.strPostImg = [dictData valueForKey:@"picture"];
-
-        NSLog(@"%@", userInfo.struserTime);
-    }
-    [self.arryOfAllFeeds addObjectsFromArray:self.arryOfFBNewsFeed];
-    [self getTweetFromTwitter];// getInstagrameIntegration];
-}
-
-#pragma mark - View to add image at left side
-
-- (UIImageView *)addUserImgAtRight {
-
-        //add mask image
-    UIImage *imgProfile = [Constant maskImage:[UIImage imageNamed: @"user-selected.png"] withMask:[UIImage imageNamed:@"list-mask.png"]];
-    UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
-    imgVwProile.frame = CGRectMake(0, 0, 35, 35);
-    return imgVwProile;
+        //  [self shortArryOfAllFeeds];
+        [self getTweetFromTwitter];// getInstagrameIntegration];
 }
 
 #pragma mark - Get Tweets from twitter
 
 - (void)getTweetFromTwitter {
 
-    if (![SLComposeViewController
-          isAvailableForServiceType:SLServiceTypeTwitter]) {
+    BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    if (isTwitterUserLogin == NO) {
 
-        NSLog(@"%@", self.tabBarController.selectedViewController);
+        NSArray *arryVwController = self.navController.viewControllers;
+        UIViewController *vwController = [arryVwController lastObject];
 
-        if (self.tabBarController.selectedViewController == self.navigationController) { //if this view controller is currently tapped
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
-            });
+        if ([vwController isKindOfClass:[FeedPagesViewController class]]) { //if this view controller is currently tapped
+            if (self.tabBarController.selectedViewController == self.navigationController) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+                });
+            }
         }
-        [self.arryOfAllFeeds removeObject:self.arryOfTwittes];
+
+        [sharedAppDelegate.arryOfTwittes removeAllObjects];
+        NSLog(@" ** %i", sharedAppDelegate.arryOfAllFeeds.count);
         [self getInstagrameIntegration];
         [sharedAppDelegate.spinner hide:YES];
         return;
@@ -259,15 +280,18 @@ BOOL hasTwitter = NO;
 
                if ([arrayOfAccounts count] > 0)
                  {
-                   ACAccount *twitterAccount = [arrayOfAccounts lastObject];
+                   sharedAppDelegate.twitterAccount = [arrayOfAccounts lastObject];
+
+                       //TWITTER_TIMELINE_URL
+                       // NSDictionary* params = @{@"count": @"50"};
 
                    NSURL *requestURL = [NSURL URLWithString:TWITTER_TIMELINE_URL];
                    SLRequest *timelineRequest = [SLRequest
-                                             requestForServiceType:SLServiceTypeTwitter
-                                             requestMethod:SLRequestMethodGET
-                                             URL:requestURL parameters:nil];
+                                                 requestForServiceType:SLServiceTypeTwitter
+                                                 requestMethod:SLRequestMethodGET
+                                                 URL:requestURL parameters:nil];
 
-                   timelineRequest.account = twitterAccount;
+                   timelineRequest.account = sharedAppDelegate.twitterAccount;
 
                    [timelineRequest performRequestWithHandler:
                     ^(NSData *responseData, NSHTTPURLResponse
@@ -275,9 +299,9 @@ BOOL hasTwitter = NO;
                     {
                       NSLog(@"%@ !#" , [error description]);
                       NSArray *arryTwitte = [NSJSONSerialization
-                                         JSONObjectWithData:responseData
-                                         options:NSJSONReadingMutableLeaves
-                                         error:&error];
+                                             JSONObjectWithData:responseData
+                                             options:NSJSONReadingMutableLeaves
+                                             error:&error];
 
                       if (arryTwitte.count != 0) {
                           dispatch_async(dispatch_get_main_queue(), ^{
@@ -290,7 +314,7 @@ BOOL hasTwitter = NO;
                               [sharedAppDelegate.spinner hide:YES];
                               [Constant showAlert:@"Message" forMessage:@"No Tweet in your account."];
                           });
-                           [self getInstagrameIntegration];
+                          [self getInstagrameIntegration];
                       }
                     }];
                  }
@@ -305,37 +329,35 @@ BOOL hasTwitter = NO;
 
 - (void)convertDataOfTwitterIntoModel:(NSArray *)arryPost {
 
-    if (arryPost.count != 0) {
+    [sharedAppDelegate.arryOfTwittes removeAllObjects];
+    @autoreleasepool {
 
-        [self.arryOfAllFeeds removeObject:self.arryOfTwittes];
-        [self.arryOfTwittes removeAllObjects];
-    }
-    for (NSDictionary *dictData in arryPost) {
+        for (NSDictionary *dictData in arryPost) {
 
-        NSLog(@"**%@", dictData);
+            NSLog(@"**%@", dictData);
 
-        NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
+            NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
 
-        UserInfo *userInfo =[[UserInfo alloc]init];
-        userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
-        userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
-        userInfo.strUserImg = [postUserDetailDict valueForKey:@"profile_image_url"];
+            UserInfo *userInfo =[[UserInfo alloc]init];
+            userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
+            userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
+            userInfo.strUserImg = [postUserDetailDict valueForKey:@"profile_image_url"];
 
-        NSArray *arryMedia = [[dictData objectForKey:@"extended_entities"] objectForKey:@"media"];
+            NSArray *arryMedia = [[dictData objectForKey:@"extended_entities"] objectForKey:@"media"];
 
-        if (arryMedia.count>0) {
-            userInfo.strPostImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
+            if (arryMedia.count>0) {
+                userInfo.strPostImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
+            }
+            userInfo.strUserPost = [dictData valueForKey:@"text"];
+            userInfo.strUserSocialType = @"Twitter";
+            userInfo.type = [dictData objectForKey:@"type"];
+            NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
+            userInfo.struserTime = [Constant convertDateOFTweeter:strDate];
+            userInfo.statusId = [dictData valueForKey:@"id"];
+            [sharedAppDelegate.arryOfTwittes addObject:userInfo];
         }
-        userInfo.strUserPost = [dictData valueForKey:@"text"];
-        userInfo.strUserSocialType = @"Twitter";
-        userInfo.type = [dictData objectForKey:@"type"];
-        NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
-        userInfo.struserTime = [Constant convertDateOFTweeter:strDate];
-        [self.arryOfTwittes addObject:userInfo];
-
-        NSLog(@"%@", self.arryOfTwittes);
     }
-    [self.arryOfAllFeeds addObjectsFromArray:self.arryOfTwittes];
+        //  [self.arryOfAllFeeds addObjectsFromArray:self.arryOfTwittes];
     [self getInstagrameIntegration];
 }
 
@@ -358,34 +380,12 @@ BOOL hasTwitter = NO;
     return strDateInDatabaseFormate;
 }
 
-#pragma mark - Sort array of news feed
-
-- (void)shortArryOfAllFeeds {
-
-    [sharedAppDelegate.spinner hide:YES];
-
-    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"struserTime" ascending:NO];//give key name
-    NSArray *sortDescriptors = [NSArray arrayWithObject:descriptor];
-
-    NSArray *sortedArray = [self.arryOfAllFeeds sortedArrayUsingDescriptors:sortDescriptors];
-    [self.arryOfAllFeeds removeAllObjects];
-    self.arryOfAllFeeds = [sortedArray mutableCopy];
-
-    for (int i=0; i<self.arryOfAllFeeds.count; i++) {
-
-        UserInfo *info = [self.arryOfAllFeeds objectAtIndex:i];
-        NSLog(@"***%@***", info.struserTime);
-    }
-
-    [self.tbleVwPostList reloadData];
-}
-
 #pragma mark - UITableViewDatasource
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    NSLog(@" ** count %icount ", self.arryOfAllFeeds.count);
-    return [self.arryOfAllFeeds count];
+    NSLog(@" ** count %icount ", sharedAppDelegate.arryOfAllFeeds.count);
+    return [sharedAppDelegate.arryOfAllFeeds count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -394,16 +394,17 @@ BOOL hasTwitter = NO;
     CustomTableCell *cell;
 
     cell = (CustomTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-
         NSArray *arryObjects;
         if (cell == nil) {
 
             arryObjects = [[NSBundle mainBundle]loadNibNamed:@"CustomTableCell" owner:nil options:nil];
             cell = [arryObjects objectAtIndex:0];
+            cell.customCellDelegate = self;
+
         }
 
-    [cell setValueInSocialTableViewCustomCell: [self.arryOfAllFeeds objectAtIndex:indexPath.row]];
-    
+    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell];
+
     return cell;
 }
 
@@ -411,7 +412,7 @@ BOOL hasTwitter = NO;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    UserInfo *objUserInfo = [self.arryOfAllFeeds objectAtIndex:indexPath.row];
+    UserInfo *objUserInfo = [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
@@ -420,27 +421,51 @@ BOOL hasTwitter = NO;
                                        context:nil];
 
     if (objUserInfo.strPostImg.length != 0) {
-        return(rect.size.height + 160);
+
+        for (NSString *index in self.arrySelectedIndex) {
+
+            if (index.integerValue == indexPath.row) {
+                return(rect.size.height + 190);
+            }
+        }
+    return(rect.size.height + 160);
+    }
+
+    for (NSString *index in self.arrySelectedIndex) {
+
+        if (index.integerValue == indexPath.row) {
+            return(rect.size.height + 90);
+        }
     }
     return (rect.size.height + 60);//183 is height of other fixed content
 }
 
-#pragma mark - Custom view over navigation bar
+- (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
 
-- (void)makeCustomViewForNavigationTitle {
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    CommentViewController *commentVw = [storyboard instantiateViewControllerWithIdentifier:@"CommentView"];
+    commentVw.userInfo = objuserInfo;
+    commentVw.postUserImg = imgName;
+    [[self navigationController] pushViewController:commentVw animated:YES];
+}
 
-        // UIView *vwTitle = [[UIView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 170)/2, 0, 170, 44)];
-        // vwTitle.backgroundColor = [UIColor blackColor];
-    UILabel *lblName = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 160)/2, 10, 160, 21)];
-    lblName.text = @"Timeline";
-    lblName.font = [UIFont boldSystemFontOfSize:17];
-    lblName.textAlignment = NSTextAlignmentCenter;
-    lblName.textColor = [UIColor blackColor];
+- (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
-        //[vwTitle addSubview:vwTitle];
+    [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
 
-    [self.navigationController.navigationBar addSubview:lblName];
-    [self.navigationController.navigationBar bringSubviewToFront:lblName];
+    NSLog(@"****%@***", self.arrySelectedIndex);
+        //your code here
+
+    if (isSelected == YES) {
+        [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
+    } else {
+        [self.arryTappedCell insertObject:[NSNumber numberWithBool:NO] atIndex:cellIndex];
+    }
+    [self.tbleVwPostList beginUpdates];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];
+    [self.tbleVwPostList reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        //your code here
+    [self.tbleVwPostList endUpdates];
 }
 
 #pragma mark - Integrate instagrame
@@ -451,33 +476,36 @@ BOOL hasTwitter = NO;
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     sharedAppDelegate.instagram.sessionDelegate = self;
     [sharedAppDelegate.spinner hide:YES];
-    if ([sharedAppDelegate.instagram isSessionValid]) {
 
-        NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"users/self/feed", @"method", nil]; //fetch feed
-        [sharedAppDelegate.instagram requestWithParams:params
-                                        delegate:self];
-    } else {
+    BOOL isInstagramUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
+    if (isInstagramUserLogin == NO) {
 
-        if (self.tabBarController.selectedViewController == self.navigationController) {
-
-            UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
-            [alertVw show];
+        NSArray *arryVwController = self.navController.viewControllers;
+        UIViewController *vwController = [arryVwController lastObject];
+        
+        if ([vwController isKindOfClass:[FeedPagesViewController class]]) { //if this view controller is currently tapped
+            if (self.tabBarController.selectedViewController == self.navigationController) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_INSTAGRAM];
+                });
+            }
         }
-    }
-}
+            //[sharedAppDelegate.arryOfInstagrame removeAllObjects];
+            // [self shortArryOfAllFeeds];
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-
-    if ([alertView.title isEqualToString:@"Facebook"]) {
-
-    }
-    if (buttonIndex == 0) {
-
-        [sharedAppDelegate.instagram authorize:[NSArray arrayWithObjects:@"comments", @"likes", nil]];
-        isInstagramOpen = YES;
     } else {
 
-        [self shortArryOfAllFeeds];
+            ///v1/users/3/media/recent/?access_token=ACCESS-TOKEN
+        if ([sharedAppDelegate.instagram isSessionValid]) {
+
+            isInstagramOpen = YES;
+            NSString *strUrl = [NSString stringWithFormat:@"users/%@/media/recent",[ [NSUserDefaults standardUserDefaults]valueForKey:@"InstagramId"]];
+            NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strUrl, @"method", nil]; //fetch feed
+            [sharedAppDelegate.instagram requestWithParams:params
+                                            delegate:self];
+        } else {
+
+        }
     }
 }
 
@@ -490,7 +518,6 @@ BOOL hasTwitter = NO;
 
 - (void)igDidLogin {
 
-    NSLog(@"Instagram did login");
         // here i can store accessToken
     [[NSUserDefaults standardUserDefaults] setObject:sharedAppDelegate.instagram.accessToken forKey:@"accessToken"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
@@ -544,9 +571,8 @@ BOOL hasTwitter = NO;
 
 - (void)request:(IGRequest *)request didLoad:(id)result {
 
-    NSLog(@"Instagram did load: %@", result);
+         NSLog(@"Instagram did load: %@", result);
     NSArray *arry = [result objectForKey:@"data"];
-
     [self convertDataOfInstagramIntoModelClass:arry];
 }
 
@@ -555,70 +581,76 @@ BOOL hasTwitter = NO;
 - (void)convertDataOfInstagramIntoModelClass:(NSArray *)arryOfInstagrame {
 
     if (arryOfInstagrame.count != 0) {
-        [self.arryOfInstagrame removeAllObjects];
+        [sharedAppDelegate.arryOfInstagrame removeAllObjects];
+    } else {
+        [Constant showAlert:@"Message" forMessage:@"No Post is Instagram."];
     }
-    for (NSDictionary *dictData in arryOfInstagrame) {
 
-        NSLog(@" instagrame %@", dictData);
-        UserInfo *userInfo =[[UserInfo alloc]init];
+    @autoreleasepool {
 
-        NSDictionary *postUserDetailDict = [dictData objectForKey:@"caption"];
-        NSLog(@" $$ %@", postUserDetailDict);
+        for (NSDictionary *dictData in arryOfInstagrame) {
 
-        NSDictionary *dictUserInfo = [postUserDetailDict objectForKey:@"from"];
-        userInfo.strUserName = [dictUserInfo valueForKey:@"username"];
-        userInfo.fromId = [dictUserInfo valueForKey:@"id"];
-        sharedAppDelegate.InstagramId = userInfo.fromId;
-        userInfo.strUserImg = [dictUserInfo valueForKey:@"profile_picture"];
+            NSLog(@" instagrame %@", dictData);
+            UserInfo *userInfo =[[UserInfo alloc]init];
 
-        userInfo.strUserPost = [postUserDetailDict valueForKey:@"text"];
-        NSString *strDate = [postUserDetailDict objectForKey:@"created_time"];
+            NSDictionary *postUserDetailDict = [dictData objectForKey:@"caption"];
 
-        NSTimeInterval interval = strDate.doubleValue;
-        NSDate *convertedDate = [NSDate dateWithTimeIntervalSince1970: interval];
-        NSLog(@"Date = %@", convertedDate);
-        userInfo.struserTime = [Constant convertDateOFInstagram:convertedDate];
+            NSDictionary *dictUserInfo = [postUserDetailDict objectForKey:@"from"];
+            userInfo.strUserName = [dictUserInfo valueForKey:@"username"];
+            userInfo.fromId = [dictUserInfo valueForKey:@"id"];
+            sharedAppDelegate.InstagramId = userInfo.fromId;
+            userInfo.strUserImg = [dictUserInfo valueForKey:@"profile_picture"];
 
-        NSDictionary *dictImage = [dictData objectForKey:@"images"];
-        userInfo.strPostImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
+            userInfo.strUserPost = [postUserDetailDict valueForKey:@"text"];
+            NSString *strDate = [postUserDetailDict objectForKey:@"created_time"];
 
-        userInfo.type = [dictData objectForKey:@"type"];
-        userInfo.strUserSocialType = @"Instagram";
-        [self.arryOfInstagrame addObject:userInfo];
+            NSTimeInterval interval = strDate.doubleValue;
+            NSDate *convertedDate = [NSDate dateWithTimeIntervalSince1970: interval];
+            userInfo.struserTime = [Constant convertDateOFInstagram:convertedDate];
 
-        NSLog(@"%@", self.arryOfInstagrame);
+            NSDictionary *dictImage = [dictData objectForKey:@"images"];
+            userInfo.strPostImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
+
+            userInfo.type = [dictData objectForKey:@"type"];
+            userInfo.strUserSocialType = @"Instagram";
+            userInfo.statusId = [dictData objectForKey:@"id"];
+
+            [sharedAppDelegate.arryOfInstagrame addObject:userInfo];
+
+            NSLog(@"%@", sharedAppDelegate.arryOfInstagrame);
+        }
     }
-    [self.arryOfAllFeeds addObjectsFromArray:self.arryOfInstagrame];
     [self shortArryOfAllFeeds];
 }
 
-#pragma mrk - Demo data
+#pragma mark - Sort array of news feed
 
-- (void)demoData {
+- (void)shortArryOfAllFeeds {
 
-    UserInfo *userInfo1 = [[UserInfo alloc]init];
-    userInfo1.strUserName = @"Dennie Ritches";
-    userInfo1.strUserPost = @"Twitter post. Apple has launch iPhone 6. it is on high demand in All over word.";
-    userInfo1.struserTime = @"2m";
-    userInfo1.strUserSocialType = @"Twitter";
-    userInfo1.strUserImg = @"user-selected.png";
-        // [self.arryOfFBNewsFeed addObject:userInfo1];
+    UIApplication *app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = NO;
 
-    UserInfo *userInfo2 = [[UserInfo alloc]init];
-    userInfo2.strUserName = @"Albert Jeck";
-    userInfo2.strUserPost = @"Instagrame post. You look social app. Spend more time to read books.";
-    userInfo2.struserTime = @"1h";
-    userInfo2.strUserSocialType = @"Instagrame";
-    userInfo2.strUserImg = @"user-selected.png";
-        // [self.arryOfFBNewsFeed addObject:userInfo2];
+    [sharedAppDelegate.arryOfAllFeeds removeAllObjects]; //first remove all object
+    [self.arryTappedCell removeAllObjects];
+    
+    [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfFBNewsFeed];
+    [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfTwittes];
+    [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfInstagrame];
 
-    UserInfo *userInfo3 = [[UserInfo alloc]init];
-    userInfo3.strUserName = @"Albert Jeck";
-    userInfo3.strUserPost = @"Instagrame post. You look social app. Spend more time to read books.";
-    userInfo3.struserTime = @"1h";
-    userInfo3.strUserSocialType = @"Instagrame";
-    userInfo3.strUserImg = @"user-selected.png";
-        //[self.arryOfFBNewsFeed addObject:userInfo3];
+    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"struserTime" ascending:NO];//give key name
+    NSArray *sortDescriptors = [NSArray arrayWithObject:descriptor];
+
+    NSArray *sortedArray = [sharedAppDelegate.arryOfAllFeeds sortedArrayUsingDescriptors:sortDescriptors];
+    [sharedAppDelegate.arryOfAllFeeds removeAllObjects];
+    sharedAppDelegate.arryOfAllFeeds = [sortedArray mutableCopy];
+
+    for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {
+        NSLog(@"%@", cellSelected);
+        [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
+    }
+
+    [sharedAppDelegate.spinner hide:YES];
+    [self.tbleVwPostList reloadData];
 }
 
 @end
