@@ -30,14 +30,17 @@
     IBOutlet UIImageView *imgVwOfLikeFb;
     IBOutlet UIImageView *imgVwOfComentFb;
     IBOutlet UIButton *btnCommentFb;
-    IBOutlet UILabel *lblLike;
+    IBOutlet UIButton *btnLike;
 
     IBOutlet UIImageView *imgVwOfReply;
     IBOutlet UIImageView *imgVwOfTweet;
     IBOutlet UIImageView *imgVwOfFavourate;
-    IBOutlet UILabel *lblReply;
     IBOutlet UIButton *btnTweet;
-    IBOutlet UILabel *lblFavourate;
+    IBOutlet UIButton *btnReply;
+    IBOutlet UIButton *btnFavourite;
+    IBOutlet UIButton *btnShowImageOrVideo;
+        //IBOutlet UILabel *lblReply;
+    IBOutlet UILabel *lblLikeCount;
 
     IBOutlet UIPageControl *pageControl;
     IBOutlet UIImageView *imgVwOfLikeInstagram;

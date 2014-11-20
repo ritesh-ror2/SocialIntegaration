@@ -11,7 +11,7 @@
 #import "MBProgressHUD.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import <Accounts/Accounts.h>
-
+#import <Accounts/ACAccountCredential.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -28,5 +28,7 @@
 @property (strong, nonatomic) NSMutableArray *arryOfTwittes;
 @property (strong, nonatomic) NSMutableArray *arryOfAllFeeds;
 
+@property (strong, nonatomic) ACAccountStore *accountStore;
+@property (strong, nonatomic) ACAccount *facebookAccount;
 
 @end

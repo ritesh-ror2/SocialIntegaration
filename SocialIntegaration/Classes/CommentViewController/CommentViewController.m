@@ -14,11 +14,13 @@
 #import "CommentCustomCell.h"
 #import "UserProfile+DatabaseHelper.h"
 #import "GiveCommentViewController.h"
+#import "ShowImageOrVideoViewController.h"
 #import <Social/Social.h>
 
 @interface CommentViewController () <UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, IGRequestDelegate, IGRequestDelegate> {
 
     NSString *strBtnTitle;
+    UserProfile *userProfile;
 }
 
 @property (nonatomic, strong) NSArray *arrayFriend;
@@ -60,11 +62,25 @@
     self.arrayFriend = @[@"@qwe123", @"qwe123", @"qwe123"];
 
     self.arryComment = [[NSMutableArray alloc]init];
-
     [tbleVwComment setBackgroundColor: [UIColor clearColor]];
+    
     [self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
     [sharedAppDelegate.spinner show:YES];
+    [btnLike addTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
+
+    if ([self.userInfo.retweeted isEqualToString:@"1"]) {
+        imgVwOfTweet.image = [UIImage imageNamed:@"Retweet_active.png"];//selected
+    } else {
+        imgVwOfTweet.image = [UIImage imageNamed:@"Retweet1.png"];//deselected
+    }
+
+    if ([self.userInfo.favourated isEqualToString:@"1"]) {
+        imgVwOfFavourate.image = [UIImage imageNamed:@"favourite_active.png"];//selected
+    } else {
+        imgVwOfFavourate.image = [UIImage imageNamed:@"favourite1.png"];//deselected
+    }
+    [self getLikeCountOfFb];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -77,11 +93,15 @@
 
     [super viewWillAppear:animated];
 
+    self.navigationController.navigationBarHidden = YES;
     [self setHeadingAndRightBtn];
         //[self giveCommentToInstagram];
     [self setCommentOfUser:self.userInfo];
     [self setProfilePic:self.userInfo];
     [self setProfilePicOfPostUser:self.userInfo];
+
+    UIApplication* app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = YES;
 }
 - (void)setHeadingAndRightBtn {
 
@@ -92,7 +112,6 @@
         strBtnTitle = @"Post";
         [self facebookConfiguration];
         [self fectchAllComment];
-
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
 
     } else if ([self.userInfo.strUserSocialType isEqualToString:@"Instagram"]) {
@@ -193,6 +212,8 @@
         return;
     }
     [sharedAppDelegate.spinner hide:YES];
+    UIApplication* app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = YES;
     [tbleVwComment reloadData];
 }
 
@@ -295,7 +316,7 @@
 }
 
 - (void)fectchAllComment {
-
+    
     NSString *strComment = [NSString stringWithFormat:@"/%@/comments", self.userInfo.objectIdFB];
     [FBRequestConnection startWithGraphPath:strComment
                                  parameters:nil
@@ -307,6 +328,7 @@
                                               ) {
                               if (error) {
 
+                                  NSLog(@"%@", [error localizedDescription]);
                               } else {
                                   NSArray *arryComment = [result objectForKey:@"data"];
                                   [self convertDataOfComment: arryComment];
@@ -316,6 +338,7 @@
 
 - (void)convertDataOfComment:(NSArray *)arryPost {
 
+    [self.arryComment removeAllObjects];
     @autoreleasepool {
 
         for (NSDictionary *dictData in arryPost) {
@@ -334,7 +357,7 @@
         }
     }
     if (self.arryComment.count == 0) {
-        [Constant showAlert:@"Message" forMessage:@"No Comment is there"];
+        [Constant showAlert:@"Message" forMessage:@"No Comment is there."];
         [sharedAppDelegate.spinner setHidden:YES];
         return;
     }
@@ -342,6 +365,9 @@
     [sharedAppDelegate.spinner hide:YES];
 
     [tbleVwComment reloadData];
+
+    UIApplication* app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = YES;
 }
 
 - (void)setCommentOfUser:(UserInfo *)objUserInfo {
@@ -356,42 +382,51 @@
     lblComment.text = objUserInfo.strUserPost;
 
     asyVwOfPost.hidden = YES;
+    btnShowImageOrVideo.hidden = YES;
+
     if (objUserInfo.strPostImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
         asyVwOfPost.frame = CGRectMake(70, lblComment.frame.size.height + lblComment.frame.origin.y + 10, 245, 100);
-
         asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
         asyVwOfPost.backgroundColor = [UIColor clearColor];
 
+        btnShowImageOrVideo.hidden = NO;
+        btnShowImageOrVideo.frame = asyVwOfPost.frame;
         [self setFrameOfActivityView:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 10];
-        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + lblComment.frame.origin.y + 140);
+        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + lblComment.frame.origin.y + 145);
     } else {
 
         [self setFrameOfActivityView:lblComment.frame.size.height + lblComment.frame.origin.y + 10];
-        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + lblComment.frame.origin.y + 60);
+        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 45));
     }
 
     tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, (self.view.frame.size.height - (imgVwBackground.frame.size.height+ 115)));
 
     imgVwUser.frame = CGRectMake(10, imgVwBackground.frame.size.height+5 , 45, 45);
-        // txtVwCommnet.frame = CGRectMake(70, imgVwBackground.frame.size.height+5 , 245, 90);
-        // lblAddComment.frame = CGRectMake(70, imgVwBackground.frame.size.height-5 , 245, 90);
+
+    if ([objUserInfo.type isEqualToString:@"video"]) {
+        [btnShowImageOrVideo setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+    }
 }
 
 - (void)setFrameOfActivityView:(NSInteger)yAxis {
 
+    if(yAxis < 50) {
+        yAxis = 53;
+    }
     [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x, yAxis, 20, 21)];
     [imgVwOfLikeFb setFrame:CGRectMake(imgVwOfLikeFb.frame.origin.x, yAxis, 20, 21)];
     [btnCommentFb setFrame:CGRectMake(btnCommentFb.frame.origin.x, yAxis, 70, 21)];
-    [lblLike setFrame:CGRectMake(lblLike.frame.origin.x, yAxis, 70, 21)];
+    [btnLike setFrame:CGRectMake(btnLike.frame.origin.x, yAxis+2, 70, 21)];
+    [lblLikeCount setFrame:CGRectMake(lblLikeCount.frame.origin.x, yAxis+2, 70, 21)];
 
     [imgVwOfFavourate setFrame:CGRectMake(imgVwOfFavourate.frame.origin.x, yAxis, imgVwOfFavourate.frame.size.width, imgVwOfFavourate.frame.size.height)];
     [imgVwOfTweet setFrame:CGRectMake(imgVwOfTweet.frame.origin.x, yAxis, imgVwOfTweet.frame.size.width, imgVwOfTweet.frame.size.height)];
     [imgVwOfReply setFrame:CGRectMake(imgVwOfReply.frame.origin.x, yAxis, imgVwOfReply.frame.size.width, imgVwOfReply.frame.size.height)];
 
-    [lblFavourate setFrame:CGRectMake(lblFavourate.frame.origin.x, yAxis, 70, 21)];
-    [lblReply setFrame:CGRectMake(lblReply.frame.origin.x, yAxis, 70, 21)];
+    [btnFavourite setFrame:CGRectMake(btnFavourite.frame.origin.x, yAxis, 70, 21)];
+    [btnReply setFrame:CGRectMake(33, yAxis, 70, 21)];
     [btnTweet setFrame:CGRectMake(btnTweet.frame.origin.x, yAxis, 70, 21)];
 
     [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 21)];
@@ -435,7 +470,7 @@
 
 - (void)setProfilePic:(UserInfo *)userInfo  {
 
-    UserProfile *userProfile = [UserProfile getProfile:userInfo.strUserSocialType];
+    userProfile = [UserProfile getProfile:userInfo.strUserSocialType];
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{
@@ -522,13 +557,13 @@
     }
 }
 
-
 - (void)facebookConfiguration {
 
     [imgVwOfComentFb setHidden:NO];
     [imgVwOfLikeFb setHidden:NO];
     [btnCommentFb setHidden:NO];
-    [lblLike setHidden:NO];
+    [btnLike setHidden:NO];
+    [lblLikeCount setHidden:NO];
 }
 
 - (void)twitterConfiguration  {
@@ -537,8 +572,8 @@
     [imgVwOfTweet setHidden:NO];
     [imgVwOfFavourate setHidden:NO];
     [btnTweet setHidden:NO];
-    [lblFavourate setHidden:NO];
-    [lblReply setHidden:NO];
+    [btnFavourite setHidden:NO];
+    [btnReply setHidden:NO];
 }
 
 - (void)instagramConfiguration  {
@@ -546,7 +581,328 @@
     [imgVwOfComentFb setHidden:NO];
     [imgVwOfLikeInstagram setHidden:NO];
     [btnCommentFb setHidden:NO];
-    [lblLike setHidden:NO];
+    [btnLike setHidden:NO];
+    [lblLikeCount setHidden:NO];
+}
+
+- (IBAction)likePost:(id)sender {
+
+    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
+    NSArray *writePermissions = @[@"publish_stream", @"publish_actions"];
+    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
+        sharedAppDelegate.fbSession = session;
+
+        NSString *strUrl = [NSString stringWithFormat:@"/%@/likes",self.userInfo.objectIdFB];
+
+        [FBRequestConnection startWithGraphPath:strUrl
+                                     parameters:nil
+                                     HTTPMethod:@"POST"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+
+                                  if (error) {
+                                      NSLog(@"%@", [error localizedDescription]);
+                                  } else {
+
+                                    imgVwOfLikeFb.image = [UIImage imageNamed:@"Liked-active.png"];
+                                    [btnLike setTitle:@"Liked" forState:UIControlStateNormal];
+                                    btnLike.titleLabel.textColor = [UIColor blueColor];
+                                    [btnLike removeTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
+                                    [btnLike addTarget:self action:@selector(unlikedPost) forControlEvents:UIControlEventTouchUpInside];
+                                  }
+                              }];
+    }];
+}
+
+- (void)getLikeCountOfFb {
+
+    NSDictionary *dictMessage = @{@"summary": @"true"};
+
+    NSString *strUrl = [NSString stringWithFormat:@"/%@/likes",self.userInfo.objectIdFB];
+    [FBRequestConnection startWithGraphPath:strUrl
+                                 parameters:dictMessage
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              if (error){
+
+                              } else {
+                                 [self likeUserList:[[result objectForKey:@"summary"] valueForKey:@"total_count"]];
+
+//                                  if ([[result valueForKey:@"paging"] count] >= 1) {
+//                                      NSString *strNextPage = [[result valueForKey:@"paging"] valueForKey:@"next"];
+//
+//                                      [FBRequestConnection startWithGraphPath:strNextPage
+//                                                                   parameters:nil
+//                                                                   HTTPMethod:@"GET"
+//                                                            completionHandler:^(
+//                                                                                FBRequestConnection *connection,
+//                                                                                id result1,
+//                                                                                NSError *error
+//                                                                                ) {
+//                                                                if (error) {
+//
+//                                                                    NSLog(@"error");
+//                                                                } else {
+//
+//                                                                    NSLog(@"sucess");
+//                                                                }
+//
+//                                       }];
+//                                       }
+                              }
+                          }];
+        //   }];
+}
+
+- (void)likeUserList:(NSString*)strCount {
+
+    lblLikeCount.text = [NSString stringWithFormat:@"%lld", strCount.longLongValue];
+
+//    for (NSDictionary *dictResult in arryLikeUserList) {
+//
+//        if ([[dictResult objectForKey:@"id"]isEqualToString: userProfile.userId]) {
+//
+//            imgVwOfLikeFb.image = [UIImage imageNamed:@"Liked-active.png"];
+//            [btnLike setTitle:@"Liked" forState:UIControlStateNormal];
+//            btnLike.titleLabel.textColor = [UIColor blueColor];
+//            [btnLike removeTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
+//            [btnLike addTarget:self action:@selector(unlikedPost) forControlEvents:UIControlEventTouchUpInside];
+//
+//            break;
+//        }
+//    }
+
+}
+
+- (IBAction)playBtnTapped:(id)sender {
+
+    UIStoryboard *storyBoard = [UIStoryboard  storyboardWithName:@"Main" bundle:nil];
+    ShowImageOrVideoViewController *viewController = [storyBoard instantiateViewControllerWithIdentifier:@"ShowImageOrVideo"];
+    viewController.userInfo = self.userInfo;
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
+
+- (IBAction)retweetBtnPressOrNot:(id)sender {
+
+    NSData *data1 = UIImagePNGRepresentation(imgVwOfTweet.image);
+    NSData *data2 = UIImagePNGRepresentation([UIImage imageNamed:@"Retweet1.png"]);
+
+    if ([data1 isEqual:data2]) { //retweet
+        [self retweetOnTwitter:nil];
+    } else { //delete retweet
+        [self deleteRetweet:nil];
+    }
+}
+
+- (IBAction)favouriteBtnPressOrNot:(id)sender {
+
+    NSData *data1 = UIImagePNGRepresentation(imgVwOfFavourate.image);
+    NSData *data2 = UIImagePNGRepresentation([UIImage imageNamed:@"Favourite1.png"]);
+
+    if ([data1 isEqual:data2]) { //favoutrite
+        [self favouriteOnTwitterPost:nil];
+    } else { //delete retweet
+        [self deleteFavouriteOnTwitterPost:nil];
+    }
+}
+
+- (void)retweetOnTwitter:(id)sender {
+
+    NSString *strRetweet = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/retweet/%@.json", self.userInfo.statusId];
+        //api.twitter.com/1.1/statuses/update.json"];
+
+    NSURL *requestURL = [NSURL URLWithString:strRetweet];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodPOST
+                                  URL:requestURL parameters:nil];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+       NSArray *arryTwitte = [NSJSONSerialization
+                              JSONObjectWithData:responseData
+                              options:NSJSONReadingMutableLeaves
+                              error:&error];
+       NSLog(@"***%@***", [error localizedDescription]);
+
+       if (!error) {
+           if (arryTwitte.count != 0) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+
+                   imgVwOfTweet.image = [UIImage imageNamed:@"Retweet_active.png"];//selected
+                       //[Constant showAlert:@"Success" forMessage:@"Retweet has done successfully."];
+               });
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+
+                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant showAlert:@"Message" forMessage:@"No Tweet in your account."];
+               });
+           }
+       }
+     }];
+}
+
+- (void)deleteRetweet:(id)sende {
+
+    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/destroy/%@.json",self.userInfo.statusId];
+
+    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodPOST
+                                  URL:requestURL parameters:nil];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+       NSArray *arryTwitte = [NSJSONSerialization
+                              JSONObjectWithData:responseData
+                              options:NSJSONReadingMutableLeaves
+                              error:&error];
+       NSLog(@"***%@***", [error localizedDescription]);
+
+       if (!error) {
+           if (arryTwitte.count != 0) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [sharedAppDelegate.spinner hide:YES];
+                   imgVwOfTweet.image = [UIImage imageNamed:@"Retweet1.png"];//deselected
+               });
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [sharedAppDelegate.spinner hide:YES];
+               });
+           }
+       }
+     }];
+}
+
+- (void)favouriteOnTwitterPost:(id)sender {
+
+    NSNumber * myNumber =[NSNumber numberWithLongLong:[self.userInfo.statusId longLongValue]];
+
+    NSDictionary *param = @{@"id": myNumber};
+
+    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/favorites/create.json"];
+    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodPOST
+                                  URL:requestURL parameters:param];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+       NSArray *arryTwitte = [NSJSONSerialization
+                              JSONObjectWithData:responseData
+                              options:NSJSONReadingMutableLeaves
+                              error:&error];
+       NSLog(@"***%@***", [error localizedDescription]);
+
+       if (!error) {
+           if (arryTwitte.count != 0) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [sharedAppDelegate.spinner hide:YES];
+                   imgVwOfFavourate.image = [UIImage imageNamed:@"favourite_active.png"];//selected
+               });
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [sharedAppDelegate.spinner hide:YES];
+               });
+           }
+       }
+     }];
+}
+
+- (void)deleteFavouriteOnTwitterPost:(id)sender {
+
+    NSDictionary *param = @{@"id": self.userInfo.statusId};
+
+    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/favorites/destroy.json"];
+    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodPOST
+                                  URL:requestURL parameters:param];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+       NSArray *arryTwitte = [NSJSONSerialization
+                              JSONObjectWithData:responseData
+                              options:NSJSONReadingMutableLeaves
+                              error:&error];
+       NSLog(@"***%@***", [error localizedDescription]);
+
+       if (!error) {
+           if (arryTwitte.count != 0) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [sharedAppDelegate.spinner hide:YES];
+                   imgVwOfFavourate.image = [UIImage imageNamed:@"Favourite1.png"];//deselected
+               });
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [sharedAppDelegate.spinner hide:YES];
+               });
+           }
+       }
+     }];
+}
+
+- (void)unlikedPost {
+
+    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
+    NSArray *writePermissions = @[@"publish_stream", @"publish_actions"];
+    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
+        sharedAppDelegate.fbSession = session;
+
+        NSString *strUrl = [NSString stringWithFormat:@"/%@/likes",self.userInfo.objectIdFB];
+
+    [FBRequestConnection startWithGraphPath:strUrl
+                                 parameters:nil
+                                 HTTPMethod:@"DELETE"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              if (error){
+
+                              } else {
+                                  NSLog(@"**unliked**");
+                                  imgVwOfLikeFb.image = [UIImage imageNamed:@"Likedd.png"];
+                                  [btnLike setTitle:@"Like" forState:UIControlStateNormal];
+                                  btnLike.titleLabel.textColor = [UIColor lightGrayColor];
+                                  [btnLike removeTarget:self action:@selector(unlikedPost) forControlEvents:UIControlEventTouchUpInside];
+                                  [btnLike addTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
+                              }
+                          }];
+    }];
 }
 /*
 #pragma mark - Navigation

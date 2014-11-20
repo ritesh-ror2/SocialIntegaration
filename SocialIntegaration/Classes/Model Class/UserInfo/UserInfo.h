@@ -20,5 +20,10 @@
 @property (nonatomic, strong) NSString *type;
 @property (nonatomic, strong) NSString *objectIdFB;
 @property (nonatomic, strong) NSString *statusId;
+@property (nonatomic, strong) NSString *retweetCount;
+@property (nonatomic, strong) NSString *retweeted;
+@property (nonatomic, strong) NSString *favourateCount;
+@property (nonatomic, strong) NSString *favourated;
+@property (nonatomic, strong) NSString *videoUrl;
 
 @end

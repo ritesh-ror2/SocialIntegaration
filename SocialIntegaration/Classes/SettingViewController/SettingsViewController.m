@@ -53,6 +53,8 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
+
+    self.navigationController.navigationBarHidden = YES;
     btnFb.hidden = NO;
     btnInstagram.hidden = NO;
     btnTwitter.hidden = NO;
@@ -67,6 +69,7 @@
     btnTwitter.hidden = YES;
     self.navigationController.navigationBarHidden = NO;
 }
+
 - (void)userLoginOrNot {
 
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
@@ -322,6 +325,7 @@
     UserProfile *userProfile = [[UserProfile alloc]init];
     userProfile.userName = [dictInfo objectForKey:@"name"];
     userProfile.userImg = strProfileImg;
+    userProfile.userId = [dictInfo objectForKey:@"id"];
     userProfile.type = @"Facebook";
 
     [self setFBUserInfo:userProfile];

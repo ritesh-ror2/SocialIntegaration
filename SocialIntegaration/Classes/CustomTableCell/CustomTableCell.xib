@@ -44,15 +44,15 @@
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view hidden="YES" contentMode="scaleAspectFit" id="rF7-GJ-YA8" customClass="AsyncImageView">
+                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" id="rF7-GJ-YA8" customClass="AsyncImageView">
                         <rect key="frame" x="64" y="94" width="249" height="98"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="eVE-vB-Vx1">
-                        <rect key="frame" x="64" y="99" width="249" height="89"/>
+                        <rect key="frame" x="64" y="94" width="249" height="89"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <state key="normal" image="play.png">
+                        <state key="normal">
                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
                     </button>
@@ -154,6 +154,5 @@
         <image name="Like_Instagram.png" width="20" height="18"/>
         <image name="Reply.png" width="19" height="14"/>
         <image name="Retweet.png" width="30" height="17"/>
-        <image name="play.png" width="24" height="24"/>
     </resources>
 </document>

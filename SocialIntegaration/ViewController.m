@@ -46,8 +46,6 @@ BOOL hasTwitter = NO;
     UIBarButtonItem *barBtnProfile = [[UIBarButtonItem alloc]initWithCustomView:[self addUserImgAtRight]];
    self.navItem.leftBarButtonItem = barBtnProfile;
 
-    self.navigationController.navigationBar.translucent = NO;
-
     self.navController.navigationBar.translucent = NO;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
@@ -63,6 +61,7 @@ BOOL hasTwitter = NO;
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
+    self.navigationController.navigationBar.translucent = NO;
 
     [self appIsInForeground:nil];
     self.navController.navigationBarHidden = NO;
@@ -77,6 +76,7 @@ BOOL hasTwitter = NO;
 
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter]removeObserver:self];
+    [self.arrySelectedIndex removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
 }
 
@@ -140,7 +140,7 @@ BOOL hasTwitter = NO;
         return;
     } else {
 
-        [FBSettings setDefaultAppID:@"357620804394305"];
+        [FBSettings setDefaultAppID:@"1544707672409931"];
         [FBAppEvents activateApp];
 
         if (FBSession.activeSession.state == FBSessionStateOpen ||
@@ -158,7 +158,7 @@ BOOL hasTwitter = NO;
 
     [FBSession openActiveSessionWithReadPermissions:@[
                                                       @"basic_info",
-                                                      @"read_stream", @"email"
+                                                      @"read_stream", @"email", @"user_friends"
                                                       ]
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
@@ -175,6 +175,24 @@ BOOL hasTwitter = NO;
                                           [self updatePosts];
                                       }
                                   }];
+
+/*   [FBSession openActiveSessionWithPublishPermissions:@[
+                                                        @"publish_stream"
+                                                         ]
+                                       defaultAudience:FBSessionDefaultAudienceEveryone allowLoginUI:YES completionHandler:^(FBSession *session,
+                                                                                                                             FBSessionState state,
+                                                                                                                             NSError *error) {
+                                           if (error) {
+
+                                               sharedAppDelegate.hasFacebook = NO;
+                                               [sharedAppDelegate.spinner hide:YES];
+                                           } else {
+
+                                               sharedAppDelegate.fbSession = session;
+                                               sharedAppDelegate.hasFacebook = YES;
+                                               [self updatePosts];
+                                           }
+                                       }];*/
 }
 
 #pragma mark - get posts
@@ -222,24 +240,33 @@ BOOL hasTwitter = NO;
 
         for (NSDictionary *dictData in arryPost) {
 
+            UserInfo *userInfo =[[UserInfo alloc]init];
+
             NSDictionary *fromUser = [dictData objectForKey:@"from"];
 
-            UserInfo *userInfo =[[UserInfo alloc]init];
             userInfo.strUserName = [fromUser valueForKey:@"name"];
             userInfo.fromId = [fromUser valueForKey:@"id"];
             userInfo.strUserPost = [dictData valueForKey:@"message"];
             userInfo.strUserSocialType = @"Facebook";
             userInfo.type = [dictData objectForKey:@"type"];
             userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-            [sharedAppDelegate.arryOfFBNewsFeed addObject:userInfo];
             userInfo.strPostImg = [dictData valueForKey:@"picture"];
-            userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
 
-            NSLog(@"%@", userInfo.struserTime);
+            NSLog(@"*** %@", [dictData objectForKey:@"type"]);
+            if (![[dictData objectForKey:@"type"] isEqualToString:@"video"]) {
+                userInfo.objectIdFB = [dictData valueForKey:@"id"];
+             } else {
+                userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
+             }
+
+            userInfo.videoUrl = [dictData valueForKey:@"source"];
+            [sharedAppDelegate.arryOfFBNewsFeed addObject:userInfo];
+
+            NSLog(@"%@", userInfo.type);
         }
     }
         //  [self shortArryOfAllFeeds];
-        [self getTweetFromTwitter];// getInstagrameIntegration];
+        [self getTweetFromTwitter];
 }
 
 #pragma mark - Get Tweets from twitter
@@ -337,7 +364,12 @@ BOOL hasTwitter = NO;
             NSLog(@"**%@", dictData);
 
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
-
+            /*
+             "retweet_count" = 57;
+             retweeted = 1;
+             "favorite_count" = 24;
+             favorited = 1;
+             */
             UserInfo *userInfo =[[UserInfo alloc]init];
             userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
             userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
@@ -354,6 +386,9 @@ BOOL hasTwitter = NO;
             NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
             userInfo.struserTime = [Constant convertDateOFTweeter:strDate];
             userInfo.statusId = [dictData valueForKey:@"id"];
+            userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
+            userInfo.retweeted = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweeted"] integerValue]];
+
             [sharedAppDelegate.arryOfTwittes addObject:userInfo];
         }
     }
@@ -451,6 +486,9 @@ BOOL hasTwitter = NO;
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
+    UIApplication *app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = NO;
+    
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
 
     NSLog(@"****%@***", self.arrySelectedIndex);
@@ -490,8 +528,8 @@ BOOL hasTwitter = NO;
                 });
             }
         }
-            //[sharedAppDelegate.arryOfInstagrame removeAllObjects];
-            // [self shortArryOfAllFeeds];
+            [sharedAppDelegate.arryOfInstagrame removeAllObjects];
+            [self shortArryOfAllFeeds];
 
     } else {
 
@@ -583,7 +621,7 @@ BOOL hasTwitter = NO;
     if (arryOfInstagrame.count != 0) {
         [sharedAppDelegate.arryOfInstagrame removeAllObjects];
     } else {
-        [Constant showAlert:@"Message" forMessage:@"No Post is Instagram."];
+            //[Constant showAlert:@"Message" forMessage:@"No Post is Instagram."];
     }
 
     @autoreleasepool {

@@ -8,9 +8,16 @@
 
 #import "GiveCommentViewController.h"
 #import "Constant.h"
+#import "UserProfile.h"
+#import "UserProfile+DatabaseHelper.h"
 #import <Social/Social.h>
+#import <FacebookSDK/FacebookSDK.h>
 
-@interface GiveCommentViewController () <IGRequestDelegate, IGRequestDelegate>
+@interface GiveCommentViewController () <IGRequestDelegate, IGRequestDelegate> {
+
+    NSMutableDictionary *facebookUserInfo;
+    UserProfile *userProfileFB;
+}
 
 @end
 
@@ -36,7 +43,9 @@
     txtVwCommnet.layer.borderWidth = 1.0;
     txtVwCommnet.layer.cornerRadius = 3.0;
 
+     userProfileFB = [UserProfile getProfile:@"Facebook"];
     [self showNavigationBarColor];
+    [self getFriendList];
 }
 
 - (void)didReceiveMemoryWarning
@@ -56,7 +65,7 @@
 
         lblNavHeading.text = @"Twitter";
         imgVwbackg.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
-        [btnPost addTarget:self action:@selector(postCommentOnInstagram) forControlEvents:UIControlEventTouchUpInside];//postCommentOnTwitter
+        [btnPost addTarget:self action:@selector(postCommentOnTwitter) forControlEvents:UIControlEventTouchUpInside];
     } else {
 
         lblNavHeading.text = @"Instagram";
@@ -70,7 +79,7 @@
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{
-        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:self.userInfo.strUserImg]];
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfileFB.userImg]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -102,11 +111,20 @@
 
 - (IBAction)postOnFbBtnTapped:(id)sender {
 
+    [sharedAppDelegate.spinner show:YES];
+    [self.view addSubview:sharedAppDelegate.spinner];
+    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
+
+    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
+    NSArray *writePermissions = @[@"publish_stream", @"publish_actions"];
+    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
+        sharedAppDelegate.fbSession = session;
+
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
                             txtVwCommnet.text, @"message",
                             nil
                             ];
-    NSString *strUrl = [NSString stringWithFormat:@"/%@",self.userInfo.objectIdFB];
+    NSString *strUrl = [NSString stringWithFormat:@"/%@/comments",self.userInfo.objectIdFB];
     /* make the API call */
     [FBRequestConnection startWithGraphPath:strUrl
                                  parameters:params
@@ -118,11 +136,32 @@
                                               ) {
                               if (error) {
 
+                                  NSLog(@"ERROR %@" ,[error localizedDescription]);
                               } else {
-                                  NSDictionary *dict = (NSDictionary *)result;
-                                  if ([[dict valueForKey:@"success"]isEqualToString:@"1"]){
-                                      [Constant showAlert:@"Success" forMessage:@"Post Your comment"];
-                                  }
+
+                                  [sharedAppDelegate.spinner hide:YES];
+                                  [Constant showAlert:@"Success" forMessage:@"Post comment successfully."];
+                                  [self.navigationController popViewControllerAnimated:YES];
+                              }
+                          }];
+        }];
+
+}
+
+- (void)getFriendList {
+
+    [FBRequestConnection startWithGraphPath:@"/me/friendlists"
+                                 parameters:nil
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              if (error) {
+                                  NSLog(@"%@", [error localizedDescription]);
+                              } else {
+                                  NSLog(@"@@@@");
                               }
                               /* handle the result */
                           }];
@@ -131,13 +170,15 @@
 
 - (void)postCommentOnTwitter {
 
-    NSString *strRetweet = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/retweet/%@.json",self.userInfo.statusId];
+    NSDictionary *param = @{@"status": txtVwCommnet.text,
+                            @"in_reply_to_status_id": self.userInfo.statusId};
 
-    NSURL *requestURL = [NSURL URLWithString:strRetweet];
+    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/update.json"];
+    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
     SLRequest *timelineRequest = [SLRequest
                                   requestForServiceType:SLServiceTypeTwitter
-                                  requestMethod:SLRequestMethodGET
-                                  URL:requestURL parameters:nil];
+                                  requestMethod:SLRequestMethodPOST
+                                  URL:requestURL parameters:param];
 
     timelineRequest.account = sharedAppDelegate.twitterAccount;
 
@@ -150,18 +191,21 @@
                               JSONObjectWithData:responseData
                               options:NSJSONReadingMutableLeaves
                               error:&error];
+       NSLog(@"***%@***", [error localizedDescription]);
 
-       if (arryTwitte.count != 0) {
-           dispatch_async(dispatch_get_main_queue(), ^{
+       if (!error) {
+           if (arryTwitte.count != 0) {
+               dispatch_async(dispatch_get_main_queue(), ^{
 
-                   //[self convertDataOfTwitterIntoModel: arryTwitte];//convert into model class
-           });
-       } else {
-           dispatch_async(dispatch_get_main_queue(), ^{
-
-               [sharedAppDelegate.spinner hide:YES];
-               [Constant showAlert:@"Message" forMessage:@"No Tweet in your account."];
-           });
+                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant showAlert:@"Success" forMessage:@"Reply sent successfully."];
+                   [self.navigationController popViewControllerAnimated:YES];
+               });
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [sharedAppDelegate.spinner hide:YES];
+               });
+           }
        }
      }];
 }

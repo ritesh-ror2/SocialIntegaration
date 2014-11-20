@@ -856,10 +856,7 @@ CGContextRef CKBitmapContextAndDataCreate(CGSize size, void ** data) {
 	activityIndicatorStyle = UIActivityIndicatorViewStyleGray;
 	crossfadeImages = YES;
 	crossfadeDuration = 0.4;
-//	self.layer.borderWidth = 1.0;
-//	self.layer.borderColor = [UIColor blackColor].CGColor;
-//	self.layer.cornerRadius = 2.0;
-//	self.clipsToBounds = YES;
+    self.backgroundColor = [UIColor clearColor];
 }
 
 - (id)initWithFrame:(CGRect)frame

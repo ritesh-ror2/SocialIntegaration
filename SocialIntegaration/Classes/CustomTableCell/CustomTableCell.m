@@ -21,9 +21,7 @@
     tapGesture.numberOfTouchesRequired = 1;
     [self.contentView addGestureRecognizer:tapGesture];
 
-//    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(handleSwipeGestureOnTableView:)];
-//    [self.contentView addGestureRecognizer:longPress];
-
+    [btnPlay addTarget:self action:@selector(handleTapGestureOnTableViewCell:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -231,6 +229,8 @@
         
         [self setPostImage:objUserInfo];
         [self setFrameOfActivityView:imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y+10];
+        btnPlay.hidden = NO;
+        [btnPlay setImage:[UIImage imageNamed:@" "] forState:UIControlStateNormal];
     } else {
         [self setFrameOfActivityView:lblText.frame.size.height + lblText.frame.origin.y+10];
     }
@@ -242,6 +242,19 @@
 //            break;
 //        }
 //    }
+
+    if ([self.userInfo.retweeted isEqualToString:@"1"]) {
+        imgVwOfTweet.image = [UIImage imageNamed:@"Retweet_active.png"];//selected
+    } else {
+        imgVwOfTweet.image = [UIImage imageNamed:@"Retweet.png"];//deselected
+    }
+
+    if ([self.userInfo.favourated isEqualToString:@"1"]) {
+        imgVwOfFavourate.image = [UIImage imageNamed:@"favourite_active.png"];//selected
+    } else {
+        imgVwOfFavourate.image = [UIImage imageNamed:@"favourite.png"];//deselected
+    }
+     
     if (arrayOfSelectedIndex.count != 0) {
 
         for (NSString *index in arrayOfSelectedIndex) {
@@ -258,8 +271,9 @@
             }
         }
     }
+
     if ([objUserInfo.type isEqualToString:@"video"]) {
-        btnPlay.hidden = NO;
+        [btnPlay setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
     }
 }
 

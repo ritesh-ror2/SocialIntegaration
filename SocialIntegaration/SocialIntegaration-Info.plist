@@ -46,6 +46,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
+	<key>FacebookDisplayName</key>
+	<string>Soci­a­l­-­I­n­t­e­g­r­a­tion</string>
 	<key>FacebookAppID</key>
 	<string>1544707672409931</string>
 	<key>LSRequiresIPhoneOS</key>
