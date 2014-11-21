@@ -7,8 +7,10 @@
 //
 
 #import "ShowUserViewController.h"
+#import "Constant.h"
+#import "UserInfo.h"
 
-@interface ShowUserViewController () <UISearchDisplayDelegate>
+@interface ShowUserViewController () <UISearchDisplayDelegate, UISearchBarDelegate>
 
 @property (nonatomic, strong) NSMutableArray *arrySearchUserList;
 
@@ -33,21 +35,95 @@
     self.title = @"User";
 
     self.arrySearchUserList = [[NSMutableArray alloc]init];
-    [self searchFriend];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+- (void)searchFriendOnTwitter:(NSString *)strKeyword {
 
-- (void)searchFriend {
+        //  NSString *strKey = [strKeyword strin]
+    BOOL isTwitter = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    if (isTwitter == NO) {
 
-    NSDictionary *param = @{@"q": @"Ronald",
-                            @"type":@"user"};
-    [FBRequestConnection startWithGraphPath:@"search"
+        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+        return;
+    }
+
+    NSDictionary *param = @{@"q":strKeyword};
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/users/search.json"];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodGET
+                                  URL:requestURL parameters:param];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+       id dataTwitte = [NSJSONSerialization
+                        JSONObjectWithData:responseData
+                        options:NSJSONReadingMutableLeaves
+                        error:&error];
+
+       if ([dataTwitte isKindOfClass:[NSDictionary class]]) {
+           NSDictionary *dictData = (NSDictionary *)dataTwitte;
+           if ([[dictData objectForKey:@"errors"]count] != 0) {
+
+               NSLog(@"%@", [dictData objectForKey:@"errors"]);
+               return ;
+           }
+       } else {
+           NSArray *arryData1 = (NSArray *)dataTwitte;
+
+           if (arryData1.count != 0) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [self convertTwitterUsersListIntoModels:arryData1];
+                   NSLog(@"success");
+               });
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+
+                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant showAlert:@"Message" forMessage:@"No notification in Twitter account."];
+               });
+           }
+       }
+     }];
+}
+
+- (void)convertTwitterUsersListIntoModels:(NSArray *)arryUser {
+
+    for (NSDictionary *dictUser in arryUser) {
+
+        UserInfo *userInfo = [[UserInfo alloc]init];
+        userInfo.fromId = [NSString stringWithFormat:@"%lli",[[dictUser valueForKey:@"id"] longLongValue]];
+        userInfo.strUserName = [dictUser valueForKey:@"name"];
+        userInfo.strUserImg = [dictUser valueForKey:@"profile_image_url"];
+
+        [self.arrySearchUserList addObject:userInfo];
+    }
+    [self.tbleVwUser reloadData];
+    [sharedAppDelegate.spinner hide:YES];
+}
+
+- (void)searchFriendOnFb:(NSString *)strKeyword {
+
+    NSString *type;
+    if ([self.searchKeywordType isEqualToString:@"user"]) {
+        type = @"user";
+    } else {
+        type = @"adkeyword";
+    }
+    NSDictionary *param = @{@"q": strKeyword,
+                            @"type":type};
+    [FBRequestConnection startWithGraphPath:@"/search"
                                  parameters:param
                                  HTTPMethod:@"GET"
                           completionHandler:^(
@@ -57,28 +133,27 @@
                                               ) {
                               if (error) {
 
-                                  NSLog(@"frien %@", [error localizedDescription]);
+                                  NSLog(@"error %@", [error localizedDescription]);
                               } else {
                                   NSArray *arryComment = [result objectForKey:@"data"];
-                                  [self showUserList:arryComment];
+                                  [self convertFbUsersListIntoModels:arryComment];
                               }
                           }];
     
 }
 
-- (void)showUserList:(NSArray *)arryUser {
+- (void)convertFbUsersListIntoModels:(NSArray *)arryUser {
 
     for (NSDictionary *dictUser in arryUser) {
 
-        NSDictionary *ditUserProfile = [[NSDictionary alloc]init];
-        NSString *userId = [NSString stringWithFormat:@"%lli",[[dictUser valueForKey:@"id"] longLongValue]];
-        NSString *strName = [dictUser valueForKey:@"name"];
-        [ditUserProfile setValue:userId forKey:@"id"];
-        [ditUserProfile setValue:strName forKey:@"name"];
+        UserInfo *userInfo = [[UserInfo alloc]init];
+        userInfo.fromId = [NSString stringWithFormat:@"%lli",[[dictUser valueForKey:@"id"] longLongValue]];
+        userInfo.strUserName = [dictUser valueForKey:@"name"];
 
-        [self.arrySearchUserList addObject:ditUserProfile];
+        [self.arrySearchUserList addObject:userInfo];
     }
     [self.tbleVwUser reloadData];
+    [sharedAppDelegate.spinner hide:YES];
 }
 
 
@@ -89,13 +164,47 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    NSString *cellIdentifier = @"DetailMessage";
+    NSString *cellIdentifier = @"SeachUser";
     UITableViewCell *cell;
 
     cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    cell.textLabel.text = [[self.arrySearchUserList objectAtIndex:indexPath.row]valueForKey:@"name"];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+    }
 
+    UserInfo *userInfo = [self.arrySearchUserList objectAtIndex:indexPath.row];
+    cell.textLabel.text = userInfo.strUserName;
     return cell;
+}
+
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller  {
+
+}
+
+- (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+
+    [self.arrySearchUserList removeAllObjects];
+
+    NSLog(@"%@",searchBar.text);
+
+    NSString *strTrim = [searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    [self.view endEditing:YES];
+    [searchBar canResignFirstResponder];
+
+    if([self.socialType isEqualToString:@"Facebook"]) {
+        [self searchFriendOnFb:searchBar.text];
+    } else if ([self.socialType isEqualToString:@"Twitter"]) {
+        [self searchFriendOnTwitter:strTrim];
+    }
+    [self.searchDisplayController setActive:NO];
+
+    [self.view addSubview:sharedAppDelegate.spinner];
+    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
+    [sharedAppDelegate.spinner show:YES];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+
 }
 /*
 #pragma mark - Navigation

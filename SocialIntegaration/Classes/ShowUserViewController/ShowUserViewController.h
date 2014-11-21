@@ -11,6 +11,7 @@
 @interface ShowUserViewController : UIViewController
 
 @property (nonatomic, strong) NSString *searchKeywordType;
+@property (nonatomic, strong) NSString *socialType;
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwUser;
 
 @end

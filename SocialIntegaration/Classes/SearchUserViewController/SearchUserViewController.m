@@ -8,8 +8,15 @@
 
 #import "SearchUserViewController.h"
 #import "ShowUserViewController.h"
+#import "UserProfile+DatabaseHelper.h"
 
-@interface SearchUserViewController ()
+@interface SearchUserViewController () {
+
+    NSString *strSocialType;
+    NSString *userNameFb;
+    NSString *userNameTwitter;
+    NSString *userNameInstagram;
+}
 
 @end
 
@@ -27,6 +34,15 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
+
+    UserProfile *userProfiltFb = [UserProfile getProfile:@"Facebook"];
+    userNameFb = userProfiltFb.userName;
+
+    UserProfile *userProfiltTwitter = [UserProfile getProfile:@"Twitter"];
+    userNameTwitter = userProfiltTwitter.userName;
+
+    UserProfile *userProfiltInst = [UserProfile getProfile:@"Instagram"];
+    userNameInstagram = userProfiltInst.userName;
 
 }
 
@@ -49,18 +65,21 @@
         cell = [[UITableViewCell alloc]initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier:@"searchCell"];
     }
 
-
-    cell.textLabel.text = @"Mac";
-
     if (indexPath.row == 0) {
+
+        cell.textLabel.text = userNameFb;
         cell.detailTextLabel.text = @"Facebook";
         cell.detailTextLabel.textColor = [UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0];
     }
     if (indexPath.row == 1) {
-         cell.detailTextLabel.text = @"Twitter";
-         cell.detailTextLabel.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
+
+        cell.textLabel.text = userNameTwitter;
+        cell.detailTextLabel.text = @"Twitter";
+        cell.detailTextLabel.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
     }
     if (indexPath.row == 2) {
+
+        cell.textLabel.text = userNameInstagram;
         cell.detailTextLabel.text = @"Instagram";
         cell.detailTextLabel.textColor = [UIColor colorWithRed:93/256.0f green:122/256.0f blue:154/256.0f alpha:1.0];
     }
@@ -69,9 +88,17 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    if (indexPath.row == 0) {
+        strSocialType = @"Facebook";
+    } else if (indexPath.row == 1) {
+        strSocialType = @"Twitter";
+    } else {
+        strSocialType = @"Instagram";
+    }
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ShowUserViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"ShowUser"];
     viewController.searchKeywordType = @"user";
+    viewController.socialType = strSocialType;
     [[self navigationController] pushViewController:viewController animated:YES];
 }
 

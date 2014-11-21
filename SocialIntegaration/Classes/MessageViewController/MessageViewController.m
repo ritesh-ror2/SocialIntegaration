@@ -58,7 +58,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-
 - (UIImageView *)addUserImgAtRight {
 
         //add mask image
@@ -80,6 +79,13 @@
 }
 
 - (void)showInboxMessage {
+
+    BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    if (isFbUserLogin == NO) {
+
+        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+        return;
+    }
 
     NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
     NSArray *readPermissions = @[@"read_mailbox"];

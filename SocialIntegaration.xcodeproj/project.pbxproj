@@ -72,6 +72,7 @@
 		0A82B3BD1A19B747009F8E7E /* Comment@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A82B3BC1A19B747009F8E7E /* Comment@2x.png */; };
 		0A82B3C11A19E66C009F8E7E /* CommentCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A82B3C01A19E66C009F8E7E /* CommentCustomCell.m */; };
 		0A82B3C51A19F553009F8E7E /* UserComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A82B3C41A19F553009F8E7E /* UserComment.m */; };
+		0A8BEB011A1EFFD500C5ADD7 /* UserNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8BEB001A1EFFD500C5ADD7 /* UserNotificationViewController.m */; };
 		0A8D12FD1A1367EF00112078 /* Activity-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A8D12F91A1367EF00112078 /* Activity-active@2x.png */; };
 		0A8D12FE1A1367EF00112078 /* Activity@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A8D12FA1A1367EF00112078 /* Activity@2x.png */; };
 		0A8D12FF1A1367EF00112078 /* feed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A8D12FB1A1367EF00112078 /* feed@2x.png */; };
@@ -139,6 +140,8 @@
 		0AECF8DE1A134912008221A8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8DD1A134912008221A8 /* UIKit.framework */; };
 		0AECF8E01A134952008221A8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8DF1A134952008221A8 /* CoreGraphics.framework */; };
 		0AECF8E31A134AD8008221A8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8E11A134A4F008221A8 /* Foundation.framework */; };
+		0AF12B4B1A1F0A24005EA084 /* UserNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF12B4A1A1F0A24005EA084 /* UserNotification.m */; };
+		0AF12B4F1A1F0E30005EA084 /* UserNotificationCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF12B4E1A1F0E30005EA084 /* UserNotificationCustomCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -250,6 +253,8 @@
 		0A82B3C01A19E66C009F8E7E /* CommentCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentCustomCell.m; sourceTree = "<group>"; };
 		0A82B3C31A19F553009F8E7E /* UserComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserComment.h; sourceTree = "<group>"; };
 		0A82B3C41A19F553009F8E7E /* UserComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserComment.m; sourceTree = "<group>"; };
+		0A8BEAFF1A1EFFD500C5ADD7 /* UserNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserNotificationViewController.h; sourceTree = "<group>"; };
+		0A8BEB001A1EFFD500C5ADD7 /* UserNotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserNotificationViewController.m; sourceTree = "<group>"; };
 		0A8D12F91A1367EF00112078 /* Activity-active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Activity-active@2x.png"; sourceTree = "<group>"; };
 		0A8D12FA1A1367EF00112078 /* Activity@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Activity@2x.png"; sourceTree = "<group>"; };
 		0A8D12FB1A1367EF00112078 /* feed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "feed@2x.png"; sourceTree = "<group>"; };
@@ -335,6 +340,10 @@
 		0AECF8DD1A134912008221A8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0AECF8DF1A134952008221A8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		0AECF8E11A134A4F008221A8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		0AF12B491A1F0A24005EA084 /* UserNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserNotification.h; sourceTree = "<group>"; };
+		0AF12B4A1A1F0A24005EA084 /* UserNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserNotification.m; sourceTree = "<group>"; };
+		0AF12B4D1A1F0E30005EA084 /* UserNotificationCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserNotificationCustomCell.h; sourceTree = "<group>"; };
+		0AF12B4E1A1F0E30005EA084 /* UserNotificationCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserNotificationCustomCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -493,6 +502,7 @@
 				0A7EE7D71A14F22800E5E65A /* CommentViewController */,
 				0AE10E8C1A1A2A7100847A1A /* GiveCommentViewController */,
 				0A3933941A1CB97800B65473 /* ShowImageOrVideoViewController */,
+				0A8BEAFE1A1EFFB100C5ADD7 /* UserNotificationViewController */,
 				0A4C03CC1A1B8009001E96EF /* MessageViewController */,
 				0AAD4C371A1C600F00EAC235 /* DetailMessageViewController */,
 				0A7EE7C31A14D6D400E5E65A /* SearchViewController */,
@@ -528,6 +538,7 @@
 		0A7324601A0B524400F10476 /* Model Class */ = {
 			isa = PBXGroup;
 			children = (
+				0AF12B481A1F09F3005EA084 /* UserNotification */,
 				0A810FE51A1C54E200D1D64D /* UserMessage */,
 				0A82B3C21A19F53D009F8E7E /* UserComment */,
 				0A9FF0671A1094BC00FC2B39 /* UserProfile */,
@@ -805,6 +816,16 @@
 			path = UserComment;
 			sourceTree = "<group>";
 		};
+		0A8BEAFE1A1EFFB100C5ADD7 /* UserNotificationViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0A8BEAFF1A1EFFD500C5ADD7 /* UserNotificationViewController.h */,
+				0A8BEB001A1EFFD500C5ADD7 /* UserNotificationViewController.m */,
+				0AF12B4C1A1F0E13005EA084 /* UserNotificationCustomCell */,
+			);
+			path = UserNotificationViewController;
+			sourceTree = "<group>";
+		};
 		0A8D130F1A136FED00112078 /* HomePageViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -986,6 +1007,24 @@
 			path = CommentViewController/GiveCommentViewController;
 			sourceTree = "<group>";
 		};
+		0AF12B481A1F09F3005EA084 /* UserNotification */ = {
+			isa = PBXGroup;
+			children = (
+				0AF12B491A1F0A24005EA084 /* UserNotification.h */,
+				0AF12B4A1A1F0A24005EA084 /* UserNotification.m */,
+			);
+			path = UserNotification;
+			sourceTree = "<group>";
+		};
+		0AF12B4C1A1F0E13005EA084 /* UserNotificationCustomCell */ = {
+			isa = PBXGroup;
+			children = (
+				0AF12B4D1A1F0E30005EA084 /* UserNotificationCustomCell.h */,
+				0AF12B4E1A1F0E30005EA084 /* UserNotificationCustomCell.m */,
+			);
+			path = UserNotificationCustomCell;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1157,6 +1196,7 @@
 				0AAD4C3A1A1C602300EAC235 /* DetailMessageViewController.m in Sources */,
 				0A7324361A0B4C0000F10476 /* ViewController.m in Sources */,
 				0A7EE7B31A1491F400E5E65A /* TwitterFeedViewController.m in Sources */,
+				0AF12B4B1A1F0A24005EA084 /* UserNotification.m in Sources */,
 				0A73246C1A0B6C1E00F10476 /* Constant.m in Sources */,
 				0A7EE7BE1A1493C000E5E65A /* FeedPagesViewController.m in Sources */,
 				0A9F506F1A11DC7600BAB0D3 /* UIImage+Alpha.m in Sources */,
@@ -1181,8 +1221,10 @@
 				0A7324641A0B527600F10476 /* UserInfo.m in Sources */,
 				0A7EE7AA1A1487F900E5E65A /* LinkViewController.m in Sources */,
 				0A7EE7D61A14E8E300E5E65A /* ShowUserViewController.m in Sources */,
+				0AF12B4F1A1F0E30005EA084 /* UserNotificationCustomCell.m in Sources */,
 				0A02A2D41A0BA58F00A1738F /* NSDate+Helper.m in Sources */,
 				0A3933971A1CB99B00B65473 /* ShowImageOrVideoViewController.m in Sources */,
+				0A8BEB011A1EFFD500C5ADD7 /* UserNotificationViewController.m in Sources */,
 				0A9F50751A11E12A00BAB0D3 /* MBProgressHUD.m in Sources */,
 				0AE10E8F1A1A2A9A00847A1A /* GiveCommentViewController.m in Sources */,
 				0A8D13121A136FFE00112078 /* HomePageViewController.m in Sources */,

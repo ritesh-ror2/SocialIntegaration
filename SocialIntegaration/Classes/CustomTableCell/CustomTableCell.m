@@ -231,7 +231,7 @@
         [self setPostImage:objUserInfo];
         [self setFrameOfActivityView:imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y+10];
         btnPlay.hidden = NO;
-        [btnPlay setImage:[UIImage imageNamed:@" "] forState:UIControlStateNormal];
+        [btnPlay setImage:[UIImage imageNamed:@"no.png"] forState:UIControlStateNormal];
     } else {
         [self setFrameOfActivityView:lblText.frame.size.height + lblText.frame.origin.y+10];
     }
@@ -277,6 +277,7 @@
     if ([objUserInfo.type isEqualToString:@"video"]) {
         [btnPlay setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
     }
+    [self.contentView bringSubviewToFront:btnPlay];
     lblTweet.text = objUserInfo.retweetCount;
     lblFavourate.text = objUserInfo.favourateCount;
 }

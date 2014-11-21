@@ -27,4 +27,12 @@
     return date;
 }
 
++ (NSDate *)dateFromStringInUserNotify:(NSString *)strPreviousDate {
+
+    NSDateFormatter *formate = [[NSDateFormatter alloc]init];
+    [formate setDateFormat:@"yyyy-MM-dd"];
+    NSDate *date = [formate dateFromString:strPreviousDate];
+    return date;
+}
+
 @end

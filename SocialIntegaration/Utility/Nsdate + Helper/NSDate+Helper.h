@@ -12,5 +12,6 @@
 
 + (NSDate *)dateFromString:(NSString *)strPreviousDate;
 + (NSDate *)dateFromCustomFormate:(NSString *)strPreviousDate;
++ (NSDate *)dateFromStringInUserNotify:(NSString *)strPreviousDate;
 
 @end

@@ -6,6 +6,7 @@
 
 #import <Availability.h>
 #import "AppDelegate.h"
+#import <Social/Social.h>
 
 #ifndef __IPHONE_5_0
 #warning "This project uses features only available in iOS SDK 5.0 and later."
@@ -37,7 +38,7 @@
 #define DatabaseDateFormate @"YYYY-MM-dd HH:mm:ss"
 #define TWEETERDATEFORMATE  @"dd MMM yyyy HH:mm:ss"
     //
-#define APP_ID @"b8d2f232eddb4593b9f333ddfe8bb876"//08b82c71973148ffbc52cb6e75102721
+#define APP_ID @"08b82c71973148ffbc52cb6e75102721"//b8d2f232eddb4593b9f333ddfe8bb876"//08b82c71973148ffbc52cb6e75102721
 
 #define sharedAppDelegate ((AppDelegate*)[[UIApplication sharedApplication] delegate])
 

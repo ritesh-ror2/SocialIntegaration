@@ -1,4 +1,5 @@
-//
+
+    //
 //  ViewController.m
 //  SocialIntegaration
 //
@@ -554,9 +555,9 @@ BOOL hasTwitter = NO;
 
 - (void)getInstagrameIntegration {
 
-     [self shortArryOfAllFeeds];
-    return;
-    // here i can set accessToken received on previous login
+        [self shortArryOfAllFeeds];
+        return;
+        // here i can set accessToken received on previous login
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     sharedAppDelegate.instagram.sessionDelegate = self;
 

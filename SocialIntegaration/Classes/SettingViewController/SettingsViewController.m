@@ -764,6 +764,8 @@
     [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"InstagramId"];
     [[NSUserDefaults standardUserDefaults]synchronize];
 
+    sharedAppDelegate.InstagramId = nil;
+
     [self hideInstagramBtn:NO];
 
     [UIView animateWithDuration:0.5 animations:^ {

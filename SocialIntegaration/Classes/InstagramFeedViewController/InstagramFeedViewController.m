@@ -53,8 +53,8 @@
         [Constant showAlert:@"Message" forMessage:@"No Feeds."];
         return;
     }
-//    [self.arrySelectedIndex removeAllObjects];
-//    [self.arryTappedCell removeAllObjects];
+    [self.arrySelectedIndex removeAllObjects];
+    [self.arryTappedCell removeAllObjects];
     [self.tbleVwInstagram reloadData];
     self.navController.navigationBarHidden = NO;
     [self.arryTappedCell removeAllObjects];
