@@ -8,7 +8,9 @@
 
 #import "ShowUserViewController.h"
 
-@interface ShowUserViewController ()
+@interface ShowUserViewController () <UISearchDisplayDelegate>
+
+@property (nonatomic, strong) NSMutableArray *arrySearchUserList;
 
 @end
 
@@ -29,6 +31,9 @@
     
     self.navigationController.navigationBar.hidden = NO;
     self.title = @"User";
+
+    self.arrySearchUserList = [[NSMutableArray alloc]init];
+    [self searchFriend];
 }
 
 - (void)didReceiveMemoryWarning
@@ -37,6 +42,61 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+- (void)searchFriend {
+
+    NSDictionary *param = @{@"q": @"Ronald",
+                            @"type":@"user"};
+    [FBRequestConnection startWithGraphPath:@"search"
+                                 parameters:param
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              if (error) {
+
+                                  NSLog(@"frien %@", [error localizedDescription]);
+                              } else {
+                                  NSArray *arryComment = [result objectForKey:@"data"];
+                                  [self showUserList:arryComment];
+                              }
+                          }];
+    
+}
+
+- (void)showUserList:(NSArray *)arryUser {
+
+    for (NSDictionary *dictUser in arryUser) {
+
+        NSDictionary *ditUserProfile = [[NSDictionary alloc]init];
+        NSString *userId = [NSString stringWithFormat:@"%lli",[[dictUser valueForKey:@"id"] longLongValue]];
+        NSString *strName = [dictUser valueForKey:@"name"];
+        [ditUserProfile setValue:userId forKey:@"id"];
+        [ditUserProfile setValue:strName forKey:@"name"];
+
+        [self.arrySearchUserList addObject:ditUserProfile];
+    }
+    [self.tbleVwUser reloadData];
+}
+
+
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+
+    return [self.arrySearchUserList count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    NSString *cellIdentifier = @"DetailMessage";
+    UITableViewCell *cell;
+
+    cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    cell.textLabel.text = [[self.arrySearchUserList objectAtIndex:indexPath.row]valueForKey:@"name"];
+
+    return cell;
+}
 /*
 #pragma mark - Navigation
 

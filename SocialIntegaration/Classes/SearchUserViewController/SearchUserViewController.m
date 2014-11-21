@@ -7,6 +7,7 @@
 //
 
 #import "SearchUserViewController.h"
+#import "ShowUserViewController.h"
 
 @interface SearchUserViewController ()
 
@@ -69,7 +70,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"ShowUser"];
+    ShowUserViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"ShowUser"];
+    viewController.searchKeywordType = @"user";
     [[self navigationController] pushViewController:viewController animated:YES];
 }
 

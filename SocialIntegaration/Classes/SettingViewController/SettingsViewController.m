@@ -761,7 +761,9 @@
 
     [UserProfile deleteProfile:@"Instagram"];
     [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISINSTAGRAMLOGIN];
+    [[NSUserDefaults standardUserDefaults]removeObjectForKey:@"InstagramId"];
     [[NSUserDefaults standardUserDefaults]synchronize];
+
     [self hideInstagramBtn:NO];
 
     [UIView animateWithDuration:0.5 animations:^ {

@@ -44,6 +44,7 @@
 		0A7639D91A1321840034D604 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A7639D81A1321840034D604 /* Default-568h@2x.png */; };
 		0A7639DD1A13397C0034D604 /* StatrtPageControllViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A7639DC1A13397C0034D604 /* StatrtPageControllViewController.m */; };
 		0A781B981A10F2D100685DBA /* InstagramProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A781B971A10F2D100685DBA /* InstagramProfileViewController.m */; };
+		0A7CEB931A1E05FC0094EA61 /* ShowOtherUserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A7CEB921A1E05FC0094EA61 /* ShowOtherUserProfileViewController.m */; };
 		0A7EE7A41A1486FF00E5E65A /* facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A7EE7A11A1486FF00E5E65A /* facebook@2x.png */; };
 		0A7EE7A51A1486FF00E5E65A /* instagram@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A7EE7A21A1486FF00E5E65A /* instagram@2x.png */; };
 		0A7EE7A61A1486FF00E5E65A /* twitter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A7EE7A31A1486FF00E5E65A /* twitter@2x.png */; };
@@ -206,6 +207,8 @@
 		0A7639DC1A13397C0034D604 /* StatrtPageControllViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatrtPageControllViewController.m; sourceTree = "<group>"; };
 		0A781B961A10F2D100685DBA /* InstagramProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstagramProfileViewController.h; sourceTree = "<group>"; };
 		0A781B971A10F2D100685DBA /* InstagramProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstagramProfileViewController.m; sourceTree = "<group>"; };
+		0A7CEB911A1E05FC0094EA61 /* ShowOtherUserProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowOtherUserProfileViewController.h; sourceTree = "<group>"; };
+		0A7CEB921A1E05FC0094EA61 /* ShowOtherUserProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowOtherUserProfileViewController.m; sourceTree = "<group>"; };
 		0A7EE7A11A1486FF00E5E65A /* facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook@2x.png"; sourceTree = "<group>"; };
 		0A7EE7A21A1486FF00E5E65A /* instagram@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "instagram@2x.png"; sourceTree = "<group>"; };
 		0A7EE7A31A1486FF00E5E65A /* twitter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter@2x.png"; sourceTree = "<group>"; };
@@ -486,6 +489,7 @@
 				0A781B951A10F2A200685DBA /* AppDelegate */,
 				0A8D130F1A136FED00112078 /* HomePageViewController */,
 				0A781B941A10F29300685DBA /* ViewController */,
+				0A7CEB901A1E05E90094EA61 /* ShowOtherUserProfileViewController */,
 				0A7EE7D71A14F22800E5E65A /* CommentViewController */,
 				0AE10E8C1A1A2A7100847A1A /* GiveCommentViewController */,
 				0A3933941A1CB97800B65473 /* ShowImageOrVideoViewController */,
@@ -659,6 +663,15 @@
 				0A73242F1A0B4C0000F10476 /* AppDelegate.m */,
 			);
 			name = AppDelegate;
+			sourceTree = "<group>";
+		};
+		0A7CEB901A1E05E90094EA61 /* ShowOtherUserProfileViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0A7CEB911A1E05FC0094EA61 /* ShowOtherUserProfileViewController.h */,
+				0A7CEB921A1E05FC0094EA61 /* ShowOtherUserProfileViewController.m */,
+			);
+			path = ShowOtherUserProfileViewController;
 			sourceTree = "<group>";
 		};
 		0A7EE7A71A1487D500E5E65A /* LinkViewController */ = {
@@ -1156,6 +1169,7 @@
 				0A7EE7CE1A14DB0300E5E65A /* SearchUserViewController.m in Sources */,
 				0A781B981A10F2D100685DBA /* InstagramProfileViewController.m in Sources */,
 				0A7324301A0B4C0000F10476 /* AppDelegate.m in Sources */,
+				0A7CEB931A1E05FC0094EA61 /* ShowOtherUserProfileViewController.m in Sources */,
 				0A9F50701A11DC7600BAB0D3 /* UIImage+Resize.m in Sources */,
 				0A9FF0661A108DAF00FC2B39 /* Reachability.m in Sources */,
 				0A7EE7C21A14BF8E00E5E65A /* SettingsViewController.m in Sources */,

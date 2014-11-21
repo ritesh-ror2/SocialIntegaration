@@ -47,10 +47,19 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 
+    [super viewWillAppear:animated];
+    if (sharedAppDelegate.arryOfInstagrame.count == 0) {
+
+        [Constant showAlert:@"Message" forMessage:@"No Feeds."];
+        return;
+    }
+//    [self.arrySelectedIndex removeAllObjects];
+//    [self.arryTappedCell removeAllObjects];
+    [self.tbleVwInstagram reloadData];
     self.navController.navigationBarHidden = NO;
     [self.arryTappedCell removeAllObjects];
 
-    for (NSString *cellSelected in sharedAppDelegate.arryOfFBNewsFeed) {
+    for (NSString *cellSelected in sharedAppDelegate.arryOfInstagrame) {
         NSLog(@"%@", cellSelected);
         [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
     }
@@ -98,7 +107,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    UserInfo *objUserInfo = [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row];
+    UserInfo *objUserInfo = [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)

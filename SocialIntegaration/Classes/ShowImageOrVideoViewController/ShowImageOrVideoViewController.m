@@ -8,7 +8,11 @@
 
 #import "ShowImageOrVideoViewController.h"
 
-@interface ShowImageOrVideoViewController () <UIWebViewDelegate>
+@interface ShowImageOrVideoViewController () <UIWebViewDelegate, NSURLConnectionDelegate> {
+
+    NSMutableData *_responseData;
+    NSURLConnection *conn;
+}
 
 @end
 
@@ -39,6 +43,16 @@
         [self.webViewVideo loadRequest:urlRequest];
         [self.webViewVideo setHidden:NO];
     } else {
+
+        if([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+
+            [self.view addSubview:sharedAppDelegate.spinner];
+            [self.view bringSubviewToFront:sharedAppDelegate.spinner];
+            [sharedAppDelegate.spinner show:YES];
+
+            [self getLargeImageOfFacebook];
+            return;
+        }
         self.asyImgView.imageURL = [NSURL URLWithString:self.userInfo.strPostImg];
         [self.asyImgView setHidden:NO];
     }
@@ -50,6 +64,46 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)getLargeImageOfFacebook {
+
+    NSString *strUrl =  [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=normal", self.userInfo.objectIdFB];
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:strUrl]];
+    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+}
+
+
+#pragma mark NSURLConnection Delegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+
+    _responseData = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+
+    [_responseData appendData:data];
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
+        // Return nil to indicate not necessary to store a cached response for this connection
+    return nil;
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+
+    self.imgVwLagre.hidden = NO;
+    [sharedAppDelegate.spinner hide:YES];
+    UIImage *image = [UIImage imageWithData:_responseData];
+    self.imgVwLagre.image = image;
+    
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+        // The request has failed for some reason!
+
+}
 /*
 #pragma mark - Navigation
 

@@ -14,6 +14,8 @@
     UILabel *lblMessage;
     UIImageView *imgVwUser;
     UIImageView *imgVwArrow;
+
+    UIImageView *imgVwBackground;
 }
 
 - (void)setDetailMessageOnTableView:(UserComment*)objComment withUserId:(NSString*)userId;

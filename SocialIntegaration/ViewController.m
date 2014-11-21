@@ -14,6 +14,7 @@
 #import "UserProfile.h"
 #import "UserProfile+DatabaseHelper.h"
 #import "CommentViewController.h"
+#import "ShowOtherUserProfileViewController.h"
 #import <Social/Social.h>
 
 NSString *const kSocialServices = @"SocialServices";
@@ -63,6 +64,10 @@ BOOL hasTwitter = NO;
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.translucent = NO;
 
+    [self.arrySelectedIndex removeAllObjects];
+    [self.arrySelectedIndex removeAllObjects];
+    [self.tbleVwPostList reloadData];
+    
     [self appIsInForeground:nil];
     self.navController.navigationBarHidden = NO;
 }
@@ -76,9 +81,7 @@ BOOL hasTwitter = NO;
 
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter]removeObserver:self];
-    [self.arrySelectedIndex removeAllObjects];
-    [self.arrySelectedIndex removeAllObjects];
-}
+   }
 
 - (UIImageView *)addUserImgAtRight {
 
@@ -130,7 +133,7 @@ BOOL hasTwitter = NO;
 
         dispatch_async(dispatch_get_main_queue(), ^{
 
-            [sharedAppDelegate.spinner hide:YES];
+                // [sharedAppDelegate.spinner hide:YES];
             [sharedAppDelegate.arryOfFBNewsFeed removeAllObjects];
 
             [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB ];
@@ -152,13 +155,51 @@ BOOL hasTwitter = NO;
 	[self updatePosts];
 }
 
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+    if ([userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+        NSString *strUserId = [NSString stringWithFormat:@"/%@",userInfo.fromId];
+        /* make the API call */
+        [FBRequestConnection startWithGraphPath:strUserId
+                                     parameters:nil
+                                     HTTPMethod:@"GET"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+                                  if (error) {
+
+                                  } else {
+
+                                      NSDictionary *dictProfile = (NSDictionary *)result;
+
+                                      UserInfo *otherUserInfo = [[UserInfo alloc]init];
+                                      otherUserInfo.strUserName = [dictProfile valueForKey:@"name"];
+                                      otherUserInfo.fromId  = [dictProfile valueForKey:@"id"];
+                                      otherUserInfo.strUserSocialType = @"Facebook";
+                                      UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                                      ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+                                      vwController.userInfo = otherUserInfo;
+                                      [self.navigationController pushViewController:vwController animated:YES];
+                                  }
+                              }];
+    } if ([userInfo.strUserSocialType isEqualToString:@"Twitter"])  {
+
+        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+        vwController.userInfo = userInfo;
+        [self.navigationController pushViewController:vwController animated:YES];
+    }
+}
+
 #pragma mark - Login with facebook
 
 - (void)loginFacebook {
 
     [FBSession openActiveSessionWithReadPermissions:@[
                                                       @"basic_info",
-                                                      @"read_stream", @"email", @"user_friends"
+                                                      @"read_stream", @"email", @"user_friends", @"user_likes"
                                                       ]
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
@@ -221,7 +262,7 @@ BOOL hasTwitter = NO;
         NSLog(@"%@", [error description]);
 		if (error) {
             [Constant showAlert:ERROR_CONNECTING forMessage:@"Feeds is not comming"];
-            [sharedAppDelegate.spinner hide:YES];
+                // [sharedAppDelegate.spinner hide:YES];
             [self getTweetFromTwitter];
 		} else {
 			NSArray *arryPost = [result objectForKey:@"data"];
@@ -253,7 +294,7 @@ BOOL hasTwitter = NO;
             userInfo.strPostImg = [dictData valueForKey:@"picture"];
 
             NSLog(@"*** %@", [dictData objectForKey:@"type"]);
-            if (![[dictData objectForKey:@"type"] isEqualToString:@"video"]) {
+            if (![[dictData objectForKey:@"type"] isEqualToString:@"video"] && ![[dictData objectForKey:@"type"] isEqualToString:@"photo"]) {
                 userInfo.objectIdFB = [dictData valueForKey:@"id"];
              } else {
                 userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
@@ -265,8 +306,8 @@ BOOL hasTwitter = NO;
             NSLog(@"%@", userInfo.type);
         }
     }
-        //  [self shortArryOfAllFeeds];
-        [self getTweetFromTwitter];
+        //[self shortArryOfAllFeeds];
+         [self getTweetFromTwitter];
 }
 
 #pragma mark - Get Tweets from twitter
@@ -388,7 +429,10 @@ BOOL hasTwitter = NO;
             userInfo.statusId = [dictData valueForKey:@"id"];
             userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
             userInfo.retweeted = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweeted"] integerValue]];
-
+            userInfo.retweetCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweet_count"] integerValue]];
+            userInfo.favourateCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorite_count"] integerValue]];
+            userInfo.isFollowing = [[postUserDetailDict valueForKey:@"following"]boolValue];
+            userInfo.dicOthertUser = postUserDetailDict;
             [sharedAppDelegate.arryOfTwittes addObject:userInfo];
         }
     }
@@ -510,14 +554,16 @@ BOOL hasTwitter = NO;
 
 - (void)getInstagrameIntegration {
 
+     [self shortArryOfAllFeeds];
+    return;
     // here i can set accessToken received on previous login
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     sharedAppDelegate.instagram.sessionDelegate = self;
-    [sharedAppDelegate.spinner hide:YES];
 
     BOOL isInstagramUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
     if (isInstagramUserLogin == NO) {
 
+        [sharedAppDelegate.spinner hide:YES];
         NSArray *arryVwController = self.navController.viewControllers;
         UIViewController *vwController = [arryVwController lastObject];
         
@@ -597,6 +643,8 @@ BOOL hasTwitter = NO;
 #pragma mark - IGRequestDelegate
 
 - (void)request:(IGRequest *)request didFailWithError:(NSError *)error {
+
+    [self shortArryOfAllFeeds];
 
     NSLog(@"Instagram did fail: %@", error);
     UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"

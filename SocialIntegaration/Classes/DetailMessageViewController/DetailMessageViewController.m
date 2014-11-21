@@ -68,6 +68,10 @@
 
     UserComment *objUserComment = [self.arryDetailMessage objectAtIndex:indexPath.row];
 
+    if (objUserComment.userComment.length == 0) {
+        return 0;
+    }
+
     NSString *string = objUserComment.userComment;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(230, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
@@ -76,18 +80,6 @@
 
     return (rect.size.height+25);//183 is height of other fixed content
 }
-
-//- (CGFloat)tableView:(UITableView*)tableView heightForFooterInSection:(NSInteger)section {
-//    return 44;
-//}
-//
-//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-//
-//    UIView *vwMessage = [[UIView alloc]init];
-//    vwMessage.backgroundColor = [UIColor blackColor];
-//    UITextView *txtVwMssage = [[UITextView alloc]initWithFrame:CGRectMake(50, 10, 200, 33)];
-//    return vwMessage;
-//}
 
 /*
 #pragma mark - Navigation

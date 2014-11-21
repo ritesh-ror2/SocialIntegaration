@@ -15,5 +15,6 @@
 @property (nonatomic, strong)UserInfo *userInfo;
 @property (nonatomic, strong)IBOutlet AsyncImageView *asyImgView;
 @property (nonatomic, strong)IBOutlet UIWebView *webViewVideo;
+@property (nonatomic, strong)IBOutlet UIImageView *imgVwLagre;
 
 @end

@@ -32,12 +32,17 @@
     IBOutlet UIButton *btnCommentFb;
     IBOutlet UIButton *btnLike;
 
-    IBOutlet UIImageView *imgVwOfReply;
-    IBOutlet UIImageView *imgVwOfTweet;
-    IBOutlet UIImageView *imgVwOfFavourate;
-    IBOutlet UIButton *btnTweet;
+        //twitter
+    IBOutlet UIButton *btnRetweet;
     IBOutlet UIButton *btnReply;
     IBOutlet UIButton *btnFavourite;
+    IBOutlet UIButton *btnMoreTweet;
+
+    IBOutlet UILabel *lblRetweet;
+    IBOutlet UILabel *lblReply;
+    IBOutlet UILabel *lblFavourite;
+
+
     IBOutlet UIButton *btnShowImageOrVideo;
         //IBOutlet UILabel *lblReply;
     IBOutlet UILabel *lblLikeCount;

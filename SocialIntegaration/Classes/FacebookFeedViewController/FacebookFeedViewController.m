@@ -49,7 +49,9 @@
 
     self.navController.navigationBarHidden = NO;
     [self.arryTappedCell removeAllObjects];
+    [self.arrySelectedIndex removeAllObjects];
 
+    [self.tbleVwFB reloadData];
     for (NSString *cellSelected in sharedAppDelegate.arryOfFBNewsFeed) {
         NSLog(@"%@", cellSelected);
         [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
@@ -113,8 +115,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    UserInfo *objUserInfo = [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row];
+    UserInfo *objUserInfo = [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row];
 
+    NSLog(@"%@", objUserInfo.strPostImg);
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin

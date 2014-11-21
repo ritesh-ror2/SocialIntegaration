@@ -14,6 +14,7 @@
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName;
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected;
+- (void)userProfileBtnTapped:(UserInfo*)userInfo;
 
 @end
 
@@ -32,12 +33,14 @@
     IBOutlet UILabel *lblCommentFb;
     IBOutlet UILabel *lblLike;
 
-    IBOutlet UIImageView *imgVwOfReply;
-    IBOutlet UIImageView *imgVwOfTweet;
-    IBOutlet UIImageView *imgVwOfFavourate;
-    IBOutlet UILabel *lblReply;
+    IBOutlet UIButton *btnReply;
+    IBOutlet UIButton *btnRetweet;
+    IBOutlet UIButton *btnFavourate;
+    IBOutlet UIButton *btnMoreTweet;
     IBOutlet UILabel *lblTweet;
     IBOutlet UILabel *lblFavourate;
+    IBOutlet UILabel *lblFbLikeCount;
+    IBOutlet UIButton *btnProfile;
 
     IBOutlet UIImageView *imgVwOfLikeInstagram;
         //IBOutlet UITextView *txtVwMessage;

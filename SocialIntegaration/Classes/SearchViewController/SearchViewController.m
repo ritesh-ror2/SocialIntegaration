@@ -35,6 +35,7 @@
     self.title = @"User";
 }
 
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

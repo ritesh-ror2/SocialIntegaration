@@ -32,12 +32,9 @@
 
 - (void)handleSwipeGestureOnTableView: (UILongPressGestureRecognizer *)gesture {
 
-        // if (gesture.direction == UISwipeGestureRecognizerDirectionLeft) {
-
-        NSLog(@"%@", self.userInfo);
-        if ([self.customCellDelegate respondsToSelector:@selector(didSelectRowWithObject:withFBProfileImg:)]) {
-            [self.customCellDelegate didSelectRowWithObject:self.userInfo withFBProfileImg:self.strProfileImg];
-                // }
+    NSLog(@"%@", self.userInfo);
+    if ([self.customCellDelegate respondsToSelector:@selector(didSelectRowWithObject:withFBProfileImg:)]) {
+        [self.customCellDelegate didSelectRowWithObject:self.userInfo withFBProfileImg:self.strProfileImg];
     }
 }
 
@@ -98,10 +95,12 @@
         [imgVwOfLikeFb setHidden:NO];
         [lblCommentFb setHidden:NO];
         [lblLike setHidden:NO];
+        [lblFbLikeCount setHidden:NO];
 
         self.contentView.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
         lblText.textColor = [UIColor whiteColor];
         lblName.textColor = [UIColor whiteColor];
+        btnMoreTweet.titleLabel.textColor = [UIColor whiteColor];
         lblTime.textColor = [UIColor whiteColor];
         lblSocialType.textColor = [UIColor whiteColor];
     } else {
@@ -110,6 +109,7 @@
         [imgVwOfLikeFb setHidden:YES];
         [lblCommentFb setHidden:YES];
         [lblLike setHidden:YES];
+        [lblFbLikeCount setHidden:YES];
 
         self.contentView.backgroundColor =  [UIColor whiteColor];
         lblText.textColor = [UIColor darkGrayColor];
@@ -123,12 +123,12 @@
 
     if (isDisplay == YES) {
 
-        [imgVwOfReply setHidden:NO];
-        [imgVwOfTweet setHidden:NO];
-        [imgVwOfFavourate setHidden:NO];
+        [btnReply setHidden:NO];
+        [btnRetweet setHidden:NO];
+        [btnFavourate setHidden:NO];
         [lblTweet setHidden:NO];
+        [btnMoreTweet setHidden:NO];
         [lblFavourate setHidden:NO];
-        [lblReply setHidden:NO];
 
         self.contentView.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];//[UIColor colorWithPatternImage:[UIImage imageNamed:@"twitter-bg.png"]];
         lblText.textColor = [UIColor whiteColor];
@@ -137,12 +137,12 @@
         lblSocialType.textColor = [UIColor whiteColor];
     } else {
 
-        [imgVwOfReply setHidden:YES];
-        [imgVwOfTweet setHidden:YES];
-        [imgVwOfFavourate setHidden:YES];
+        [btnReply setHidden:YES];
+        [btnMoreTweet setHidden:YES];
+        [btnRetweet setHidden:YES];
+        [btnFavourate setHidden:YES];
         [lblTweet setHidden:YES];
         [lblFavourate setHidden:YES];
-        [lblReply setHidden:YES];
 
         self.contentView.backgroundColor = [UIColor whiteColor];
         lblText.textColor = [UIColor darkGrayColor];
@@ -212,6 +212,7 @@
 
         lblSocialType.textColor = [UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0];
         [self uploadProfileImage:objUserInfo]; //upload profile image
+
     } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
 
         lblSocialType.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
@@ -243,16 +244,17 @@
 //        }
 //    }
 
+    [self getLikeCountOfFb];
     if ([self.userInfo.retweeted isEqualToString:@"1"]) {
-        imgVwOfTweet.image = [UIImage imageNamed:@"Retweet_active.png"];//selected
+        [btnRetweet setImage:[UIImage imageNamed:@"Retweet_active.png"] forState:UIControlStateNormal];//selected
     } else {
-        imgVwOfTweet.image = [UIImage imageNamed:@"Retweet.png"];//deselected
+        [btnRetweet setImage:[UIImage imageNamed:@"Retweet.png"] forState:UIControlStateNormal];//deselected
     }
 
     if ([self.userInfo.favourated isEqualToString:@"1"]) {
-        imgVwOfFavourate.image = [UIImage imageNamed:@"favourite_active.png"];//selected
+        [btnFavourate setImage:[UIImage imageNamed:@"favourite_active.png"] forState:UIControlStateNormal];//selected
     } else {
-        imgVwOfFavourate.image = [UIImage imageNamed:@"favourite.png"];//deselected
+        [btnFavourate setImage:[UIImage imageNamed:@"favourite.png"] forState:UIControlStateNormal];//deselected
     }
      
     if (arrayOfSelectedIndex.count != 0) {
@@ -275,24 +277,34 @@
     if ([objUserInfo.type isEqualToString:@"video"]) {
         [btnPlay setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
     }
+    lblTweet.text = objUserInfo.retweetCount;
+    lblFavourate.text = objUserInfo.favourateCount;
 }
 
 - (void)setFrameOfActivityView:(NSInteger)yAxis {
 
     [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x, yAxis, 20, 21)];
     [imgVwOfLikeFb setFrame:CGRectMake(imgVwOfLikeFb.frame.origin.x, yAxis, 20, 21)];
-    [lblCommentFb setFrame:CGRectMake(lblCommentFb.frame.origin.x, yAxis, 70, 21)];
+    [lblCommentFb setFrame:CGRectMake(lblCommentFb.frame.origin.x, yAxis, 80, 21)];
     [lblLike setFrame:CGRectMake(lblLike.frame.origin.x, yAxis, 70, 21)];
+    [lblFbLikeCount setFrame:CGRectMake(lblFbLikeCount.frame.origin.x, yAxis, 70, 21)];
 
-    [imgVwOfFavourate setFrame:CGRectMake(imgVwOfFavourate.frame.origin.x, yAxis, imgVwOfFavourate.frame.size.width, imgVwOfFavourate.frame.size.height)];
-    [imgVwOfTweet setFrame:CGRectMake(imgVwOfTweet.frame.origin.x, yAxis, imgVwOfTweet.frame.size.width, imgVwOfTweet.frame.size.height)];
-    [imgVwOfReply setFrame:CGRectMake(imgVwOfReply.frame.origin.x, yAxis, imgVwOfReply.frame.size.width, imgVwOfReply.frame.size.height)];
+    [btnFavourate setFrame:CGRectMake(btnFavourate.frame.origin.x, yAxis, btnFavourate.frame.size.width, btnFavourate.frame.size.height)];
+    [btnReply setFrame:CGRectMake(btnReply.frame.origin.x, yAxis, btnReply.frame.size.width, btnReply.frame.size.height)];
+    [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x, yAxis, btnRetweet.frame.size.width, btnRetweet.frame.size.height)];
+    [btnMoreTweet setFrame:CGRectMake(btnMoreTweet.frame.origin.x, yAxis, btnMoreTweet.frame.size.width, btnMoreTweet.frame.size.height)];
 
-    [lblFavourate setFrame:CGRectMake(lblFavourate.frame.origin.x, yAxis, 70, 21)];
-    [lblReply setFrame:CGRectMake(lblReply.frame.origin.x, yAxis, 70, 21)];
-    [lblTweet setFrame:CGRectMake(lblTweet.frame.origin.x, yAxis, 70, 21)];
+    [lblFavourate setFrame:CGRectMake(lblFavourate.frame.origin.x, yAxis+4, 70, 21)];
+    [lblTweet setFrame:CGRectMake(lblTweet.frame.origin.x, yAxis+4, 70, 21)];
 
     [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 21)];
+}
+
+- (IBAction)profileBtnTapped:(id)sender {
+
+    if ([self.customCellDelegate respondsToSelector:@selector(userProfileBtnTapped:)]) {
+        [self.customCellDelegate userProfileBtnTapped:self.userInfo];
+    }
 }
 
 #pragma mark - Set profile image of twitter and Instagram
@@ -363,4 +375,26 @@
 	});
 }
 
+
+- (void)getLikeCountOfFb {
+
+    NSDictionary *dictMessage = @{@"summary": @"true"};
+
+    NSString *strUrl = [NSString stringWithFormat:@"/%@/likes",self.userInfo.objectIdFB];
+    [FBRequestConnection startWithGraphPath:strUrl
+                                 parameters:dictMessage
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              if (error){
+
+                              } else {
+                                 NSString *strLikeCount = [NSString stringWithFormat:@"%@",[[result objectForKey:@"summary"] valueForKey:@"total_count"]];
+                                  lblFbLikeCount.text = strLikeCount;
+                              }
+                          }];
+}
 @end

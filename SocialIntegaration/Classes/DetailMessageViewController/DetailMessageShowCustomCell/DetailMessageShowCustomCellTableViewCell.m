@@ -27,11 +27,17 @@
     [self.contentView addSubview:imgVwArrow];
     [self.contentView sendSubviewToBack:imgVwArrow];
 
+
+    imgVwBackground = [[UIImageView alloc]init];
+    imgVwBackground.layer.cornerRadius = 5.0;
+    imgVwBackground.clipsToBounds = YES;
+    [self.contentView addSubview:imgVwBackground];
+
     lblMessage = [[UILabel alloc]init];
     lblMessage.textColor = [UIColor whiteColor];
     lblMessage.numberOfLines = 0;
-    lblMessage.layer.cornerRadius = 2.0;
-    lblMessage.clipsToBounds = YES;
+
+    //lblMessage.layer.borderWidth = 3.0;
     [self.contentView addSubview:lblMessage];
 
     imgVwUser = [[UIImageView alloc]init];
@@ -47,6 +53,9 @@
 
 - (void)setDetailMessageOnTableView:(UserComment*)objComment withUserId:(NSString*)userId {
 
+    if (objComment.userComment.length == 0) {
+        return;
+    }
     NSString *string = objComment.userComment;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(230, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
@@ -55,8 +64,11 @@
     if (![objComment.fromId isEqualToString:userId]) {
 
         lblMessage.text = objComment.userComment;
-        lblMessage.backgroundColor = [UIColor colorWithRed:107/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
-        lblMessage.frame = CGRectMake(55, 5, rect.size.width, rect.size.height+2);
+        lblMessage.backgroundColor = [UIColor clearColor];
+        lblMessage.frame = CGRectMake(60, 5, rect.size.width, rect.size.height);
+
+        imgVwBackground.frame = CGRectMake(55, 3, rect.size.width+10, rect.size.height+6);
+        imgVwBackground.backgroundColor = [UIColor colorWithRed:107/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
 
         imgVwUser.frame = CGRectMake(5, 0, 40, 40);
         imgVwArrow.image = [UIImage imageNamed:@"arrow-blue.png"];
@@ -64,8 +76,11 @@
     } else {
 
         lblMessage.text = objComment.userComment;
-        lblMessage.frame = CGRectMake((265 - rect.size.width), 5, rect.size.width, rect.size.height+2);
-        lblMessage.backgroundColor = [UIColor lightGrayColor];
+        lblMessage.frame = CGRectMake((263 - rect.size.width), 5, rect.size.width, rect.size.height+2);
+        lblMessage.backgroundColor = [UIColor clearColor];
+
+        imgVwBackground.frame = CGRectMake((258 - rect.size.width), 3, rect.size.width+10, rect.size.height+6);
+        imgVwBackground.backgroundColor = [UIColor lightGrayColor];
 
         imgVwUser.frame = CGRectMake(275, 0, 40, 40);
         imgVwArrow.image = [UIImage imageNamed:@"arrow-gray.png"];
