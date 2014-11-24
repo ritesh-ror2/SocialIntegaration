@@ -9,11 +9,13 @@
 #import "ShowUserViewController.h"
 #import "Constant.h"
 #import "UserInfo.h"
+#import "SearchCustomCell.h"
+#import "ShowOtherUserProfileViewController.h"
 
-@interface ShowUserViewController () <UISearchDisplayDelegate, UISearchBarDelegate>
+@interface ShowUserViewController () <UISearchDisplayDelegate, UISearchBarDelegate, IGRequestDelegate, IGSessionDelegate, SearchCustomDelegate>
 
 @property (nonatomic, strong) NSMutableArray *arrySearchUserList;
-
+@property (nonatomic, strong) NSString *strSearchText;
 @end
 
 @implementation ShowUserViewController
@@ -32,15 +34,159 @@
     [super viewDidLoad];
     
     self.navigationController.navigationBar.hidden = NO;
-    self.title = @"User";
-
+    self.navigationItem.title = self.searchKeywordType;
     self.arrySearchUserList = [[NSMutableArray alloc]init];
+    NSLog(@"%@", self.searchKeywordType);
 }
 
 - (void)didReceiveMemoryWarning {
 
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    if (self.strSearchText.length != 0) {
+
+        if([self.socialType isEqualToString:@"Facebook"]) {
+            [self searchFriendOnFb:self.strSearchText];
+        } else if ([self.socialType isEqualToString:@"Twitter"]) {
+            [self searchFriendOnTwitter:self.strSearchText];
+        } else {
+            [self searchOnInstagram:self.strSearchText];
+        }
+    }
+
+}
+
+
+- (void)searchOnInstagram:(NSString *)strName {
+
+    https://api.instagram.com/v1/users/search?q=jack&access_token=ACCESS-TOKEN
+
+    sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
+    sharedAppDelegate.instagram.sessionDelegate = self;
+
+    BOOL isInstagramUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
+    if (isInstagramUserLogin == NO) {
+
+        [sharedAppDelegate.spinner hide:YES];
+        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_INSTAGRAM];
+    } else {
+
+        if ([sharedAppDelegate.instagram isSessionValid]) {
+
+            if ([self.searchKeywordType isEqualToString:@"User"]) {
+                NSString *strUrl = [NSString stringWithFormat:@"users/search"];
+                NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strName, @"q", nil]; //fetch feed
+                [sharedAppDelegate.instagram requestWithMethodName:strUrl params:params httpMethod:@"GET" delegate:self];
+            } else {
+                NSString *strUrl = [NSString stringWithFormat:@"tags/%@/media/recent", strName];//@"/tags/search"];
+
+                NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strName, @"q", nil]; //fetch feed
+                [sharedAppDelegate.instagram requestWithMethodName:strUrl params:params httpMethod:@"GET" delegate:self];
+            }
+        }
+    }
+}
+
+#pragma - IGSessionDelegate
+
+- (void)igDidLogin {
+
+        // here i can store accessToken
+    [[NSUserDefaults standardUserDefaults] setObject:sharedAppDelegate.instagram.accessToken forKey:@"accessToken"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+
+        // [self getInstagrameIntegration];
+}
+
+- (void)igDidNotLogin:(BOOL)cancelled {
+
+    NSLog(@"Instagram did not login");
+    NSString* message = nil;
+    if (cancelled) {
+        message = @"Access cancelled!";
+    } else {
+        message = @"Access denied!";
+    }
+    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:message
+                                                       delegate:nil
+                                              cancelButtonTitle:@"Ok"
+                                              otherButtonTitles:nil];
+    [alertView show];
+}
+
+- (void)igDidLogout {
+
+    NSLog(@"Instagram did logout");
+        // remove the accessToken
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"accessToken"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)igSessionInvalidated {
+
+    NSLog(@"Instagram session was invalidated");
+}
+#pragma mark - IGRequestDelegate
+
+- (void)request:(IGRequest *)request didFailWithError:(NSError *)error {
+
+    NSLog(@"Instagram did fail: %@", error);
+    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:[error localizedDescription]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"Ok"
+                                              otherButtonTitles:nil];
+    [alertView show];
+}
+
+- (void)request:(IGRequest *)request didLoad:(id)result {
+
+    NSArray *arry = [result objectForKey:@"data"];
+    [self convertInstagramData:arry];
+    NSLog(@"Instagram did load: %@", result);
+    [sharedAppDelegate.spinner hide:YES];
+}
+
+- (void)convertInstagramData:(NSArray *)arry {
+
+    for (NSDictionary *dictData in arry) {
+
+        UserInfo *userInfo = [[UserInfo alloc]init];
+
+        if ([self.searchKeywordType isEqualToString:@"User"]) {
+
+            userInfo.strUserName = [dictData valueForKey:@"username"];
+            userInfo.strUserImg = [dictData valueForKey:@"profile_picture"];
+            userInfo.fromId = [dictData valueForKey:@"id"];
+            userInfo.strUserSocialType = @"Instagram";
+            userInfo.type = self.searchKeywordType;
+
+            [self.arrySearchUserList addObject:userInfo];
+
+        } else {
+
+            NSDictionary *dictCaption = [dictData objectForKey:@"caption"];
+            if ([dictData objectForKey:@"caption"] != [NSNull null]) {
+                NSDictionary *dictUser = [dictCaption objectForKey:@"from"];
+                userInfo.strUserName = [dictUser valueForKey:@"username"];
+                userInfo.strUserImg = [dictUser valueForKey:@"profile_picture"];
+                userInfo.fromId = [dictUser valueForKey:@"id"];
+                userInfo.strUserPost = [dictCaption valueForKey:@"text"];
+
+                userInfo.strUserSocialType = @"Instagram";
+                userInfo.type = self.searchKeywordType;
+
+                [self.arrySearchUserList addObject:userInfo];
+            }
+        }
+    }
+    [self.tbleVwUser reloadData];
 }
 
 - (void)searchFriendOnTwitter:(NSString *)strKeyword {
@@ -53,7 +199,17 @@
         return;
     }
 
-    NSDictionary *param = @{@"q":strKeyword};
+    NSString *strKey;
+
+    if ([self.searchKeywordType isEqualToString:@"user"]) {
+        strKey = [NSString stringWithFormat:@"@%@",strKeyword];
+    } else if ([self.searchKeywordType isEqualToString:@"Keyword"]) {
+        strKey = strKeyword;
+    } else {
+        strKey = [NSString stringWithFormat:@"#%@",strKeyword];
+    }
+
+    NSDictionary *param = @{@"q":strKey};
     NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/users/search.json"];
     SLRequest *timelineRequest = [SLRequest
                                   requestForServiceType:SLServiceTypeTwitter
@@ -100,29 +256,42 @@
 
 - (void)convertTwitterUsersListIntoModels:(NSArray *)arryUser {
 
-    for (NSDictionary *dictUser in arryUser) {
+     [self.arrySearchUserList removeAllObjects];
 
+    for (NSDictionary *dictUser in arryUser) {
+        
         UserInfo *userInfo = [[UserInfo alloc]init];
         userInfo.fromId = [NSString stringWithFormat:@"%lli",[[dictUser valueForKey:@"id"] longLongValue]];
-        userInfo.strUserName = [dictUser valueForKey:@"name"];
-        userInfo.strUserImg = [dictUser valueForKey:@"profile_image_url"];
 
-        [self.arrySearchUserList addObject:userInfo];
+        userInfo.strUserName = [dictUser valueForKey:@"name"];
+        userInfo.isFollowing = [[dictUser valueForKey:@"username"] boolValue];
+        userInfo.strUserImg = [dictUser valueForKey:@"profile_image_url"];
+        userInfo.isFollowing = [[dictUser valueForKey:@"following"] boolValue];
+        userInfo.strUserSocialType = @"Twitter";
+        //set user profile
+        NSString *strFollowers = [NSString stringWithFormat:@"%i",[[dictUser valueForKey:@"followers_count"] integerValue]];
+         NSString *strTweet = [NSString stringWithFormat:@"%i",[[dictUser valueForKey:@"listed_count"] integerValue]];
+        NSString *strFollowing = [NSString stringWithFormat:@"%i",[[dictUser valueForKey:@"friends_count"] integerValue]];
+        NSDictionary *dictUserData = @{@"friends_count": strFollowing, @"followers_count":strFollowers, @"listed_count":strTweet, @"profile_image_url":userInfo.strUserImg, @"id":userInfo.fromId};
+        userInfo.dicOthertUser = dictUserData;
+
+        if ([self.searchKeywordType isEqualToString:@"Keyword"]) {
+            userInfo.type = @"Keyword";
+            userInfo.strUserPost =  [dictUser valueForKey:@"description"];
+        } else {
+            userInfo.type = @"User";
+        }
+    [self.arrySearchUserList addObject:userInfo];
     }
+
     [self.tbleVwUser reloadData];
     [sharedAppDelegate.spinner hide:YES];
 }
 
 - (void)searchFriendOnFb:(NSString *)strKeyword {
 
-    NSString *type;
-    if ([self.searchKeywordType isEqualToString:@"user"]) {
-        type = @"user";
-    } else {
-        type = @"adkeyword";
-    }
     NSDictionary *param = @{@"q": strKeyword,
-                            @"type":type};
+                            @"type":@"user"};
     [FBRequestConnection startWithGraphPath:@"/search"
                                  parameters:param
                                  HTTPMethod:@"GET"
@@ -149,6 +318,14 @@
         UserInfo *userInfo = [[UserInfo alloc]init];
         userInfo.fromId = [NSString stringWithFormat:@"%lli",[[dictUser valueForKey:@"id"] longLongValue]];
         userInfo.strUserName = [dictUser valueForKey:@"name"];
+        userInfo.strUserSocialType = @"Facebook";
+
+        if ([self.searchKeywordType isEqualToString:@"Keyword"]) {
+            userInfo.type = @"Keyword";
+            userInfo.strUserPost =  [dictUser valueForKey:@"message"];
+        } else {
+            userInfo.type = @"User";
+        }
 
         [self.arrySearchUserList addObject:userInfo];
     }
@@ -165,20 +342,105 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     NSString *cellIdentifier = @"SeachUser";
-    UITableViewCell *cell;
+    SearchCustomCell *cell;
 
-    cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-    }
+    cell = (SearchCustomCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 
     UserInfo *userInfo = [self.arrySearchUserList objectAtIndex:indexPath.row];
-    cell.textLabel.text = userInfo.strUserName;
+    [cell setSearchResultIntableView:userInfo];
+    cell.delegate = self;
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  {
+
+    UserInfo *userInfo = [self.arrySearchUserList objectAtIndex:indexPath.row];
+
+    NSString *strPost = userInfo.strUserPost;
+
+    if (strPost.length == 0) {
+        return 47;
+    }
+    
+    CGRect rect = [strPost boundingRectWithSize:CGSizeMake(250, 100)
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                       context:nil];
+    return (rect.size.height +30);
+}
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller  {
 
+}
+
+- (void)followOrNotFollow:(UserInfo *)userInfo withTitle:(NSString *)follow {
+
+    [self followOrNotFollowFriend:userInfo withFollowOrNot:follow];
+}
+
+- (void)followOrNotFollowFriend:(UserInfo *)userInfo withFollowOrNot:(NSString *)strFollow {
+
+       if ([strFollow isEqualToString:@"Follow"]) {
+
+        NSString *strUserId = [NSString stringWithFormat:@"%i",[userInfo.fromId integerValue]];
+        NSDictionary *param = @{@"user_id": strUserId, @"follow":@"true"};
+        NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"];
+        SLRequest *timelineRequest = [SLRequest
+                                      requestForServiceType:SLServiceTypeTwitter
+                                      requestMethod:SLRequestMethodPOST
+                                      URL:requestURL parameters:param];
+
+        timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+        [timelineRequest performRequestWithHandler:
+         ^(NSData *responseData, NSHTTPURLResponse
+           *urlResponse, NSError *error)
+         {
+           NSLog(@"%@ !#" , [error description]);
+           NSArray *arryTwitte = [NSJSONSerialization
+                                  JSONObjectWithData:responseData
+                                  options:NSJSONReadingMutableLeaves
+                                  error:&error];
+
+           if (arryTwitte.count != 0) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+
+                   NSLog(@"Success %@", arryTwitte);
+               });
+           }
+         }];
+        return;
+    } else {
+
+        NSString *strUserId = [NSString stringWithFormat:@"%i",[userInfo.fromId integerValue]];
+        NSDictionary *param = @{@"user_id": strUserId};
+        NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/destroy.json"];
+        SLRequest *timelineRequest = [SLRequest
+                                      requestForServiceType:SLServiceTypeTwitter
+                                      requestMethod:SLRequestMethodPOST
+                                      URL:requestURL parameters:param];
+
+        timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+        [timelineRequest performRequestWithHandler:
+         ^(NSData *responseData, NSHTTPURLResponse
+           *urlResponse, NSError *error)
+         {
+           NSLog(@"%@ !#" , [error description]);
+           NSArray *arryTwitte = [NSJSONSerialization
+                                  JSONObjectWithData:responseData
+                                  options:NSJSONReadingMutableLeaves
+                                  error:&error];
+
+           if (arryTwitte.count != 0) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   NSLog(@"Success %@", arryTwitte);
+               });
+           }
+         }];
+        return;
+    }
+
+    [self.tbleVwUser reloadData];
 }
 
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -191,10 +453,14 @@
     [self.view endEditing:YES];
     [searchBar canResignFirstResponder];
 
+    self.strSearchText = [searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
     if([self.socialType isEqualToString:@"Facebook"]) {
         [self searchFriendOnFb:searchBar.text];
     } else if ([self.socialType isEqualToString:@"Twitter"]) {
         [self searchFriendOnTwitter:strTrim];
+    } else {
+        [self searchOnInstagram:strTrim];
     }
     [self.searchDisplayController setActive:NO];
 
@@ -205,6 +471,15 @@
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
 
+}
+
+
+- (void)userProfileBtnTapped:(UserInfo *)userInfo {
+
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+    vwController.userInfo = userInfo;
+    [self.navigationController pushViewController:vwController animated:YES];
 }
 /*
 #pragma mark - Navigation

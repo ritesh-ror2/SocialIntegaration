@@ -90,7 +90,7 @@
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="XdK-2Q-k0i">
                                                             <rect key="frame" x="90" y="5" width="24" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <state key="normal" image="41C3D9CC-B470-4BE6-AA74-931CD2E2B2A4">
+                                                            <state key="normal" image="F5E28505-D9DB-4043-89A4-F9C6619CC2EF">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                         </button>
@@ -181,7 +181,7 @@
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="2fo-xQ-DKl">
                                                             <rect key="frame" x="90" y="5" width="24" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <state key="normal" image="2BAAA4EF-6C0F-48EF-8E39-55D904F4F820">
+                                                            <state key="normal" image="B048FF6E-11DA-492B-BBFD-C1221A6B3AA4">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                         </button>
@@ -272,7 +272,7 @@
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Pe6-RL-mSK">
                                                             <rect key="frame" x="90" y="5" width="24" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <state key="normal" image="1CAE70EF-E125-46BE-B684-907FF6145E88">
+                                                            <state key="normal" image="5070952C-2B60-4CF7-835A-49F449EA782E">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                         </button>
@@ -770,7 +770,7 @@
                                 <autoresizingMask key="autoresizingMask"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Kar-nE-AxC">
-                                <rect key="frame" x="242" y="23" width="66" height="30"/>
+                                <rect key="frame" x="211" y="23" width="108" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="16"/>
                                 <state key="normal" title="Request">
@@ -933,7 +933,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Notification" id="uQE-NB-ng5"/>
+                    <tabBarItem key="tabBarItem" title="Notification" image="Notify.png" id="uQE-NB-ng5"/>
                     <connections>
                         <outlet property="tbleViewNotification" destination="j9Y-c4-Iag" id="OaD-wz-3jf"/>
                     </connections>
@@ -1064,6 +1064,73 @@
                                         <outlet property="delegate" destination="aCR-tw-n7t" id="9yZ-Nw-Zkp"/>
                                     </connections>
                                 </searchBar>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SeachUser" rowHeight="74" id="LnM-2f-vzF" customClass="SearchCustomCell">
+                                        <rect key="frame" x="0.0" y="66" width="320" height="74"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="LnM-2f-vzF" id="GzB-Qd-r2q">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="73"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="c9g-6E-ZOr">
+                                                    <rect key="frame" x="58" y="10" width="197" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pfq-1U-aAH">
+                                                    <rect key="frame" x="58" y="39" width="200" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="2Yj-rl-rkx">
+                                                    <rect key="frame" x="248" y="6" width="63" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" red="0.28241114814521273" green="0.43459024234693877" blue="0.075239843132488174" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <state key="normal" title="Follow">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="followBtnTapped:" destination="LnM-2f-vzF" eventType="touchUpInside" id="1lC-rV-lpk"/>
+                                                    </connections>
+                                                </button>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Epn-lw-xlw">
+                                                    <rect key="frame" x="5" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </imageView>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" id="AhG-WZ-f0j">
+                                                    <rect key="frame" x="58" y="36" width="0.0" height="37"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                </textView>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Vgu-f7-Q6G">
+                                                    <rect key="frame" x="5" y="1" width="45" height="45"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="showUserProfile:" destination="LnM-2f-vzF" eventType="touchUpInside" id="bRD-Ty-rfQ"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="btnFollow" destination="2Yj-rl-rkx" id="OJr-8e-Kat"/>
+                                            <outlet property="imgVwUser" destination="Epn-lw-xlw" id="mDX-uj-LIC"/>
+                                            <outlet property="lblDescription" destination="pfq-1U-aAH" id="0Tk-fj-4Y3"/>
+                                            <outlet property="lblResult" destination="c9g-6E-ZOr" id="Ojv-HH-4dM"/>
+                                            <outlet property="txtVwDescription" destination="AhG-WZ-f0j" id="tf2-mC-wtf"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="aCR-tw-n7t" id="Rxx-YQ-yW2"/>
                                     <outlet property="delegate" destination="aCR-tw-n7t" id="uKc-ki-xER"/>
@@ -1285,7 +1352,7 @@
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="FNs-2C-vbF">
                                                             <rect key="frame" x="90" y="5" width="24" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <state key="normal" image="DE49B3CD-6D31-40DB-9090-4F78A9F49137">
+                                                            <state key="normal" image="A7D607AB-6C4B-4CA6-8806-21E05D1C58BF">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                         </button>
@@ -2309,7 +2376,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="1CAE70EF-E125-46BE-B684-907FF6145E88" width="24" height="24">
+        <image name="5070952C-2B60-4CF7-835A-49F449EA782E" width="24" height="24">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -2398,96 +2465,7 @@ LQAyADcARgBMAFcAXgBlAHIAeQCBAIMAhQCKAIwAjgCXAJwApwCpAKsArQCyALUAtwC5ALsAvQDCANkA
 KBMtAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAAEy8
 </mutableData>
         </image>
-        <image name="2BAAA4EF-6C0F-48EF-8E39-55D904F4F820" width="24" height="24">
-            <mutableData key="keyedArchiveRepresentation">
-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
-cgBmAGkAbAAgAFIARwBCACAARwBlAG4A6QByAGkAYwBvBBcEMAQzBDAEOwRMBD0EOAQ5ACAEPwRABD4E
-RAQwBDkEOwAgAFIARwBCAFAAcgBvAGYAaQBsACAAZwDpAG4A6QByAGkAcQB1AGUAIABSAFYAQpAadSgA
-IABSAEcAQgAggnJfaWPPj/AAUAByAG8AZgBpAGwAbwAgAFIARwBCACAAZwBlAG4AZQByAGkAYwBvAEcA
-ZQBuAGUAcgBpAHMAawAgAFIARwBCAC0AcAByAG8AZgBpAGzHfLwYACAAUgBHAEIAINUEuFzTDMd8AE8A
-YgBlAGMAbgD9ACAAUgBHAEIAIABwAHIAbwBmAGkAbAXkBegF1QXkBdkF3AAgAFIARwBCACAF2wXcBdwF
-2QBBAGwAbABnAGUAbQBlAGkAbgBlAHMAIABSAEcAQgAtAFAAcgBvAGYAaQBsAMEAbAB0AGEAbADhAG4A
-bwBzACAAUgBHAEIAIABwAHIAbwBmAGkAbGZukBoAIABSAEcAQgAgY8+P8GWHTvZOAIIsACAAUgBHAEIA
-IDDXMO0w1TChMKQw6wBQAHIAbwBmAGkAbAAgAFIARwBCACAAZwBlAG4AZQByAGkAYwOTA7UDvQO5A7oD
-zAAgA8ADwQO/A8YDrwO7ACAAUgBHAEIAUABlAHIAZgBpAGwAIABSAEcAQgAgAGcAZQBuAOkAcgBpAGMA
-bwBBAGwAZwBlAG0AZQBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBlAGwOQg4bDiMORA4fDiUOTAAgAFIA
-RwBCACAOFw4xDkgOJw5EDhsARwBlAG4AZQBsACAAUgBHAEIAIABQAHIAbwBmAGkAbABpAFkAbABlAGkA
-bgBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBpAGwAaQBVAG4AaQB3AGUAcgBzAGEAbABuAHkAIABwAHIA
-bwBmAGkAbAAgAFIARwBCBB4EMQRJBDgEOQAgBD8EQAQ+BEQEOAQ7BEwAIABSAEcAQgZFBkQGQQAgBioG
-OQYxBkoGQQAgAFIARwBCACAGJwZEBjkGJwZFAEcAZQBuAGUAcgBpAGMAIABSAEcAQgAgAFAAcgBvAGYA
-aQBsAGUARwBlAG4AZQByAGUAbAAgAFIARwBCAC0AYgBlAHMAawByAGkAdgBlAGwAcwBldGV4dAAAAABD
-b3B5cmlnaHQgMjAwNyBBcHBsZSBJbmMuLCBhbGwgcmlnaHRzIHJlc2VydmVkLgBYWVogAAAAAAAA81IA
-AQAAAAEWz1hZWiAAAAAAAAB0TQAAPe4AAAPQWFlaIAAAAAAAAFp1AACscwAAFzRYWVogAAAAAAAAKBoA
-ABWfAAC4NmN1cnYAAAAAAAAAAQHNAABzZjMyAAAAAAABDEIAAAXe///zJgAAB5IAAP2R///7ov///aMA
-AAPcAADAbNIlJicoWiRjbGFzc25hbWVYJGNsYXNzZXNfEBBOU0JpdG1hcEltYWdlUmVwoykqK18QEE5T
-Qml0bWFwSW1hZ2VSZXBaTlNJbWFnZVJlcFhOU09iamVjdNIlJi0uV05TQXJyYXmiLSvSJSYwMV5OU011
-dGFibGVBcnJheaMwLSvTMzQKNTY3V05TV2hpdGVcTlNDb2xvclNwYWNlRDAgMAAQA4AM0iUmOTpXTlND
-b2xvcqI5K9IlJjw9V05TSW1hZ2WiPCtfEA9OU0tleWVkQXJjaGl2ZXLRQEFUcm9vdIABAAgAEQAaACMA
-LQAyADcARgBMAFcAXgBlAHIAeQCBAIMAhQCKAIwAjgCXAJwApwCpAKsArQCyALUAtwC5ALsAvQDCANkA
-2wDdEk8SVBJfEmgSexJ/EpISnRKmEqsSsxK2ErsSyhLOEtUS3RLqEu8S8RLzEvgTABMDEwgTEBMTEyUT
-KBMtAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAAEy8
-</mutableData>
-        </image>
-        <image name="41C3D9CC-B470-4BE6-AA74-931CD2E2B2A4" width="24" height="24">
+        <image name="A7D607AB-6C4B-4CA6-8806-21E05D1C58BF" width="24" height="24">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -2577,9 +2555,98 @@ KBMtAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAAEy8
 </mutableData>
         </image>
         <image name="Activity.png" width="25" height="25"/>
+        <image name="B048FF6E-11DA-492B-BBFD-C1221A6B3AA4" width="24" height="24">
+            <mutableData key="keyedArchiveRepresentation">
+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
+cgBmAGkAbAAgAFIARwBCACAARwBlAG4A6QByAGkAYwBvBBcEMAQzBDAEOwRMBD0EOAQ5ACAEPwRABD4E
+RAQwBDkEOwAgAFIARwBCAFAAcgBvAGYAaQBsACAAZwDpAG4A6QByAGkAcQB1AGUAIABSAFYAQpAadSgA
+IABSAEcAQgAggnJfaWPPj/AAUAByAG8AZgBpAGwAbwAgAFIARwBCACAAZwBlAG4AZQByAGkAYwBvAEcA
+ZQBuAGUAcgBpAHMAawAgAFIARwBCAC0AcAByAG8AZgBpAGzHfLwYACAAUgBHAEIAINUEuFzTDMd8AE8A
+YgBlAGMAbgD9ACAAUgBHAEIAIABwAHIAbwBmAGkAbAXkBegF1QXkBdkF3AAgAFIARwBCACAF2wXcBdwF
+2QBBAGwAbABnAGUAbQBlAGkAbgBlAHMAIABSAEcAQgAtAFAAcgBvAGYAaQBsAMEAbAB0AGEAbADhAG4A
+bwBzACAAUgBHAEIAIABwAHIAbwBmAGkAbGZukBoAIABSAEcAQgAgY8+P8GWHTvZOAIIsACAAUgBHAEIA
+IDDXMO0w1TChMKQw6wBQAHIAbwBmAGkAbAAgAFIARwBCACAAZwBlAG4AZQByAGkAYwOTA7UDvQO5A7oD
+zAAgA8ADwQO/A8YDrwO7ACAAUgBHAEIAUABlAHIAZgBpAGwAIABSAEcAQgAgAGcAZQBuAOkAcgBpAGMA
+bwBBAGwAZwBlAG0AZQBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBlAGwOQg4bDiMORA4fDiUOTAAgAFIA
+RwBCACAOFw4xDkgOJw5EDhsARwBlAG4AZQBsACAAUgBHAEIAIABQAHIAbwBmAGkAbABpAFkAbABlAGkA
+bgBlAG4AIABSAEcAQgAtAHAAcgBvAGYAaQBpAGwAaQBVAG4AaQB3AGUAcgBzAGEAbABuAHkAIABwAHIA
+bwBmAGkAbAAgAFIARwBCBB4EMQRJBDgEOQAgBD8EQAQ+BEQEOAQ7BEwAIABSAEcAQgZFBkQGQQAgBioG
+OQYxBkoGQQAgAFIARwBCACAGJwZEBjkGJwZFAEcAZQBuAGUAcgBpAGMAIABSAEcAQgAgAFAAcgBvAGYA
+aQBsAGUARwBlAG4AZQByAGUAbAAgAFIARwBCAC0AYgBlAHMAawByAGkAdgBlAGwAcwBldGV4dAAAAABD
+b3B5cmlnaHQgMjAwNyBBcHBsZSBJbmMuLCBhbGwgcmlnaHRzIHJlc2VydmVkLgBYWVogAAAAAAAA81IA
+AQAAAAEWz1hZWiAAAAAAAAB0TQAAPe4AAAPQWFlaIAAAAAAAAFp1AACscwAAFzRYWVogAAAAAAAAKBoA
+ABWfAAC4NmN1cnYAAAAAAAAAAQHNAABzZjMyAAAAAAABDEIAAAXe///zJgAAB5IAAP2R///7ov///aMA
+AAPcAADAbNIlJicoWiRjbGFzc25hbWVYJGNsYXNzZXNfEBBOU0JpdG1hcEltYWdlUmVwoykqK18QEE5T
+Qml0bWFwSW1hZ2VSZXBaTlNJbWFnZVJlcFhOU09iamVjdNIlJi0uV05TQXJyYXmiLSvSJSYwMV5OU011
+dGFibGVBcnJheaMwLSvTMzQKNTY3V05TV2hpdGVcTlNDb2xvclNwYWNlRDAgMAAQA4AM0iUmOTpXTlND
+b2xvcqI5K9IlJjw9V05TSW1hZ2WiPCtfEA9OU0tleWVkQXJjaGl2ZXLRQEFUcm9vdIABAAgAEQAaACMA
+LQAyADcARgBMAFcAXgBlAHIAeQCBAIMAhQCKAIwAjgCXAJwApwCpAKsArQCyALUAtwC5ALsAvQDCANkA
+2wDdEk8SVBJfEmgSexJ/EpISnRKmEqsSsxK2ErsSyhLOEtUS3RLqEu8S8RLzEvgTABMDEwgTEBMTEyUT
+KBMtAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAAEy8
+</mutableData>
+        </image>
         <image name="Comment1.png" width="46" height="45"/>
         <image name="Cross.png" width="20" height="20"/>
-        <image name="DE49B3CD-6D31-40DB-9090-4F78A9F49137" width="24" height="24">
+        <image name="F5E28505-D9DB-4043-89A4-F9C6619CC2EF" width="24" height="24">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -2670,6 +2737,7 @@ KBMtAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAAEy8
         </image>
         <image name="Favourite1.png" width="27" height="25"/>
         <image name="Liked.png" width="40" height="42"/>
+        <image name="Notify.png" width="24" height="24"/>
         <image name="Reply1.png" width="19" height="24"/>
         <image name="Retweet1.png" width="30" height="17"/>
         <image name="Search-active.png" width="21" height="22"/>

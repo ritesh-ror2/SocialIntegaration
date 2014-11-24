@@ -768,6 +768,7 @@
 
     [self hideInstagramBtn:NO];
 
+    [self igDidLogout];
     [UIView animateWithDuration:0.5 animations:^ {
 
         vwInstagram.frame = CGRectMake(0, vwInstagram.frame.origin.y, vwInstagram.frame.size.width, vwInstagram.frame.size.height);

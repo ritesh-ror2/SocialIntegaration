@@ -7,6 +7,7 @@
 //
 
 #import "SearchViewController.h"
+#import "SearchUserViewController.h"
 
 @interface SearchViewController () {
 
@@ -61,7 +62,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"SearchUser"];
+    SearchUserViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"SearchUser"];
+    viewController.searchKeyword = [array objectAtIndex:indexPath.row];
     [[self navigationController] pushViewController:viewController animated:YES];
 }
 

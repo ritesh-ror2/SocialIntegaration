@@ -26,7 +26,7 @@
 @property (nonatomic, strong) NSString *favourated;
 @property (nonatomic, strong) NSString *videoUrl;
 @property (nonatomic, strong) NSString *largeImageUrl;
-@property (nonatomic, strong) NSString *fbLike;
+@property (nonatomic) BOOL fbLike;
 @property (nonatomic) BOOL isFollowing;
 @property (nonatomic, strong) NSDictionary *dicOthertUser;
 

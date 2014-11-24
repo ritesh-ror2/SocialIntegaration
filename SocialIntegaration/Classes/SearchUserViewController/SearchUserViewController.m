@@ -97,7 +97,7 @@
     }
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ShowUserViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"ShowUser"];
-    viewController.searchKeywordType = @"user";
+    viewController.searchKeywordType = self.searchKeyword;
     viewController.socialType = strSocialType;
     [[self navigationController] pushViewController:viewController animated:YES];
 }

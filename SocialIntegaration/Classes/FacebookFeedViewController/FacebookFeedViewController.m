@@ -10,6 +10,7 @@
 #import "CustomTableCell.h"
 #import "CommentViewController.h"
 #import "Constant.h"
+#import "ShowOtherUserProfileViewController.h"
 
 @interface FacebookFeedViewController () <CustomTableCellDelegate>
 
@@ -37,6 +38,8 @@
     self.navController.navigationBar.translucent = NO;
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
+
+    self.tbleVwFB.pagingEnabled= YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -82,6 +85,44 @@
     imgVwProile.frame = CGRectMake(0, 0, 35, 35);
     return imgVwProile;
 }
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+    if ([userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+        NSString *strUserId = [NSString stringWithFormat:@"/%@",userInfo.fromId];
+        /* make the API call */
+        [FBRequestConnection startWithGraphPath:strUserId
+                                     parameters:nil
+                                     HTTPMethod:@"GET"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+                                  if (error) {
+
+                                  } else {
+
+                                      NSDictionary *dictProfile = (NSDictionary *)result;
+
+                                      UserInfo *otherUserInfo = [[UserInfo alloc]init];
+                                      otherUserInfo.strUserName = [dictProfile valueForKey:@"name"];
+                                      otherUserInfo.fromId  = [dictProfile valueForKey:@"id"];
+                                      otherUserInfo.strUserSocialType = @"Facebook";
+                                      UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                                      ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+                                      vwController.userInfo = otherUserInfo;
+                                      [self.navigationController pushViewController:vwController animated:YES];
+                                  }
+                              }];
+    } if ([userInfo.strUserSocialType isEqualToString:@"Twitter"])  {
+
+        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+        vwController.userInfo = userInfo;
+        [self.navigationController pushViewController:vwController animated:YES];
+    }
+}
+
 #pragma mark - UITableViewDatasource
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -142,6 +183,25 @@
         }
     }
     return (rect.size.height + 60);//183 is height of other fixed content
+}
+
+- (UITableViewCell *)loadingCell {
+    UITableViewCell *cell = [[UITableViewCell alloc]
+                              initWithStyle:UITableViewCellStyleDefault
+                              reuseIdentifier:nil];
+
+//    UIActivityIndicatorView *activityIndicator =
+//    [[UIActivityIndicatorView alloc]
+//     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//    activityIndicator.center = cell.center;
+//    [cell addSubview:activityIndicator];
+//    [activityIndicator release];
+//
+//    [activityIndicator startAnimating];
+//
+//    cell.tag = kLoadingCellTag;
+
+    return cell;
 }
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {

@@ -12,6 +12,7 @@
 #import "Constant.h"
 #import "CommentViewController.h"
 #import <Social/Social.h>
+#import "ShowOtherUserProfileViewController.h"
 
 @interface TwitterFeedViewController () <CustomTableCellDelegate>
 
@@ -71,6 +72,44 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+    if ([userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+        NSString *strUserId = [NSString stringWithFormat:@"/%@",userInfo.fromId];
+        /* make the API call */
+        [FBRequestConnection startWithGraphPath:strUserId
+                                     parameters:nil
+                                     HTTPMethod:@"GET"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+                                  if (error) {
+
+                                  } else {
+
+                                      NSDictionary *dictProfile = (NSDictionary *)result;
+
+                                      UserInfo *otherUserInfo = [[UserInfo alloc]init];
+                                      otherUserInfo.strUserName = [dictProfile valueForKey:@"name"];
+                                      otherUserInfo.fromId  = [dictProfile valueForKey:@"id"];
+                                      otherUserInfo.strUserSocialType = @"Facebook";
+                                      UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                                      ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+                                      vwController.userInfo = otherUserInfo;
+                                      [self.navigationController pushViewController:vwController animated:YES];
+                                  }
+                              }];
+    } if ([userInfo.strUserSocialType isEqualToString:@"Twitter"])  {
+
+        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+        vwController.userInfo = userInfo;
+        [self.navigationController pushViewController:vwController animated:YES];
+    }
 }
 
 - (void)getTweetFromTwitter:(UserInfo *)userData {

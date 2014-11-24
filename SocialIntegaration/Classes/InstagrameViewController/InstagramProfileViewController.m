@@ -179,13 +179,13 @@
 
 #pragma mark - Convert user post in to model class
 
-- (void)convertUserPostIntoModel:(NSArray *)arryOfInstagrame {
+- (void)convertUserPostIntoModel:(NSArray *)arryOfInstagrame1 {
 
     [self.arryOfInstagrame removeAllObjects];
 
     @autoreleasepool {
 
-        for (NSDictionary *dictData in arryOfInstagrame) {
+        for (NSDictionary *dictData in arryOfInstagrame1) {
 
             NSLog(@" instagrame %@", dictData);
             UserInfo *userInfo =[[UserInfo alloc]init];

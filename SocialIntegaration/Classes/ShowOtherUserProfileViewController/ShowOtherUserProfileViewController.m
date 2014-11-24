@@ -47,6 +47,12 @@
     [self.view bringSubviewToFront:ImgVwCircle];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.translucent = NO;
+}
+
 - (void)setTwitterUserInformation {
 
     lblTweetCount.hidden = NO;
@@ -112,8 +118,8 @@
         NSDictionary *dictOtherUser = self.userInfo.dicOthertUser;
 
         NSString *strUserId = [NSString stringWithFormat:@"%i",[[dictOtherUser valueForKey:@"id"]integerValue]];
-        NSDictionary *param = @{@"user_id": strUserId};
-        NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/update.json"];
+        NSDictionary *param = @{@"user_id": strUserId, @"follow":@"true"};
+        NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"];
         SLRequest *timelineRequest = [SLRequest
                                       requestForServiceType:SLServiceTypeTwitter
                                       requestMethod:SLRequestMethodPOST
@@ -132,6 +138,7 @@
                                   error:&error];
 
            if (arryTwitte.count != 0) {
+               NSLog(@"%@", arryTwitte);
                dispatch_async(dispatch_get_main_queue(), ^{
                    [btnRequestOrFollow setTitle:@"Unfollow" forState:UIControlStateNormal];
                });
@@ -139,9 +146,50 @@
          }];
         return;
     }
+
+  /*  NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObject:self.userInfo.fromId forKey:@"to"];
+    NSString *message = @"Send Request";
+    NSString *title = @"TITLE";
+
+    FBSession *facebookSession = sharedAppDelegate.fbSession; //You may changed this if you are not using parse.com
+
+    [FBWebDialogs presentRequestsDialogModallyWithSession:facebookSession
+                                                  message:message
+                                                    title:title
+                                               parameters:params handler:
+     ^(FBWebDialogResult result, NSURL *resultURL, NSError *error)
+     {
+       NSLog(@"%@", [error localizedDescription]);
+       if (error)
+         {
+               // Case A: Error launching the dialog or sending request.
+           NSLog(@"Error sending request.");
+         }
+       else
+         {
+           if (result == FBWebDialogResultDialogNotCompleted)
+             {
+                   // Case B: User clicked the "x" icon
+               NSLog(@"User canceled request.");
+             }
+           else
+             {
+               NSLog(@"Request Sent. %@", params);
+             }
+         }
+
+     }];*/
+
+ /*   NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
+    NSArray *writePermissions = @[@"friend_request"];
+    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
+        sharedAppDelegate.fbSession = session;
+
+
     NSDictionary* params = [NSDictionary dictionaryWithObjectsAndKeys: @"Please accept my request", @"message", nil];//@"[FRIEND ID]/apprequests"
 
-    NSString *strUserId = [NSString stringWithFormat:@"/%@/apprequests", self.userInfo.fromId];
+     NSString *strUserId = [NSString stringWithFormat:@"/%@/apprequests", self.userInfo.fromId];
+
     [FBRequestConnection startWithGraphPath:strUserId
                                  parameters:params
                                  HTTPMethod:@"POST"
@@ -151,11 +199,12 @@
                                               NSError *error
                                               ) {
                               if (error) {
-
+                                  NSLog(@"%@", [error localizedDescription]);
                               } else {
                                   NSLog(@"success");
                               }
-                          }];
+    }];
+    }];*/
 }
 
 #pragma mark - Set profile image of twitter and Instagram

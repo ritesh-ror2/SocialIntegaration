@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0A02A2D41A0BA58F00A1738F /* NSDate+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A02A2D31A0BA58F00A1738F /* NSDate+Helper.m */; };
+		0A1F70F31A1F72B400EC69DD /* Notify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A1F70F21A1F72B400EC69DD /* Notify@2x.png */; };
 		0A39338D1A1C9F7700B65473 /* favourite_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A39338C1A1C9F7700B65473 /* favourite_active@2x.png */; };
 		0A39338F1A1CA6C000B65473 /* mask_message@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A39338E1A1CA6C000B65473 /* mask_message@2x.png */; };
 		0A3933911A1CAC4200B65473 /* Retweet_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A3933901A1CAC4200B65473 /* Retweet_active@2x.png */; };
@@ -142,6 +143,7 @@
 		0AECF8E31A134AD8008221A8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8E11A134A4F008221A8 /* Foundation.framework */; };
 		0AF12B4B1A1F0A24005EA084 /* UserNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF12B4A1A1F0A24005EA084 /* UserNotification.m */; };
 		0AF12B4F1A1F0E30005EA084 /* UserNotificationCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF12B4E1A1F0E30005EA084 /* UserNotificationCustomCell.m */; };
+		0AFAD5BA1A1F52BD00E2D237 /* SearchCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AFAD5B91A1F52BD00E2D237 /* SearchCustomCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +159,7 @@
 /* Begin PBXFileReference section */
 		0A02A2D21A0BA58F00A1738F /* NSDate+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Helper.h"; sourceTree = "<group>"; };
 		0A02A2D31A0BA58F00A1738F /* NSDate+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Helper.m"; sourceTree = "<group>"; };
+		0A1F70F21A1F72B400EC69DD /* Notify@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Notify@2x.png"; sourceTree = "<group>"; };
 		0A39338C1A1C9F7700B65473 /* favourite_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "favourite_active@2x.png"; sourceTree = "<group>"; };
 		0A39338E1A1CA6C000B65473 /* mask_message@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mask_message@2x.png"; sourceTree = "<group>"; };
 		0A3933901A1CAC4200B65473 /* Retweet_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Retweet_active@2x.png"; sourceTree = "<group>"; };
@@ -344,6 +347,8 @@
 		0AF12B4A1A1F0A24005EA084 /* UserNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserNotification.m; sourceTree = "<group>"; };
 		0AF12B4D1A1F0E30005EA084 /* UserNotificationCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserNotificationCustomCell.h; sourceTree = "<group>"; };
 		0AF12B4E1A1F0E30005EA084 /* UserNotificationCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserNotificationCustomCell.m; sourceTree = "<group>"; };
+		0AFAD5B81A1F52BD00E2D237 /* SearchCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchCustomCell.h; sourceTree = "<group>"; };
+		0AFAD5B91A1F52BD00E2D237 /* SearchCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchCustomCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -567,6 +572,7 @@
 				0A3933991A1CC3F500B65473 /* arrow-blue@2x.png */,
 				0A76295D1A1A302200F65048 /* Comment1.png */,
 				0A76295E1A1A302200F65048 /* Favourite1@2x.png */,
+				0A1F70F21A1F72B400EC69DD /* Notify@2x.png */,
 				0A76295F1A1A302200F65048 /* Liked.png */,
 				0A7629601A1A302200F65048 /* Reply1@2x.png */,
 				0A3933901A1CAC4200B65473 /* Retweet_active@2x.png */,
@@ -764,6 +770,8 @@
 			children = (
 				0A7EE7D41A14E8E300E5E65A /* ShowUserViewController.h */,
 				0A7EE7D51A14E8E300E5E65A /* ShowUserViewController.m */,
+				0AFAD5B81A1F52BD00E2D237 /* SearchCustomCell.h */,
+				0AFAD5B91A1F52BD00E2D237 /* SearchCustomCell.m */,
 			);
 			name = ShowUserViewController;
 			path = SocialIntegaration/Classes/ShowUserViewController;
@@ -1145,6 +1153,7 @@
 				0A9236BD1A0E103300857D82 /* Icon-72.png in Resources */,
 				0A7EE7A61A1486FF00E5E65A /* twitter@2x.png in Resources */,
 				0A9236B31A0E103300857D82 /* Icon-40@2x.png in Resources */,
+				0A1F70F31A1F72B400EC69DD /* Notify@2x.png in Resources */,
 				0A9236BC1A0E103300857D82 /* Icon-60.png in Resources */,
 				0A7639D91A1321840034D604 /* Default-568h@2x.png in Resources */,
 				0A9FF05F1A108B5000FC2B39 /* mask-border.png in Resources */,
@@ -1227,6 +1236,7 @@
 				0A8BEB011A1EFFD500C5ADD7 /* UserNotificationViewController.m in Sources */,
 				0A9F50751A11E12A00BAB0D3 /* MBProgressHUD.m in Sources */,
 				0AE10E8F1A1A2A9A00847A1A /* GiveCommentViewController.m in Sources */,
+				0AFAD5BA1A1F52BD00E2D237 /* SearchCustomCell.m in Sources */,
 				0A8D13121A136FFE00112078 /* HomePageViewController.m in Sources */,
 				0AE10E8B1A1A134200847A1A /* CustomGiveCommentCell.m in Sources */,
 				0A7639DD1A13397C0034D604 /* StatrtPageControllViewController.m in Sources */,

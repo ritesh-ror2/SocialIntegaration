@@ -244,6 +244,13 @@
 //        }
 //    }
 
+    if (objUserInfo.fbLike == 1) {
+
+        [imgVwOfLikeFb setImage:[UIImage imageNamed:@"Liked-active.png"]];
+    } else {
+        [imgVwOfLikeFb setImage:[UIImage imageNamed:@"Like_fb.png"]];
+    }
+
     [self getLikeCountOfFb];
     if ([self.userInfo.retweeted isEqualToString:@"1"]) {
         [btnRetweet setImage:[UIImage imageNamed:@"Retweet_active.png"] forState:UIControlStateNormal];//selected

@@ -217,24 +217,6 @@ BOOL hasTwitter = NO;
                                           [self updatePosts];
                                       }
                                   }];
-
-/*   [FBSession openActiveSessionWithPublishPermissions:@[
-                                                        @"publish_stream"
-                                                         ]
-                                       defaultAudience:FBSessionDefaultAudienceEveryone allowLoginUI:YES completionHandler:^(FBSession *session,
-                                                                                                                             FBSessionState state,
-                                                                                                                             NSError *error) {
-                                           if (error) {
-
-                                               sharedAppDelegate.hasFacebook = NO;
-                                               [sharedAppDelegate.spinner hide:YES];
-                                           } else {
-
-                                               sharedAppDelegate.fbSession = session;
-                                               sharedAppDelegate.hasFacebook = YES;
-                                               [self updatePosts];
-                                           }
-                                       }];*/
 }
 
 #pragma mark - get posts
@@ -290,6 +272,7 @@ BOOL hasTwitter = NO;
             userInfo.fromId = [fromUser valueForKey:@"id"];
             userInfo.strUserPost = [dictData valueForKey:@"message"];
             userInfo.strUserSocialType = @"Facebook";
+            userInfo.fbLike = [[dictData valueForKey:@"user_likes"] boolValue];
             userInfo.type = [dictData objectForKey:@"type"];
             userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
             userInfo.strPostImg = [dictData valueForKey:@"picture"];
@@ -555,8 +538,8 @@ BOOL hasTwitter = NO;
 
 - (void)getInstagrameIntegration {
 
-        [self shortArryOfAllFeeds];
-        return;
+          [self shortArryOfAllFeeds];
+         return;
         // here i can set accessToken received on previous login
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     sharedAppDelegate.instagram.sessionDelegate = self;

@@ -210,7 +210,6 @@
      }];
 }
 
-
 - (void)postCommentOnInstagram {
 
         //api.instagram.com/v1/media/555/comments?access_token=ACCESS-TOKEN
@@ -236,7 +235,7 @@
 - (void)request:(IGRequest *)request didLoad:(id)result {
 
     NSLog(@"Instagram did load: %@", result);
-    NSArray *arry = [result objectForKey:@"data"];
+        //NSArray *arry = [result objectForKey:@"data"];
 }
 
 
