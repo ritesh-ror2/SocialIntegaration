@@ -43,6 +43,7 @@
     IBOutlet UIButton *btnProfile;
 
     IBOutlet UIImageView *imgVwOfLikeInstagram;
+    UIActivityIndicatorView *spinner;
         //IBOutlet UITextView *txtVwMessage;
 }
 
@@ -51,6 +52,6 @@
 @property (nonatomic, strong) UserInfo *userInfo;
 @property (nonatomic)NSInteger cellIndex;
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell;
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell withPagging:(BOOL)isPagging;
 
 @end

@@ -12,7 +12,12 @@
 #import "Constant.h"
 #import "ShowOtherUserProfileViewController.h"
 
-@interface FacebookFeedViewController () <CustomTableCellDelegate>
+@interface FacebookFeedViewController () <CustomTableCellDelegate, NSURLConnectionDelegate> {
+
+    NSMutableData *fbData;
+    NSMutableURLRequest *fbRequest;
+    NSURLConnection *connetion;
+}
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwFB;
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
@@ -38,8 +43,6 @@
     self.navController.navigationBar.translucent = NO;
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
-
-    self.tbleVwFB.pagingEnabled= YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -51,6 +54,7 @@
 - (void)viewWillAppear:(BOOL)animated {
 
     self.navController.navigationBarHidden = NO;
+    self.noMoreResultsAvail = NO;
     [self.arryTappedCell removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
 
@@ -68,11 +72,6 @@
         [Constant showAlert:@"Message" forMessage:ERROR_FB_SETTING];
     }
     self.navItem.title = @"Facebook";
-}
-
-- (void)makeCustomViewForNavigationTitle {
-
-        //self.navItem.title = @"Facebook";
 }
 
 #pragma mark - View to add image at left side
@@ -127,9 +126,8 @@
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-     [self makeCustomViewForNavigationTitle];
     NSLog(@" ** count %icount ", sharedAppDelegate.arryOfFBNewsFeed.count);
-    return [sharedAppDelegate.arryOfFBNewsFeed count];
+    return [sharedAppDelegate.arryOfFBNewsFeed count]+1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -140,6 +138,8 @@
     cell = (CustomTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 
     NSArray *arryObjects;
+
+
     if (cell == nil) {
 
         arryObjects = [[NSBundle mainBundle]loadNibNamed:@"CustomTableCell" owner:nil options:nil];
@@ -147,8 +147,22 @@
         cell.customCellDelegate = self;
     }
 
-    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell];
+    if(indexPath.row < [sharedAppDelegate.arryOfFBNewsFeed count]){
 
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+    } else {
+
+        if (self.noMoreResultsAvail == NO) {
+
+            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
+            cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
+            [self getMoreDataOfFeed];
+        } else {
+            self.noMoreResultsAvail = NO;
+        }
+    }
+
+        //limit=25&after
     return cell;
 }
 
@@ -156,6 +170,10 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    if(indexPath.row > [sharedAppDelegate.arryOfFBNewsFeed count]-1) {
+        return 44;
+
+    }
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row];
 
     NSLog(@"%@", objUserInfo.strPostImg);
@@ -185,24 +203,7 @@
     return (rect.size.height + 60);//183 is height of other fixed content
 }
 
-- (UITableViewCell *)loadingCell {
-    UITableViewCell *cell = [[UITableViewCell alloc]
-                              initWithStyle:UITableViewCellStyleDefault
-                              reuseIdentifier:nil];
 
-//    UIActivityIndicatorView *activityIndicator =
-//    [[UIActivityIndicatorView alloc]
-//     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-//    activityIndicator.center = cell.center;
-//    [cell addSubview:activityIndicator];
-//    [activityIndicator release];
-//
-//    [activityIndicator startAnimating];
-//
-//    cell.tag = kLoadingCellTag;
-
-    return cell;
-}
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
 
@@ -230,5 +231,81 @@
     [self.tbleVwFB endUpdates];
 }
 
+- (void) getMoreDataOfFeed {
+
+    //Get more data of feed
+
+    NSURL *fbUrl = [NSURL URLWithString:sharedAppDelegate.nextFbUrl];
+    fbRequest = [[NSMutableURLRequest alloc]initWithURL:fbUrl];
+    connetion = [[NSURLConnection alloc]initWithRequest:fbRequest delegate:self];
+}
+
+
+#pragma mark NSURLConnection Delegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+
+    fbData = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+
+    [fbData appendData:data];
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
+        // Return nil to indicate not necessary to store a cached response for this connection
+    return nil;
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+
+    self.noMoreResultsAvail = YES;
+    id result = [NSJSONSerialization JSONObjectWithData:fbData options:kNilOptions error:nil];
+    NSLog(@"%@", result);
+    sharedAppDelegate.nextFbUrl = [[result objectForKey:@"paging"]valueForKey:@"next"];
+    [self convertDataOfFBIntoModel:[result objectForKey:@"data"]];
+}
+
+#pragma mark - Convert array of FB into model class
+
+- (void)convertDataOfFBIntoModel:(NSArray *)arryPost {
+
+    @autoreleasepool {
+
+        for (NSDictionary *dictData in arryPost) {
+
+            UserInfo *userInfo =[[UserInfo alloc]init];
+
+            NSDictionary *fromUser = [dictData objectForKey:@"from"];
+
+            userInfo.strUserName = [fromUser valueForKey:@"name"];
+            userInfo.fromId = [fromUser valueForKey:@"id"];
+            userInfo.strUserPost = [dictData valueForKey:@"message"];
+            userInfo.strUserSocialType = @"Facebook";
+            userInfo.fbLike = [[dictData valueForKey:@"user_likes"] boolValue];
+            userInfo.type = [dictData objectForKey:@"type"];
+            userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+            userInfo.strPostImg = [dictData valueForKey:@"picture"];
+
+            NSLog(@"*** %@", [dictData objectForKey:@"type"]);
+            if (![[dictData objectForKey:@"type"] isEqualToString:@"video"] && ![[dictData objectForKey:@"type"] isEqualToString:@"photo"]) {
+                userInfo.objectIdFB = [dictData valueForKey:@"id"];
+            } else {
+                userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
+            }
+
+            userInfo.videoUrl = [dictData valueForKey:@"source"];
+            [sharedAppDelegate.arryOfFBNewsFeed addObject:userInfo];
+        }
+    }
+        [self.tbleVwFB reloadData];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+        // The request has failed for some reason!
+    
+}
 
 @end

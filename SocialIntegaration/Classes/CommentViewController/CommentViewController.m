@@ -15,9 +15,10 @@
 #import "UserProfile+DatabaseHelper.h"
 #import "GiveCommentViewController.h"
 #import "ShowImageOrVideoViewController.h"
+#import "ShowOtherUserProfileViewController.h"
 #import <Social/Social.h>
 
-@interface CommentViewController () <UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, IGRequestDelegate, IGRequestDelegate> {
+@interface CommentViewController () <UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, IGRequestDelegate, IGRequestDelegate, UIAlertViewDelegate> {
 
     NSString *strBtnTitle;
     UserProfile *userProfile;
@@ -25,6 +26,8 @@
 
 @property (nonatomic, strong) NSArray *arrayFriend;
 @property (nonatomic, strong) NSMutableArray *arryComment;
+@property (nonatomic, strong) NSMutableArray *arryTaggedUser;
+
 
 @end
 
@@ -83,6 +86,9 @@
     } else {
         [btnFavourite setImage:[UIImage imageNamed:@"favourite1.png"] forState:UIControlStateNormal];//deselected
     }
+
+    self.arryTaggedUser = [[NSMutableArray alloc]init];
+
     [self getLikeCountOfFb];
 }
 
@@ -99,7 +105,7 @@
     self.navigationController.navigationBarHidden = YES;
     [self setHeadingAndRightBtn];
         //[self giveCommentToInstagram];
-    [self setCommentOfUser:self.userInfo];
+    [self showUserTagged:nil];
     [self setProfilePic:self.userInfo];
     [self setProfilePicOfPostUser:self.userInfo];
 
@@ -130,6 +136,7 @@
         [btnRight setTitle:@"Tweet" forState:UIControlStateNormal];
         lblHeading.text = @"Twitter";
         strBtnTitle = @"Tweet";
+        [self setCommentOfUser:self.userInfo];
         [self fetchRetewwtOfTwitter];
         [self twitterConfiguration];
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
@@ -382,37 +389,219 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
                                        context:nil];
 
-    lblComment.frame = CGRectMake(70, 6, 245, rect.size.height+10);
+    lblComment.frame = CGRectMake(70, 21, 245, rect.size.height+10);
     lblComment.text = objUserInfo.strUserPost;
-
+    lblName.text = objUserInfo.strUserName;
+    
     asyVwOfPost.hidden = YES;
     btnShowImageOrVideo.hidden = YES;
 
     if (objUserInfo.strPostImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
-        asyVwOfPost.frame = CGRectMake(70, lblComment.frame.size.height + lblComment.frame.origin.y + 10, 245, 100);
+        asyVwOfPost.frame = CGRectMake(70, lblComment.frame.size.height + lblComment.frame.origin.y + 3, 245, 100);
         asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
         asyVwOfPost.backgroundColor = [UIColor clearColor];
 
         btnShowImageOrVideo.hidden = NO;
         btnShowImageOrVideo.frame = asyVwOfPost.frame;
         [self setFrameOfActivityView:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 10];
-        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + lblComment.frame.origin.y + 145);
+        int taggedUser =  [self setFramesOfTaggedUsers:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 95];
+        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + lblComment.frame.origin.y + 140 + taggedUser);
     } else {
 
         [self setFrameOfActivityView:lblComment.frame.size.height + lblComment.frame.origin.y + 10];
-        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 45));
+        int taggedUser =  [self setFramesOfTaggedUsers:lblComment.frame.size.height + lblComment.frame.origin.y + 40];
+        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 40) + taggedUser);
     }
 
     tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, (self.view.frame.size.height - (imgVwBackground.frame.size.height+ 115)));
 
     imgVwUser.frame = CGRectMake(10, imgVwBackground.frame.size.height+5 , 45, 45);
 
+
+
     if ([objUserInfo.type isEqualToString:@"video"]) {
         [btnShowImageOrVideo setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
     }
 }
+
+- (int)setFramesOfTaggedUsers:(int)yAxis {
+
+    NSMutableString *strUserNameList = [[NSMutableString alloc]init];
+
+    UILabel *lblWith = [[UILabel alloc]initWithFrame:CGRectMake(5, yAxis, 25, 21)];
+    lblWith.text = @"with";
+    lblWith.textColor = [UIColor lightGrayColor];
+    [self.view addSubview:lblWith];
+
+    int xAxis = 30;
+    for (UserInfo *userInfo  in self.arryTaggedUser) {
+
+        NSString *strName = userInfo.strUserName;
+        [strUserNameList appendString:strName];
+
+        CGRect rect = [strName boundingRectWithSize:CGSizeMake(250, 30)
+                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                         attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                            context:nil];
+
+        UIButton *btnTaggedUser = [UIButton buttonWithType:UIButtonTypeCustom];
+        [btnTaggedUser setTitle:strName forState:UIControlStateNormal];
+        btnTaggedUser.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neune" size:13.0];
+        btnTaggedUser.frame = CGRectMake(xAxis, yAxis, rect.size.width, 30);
+        btnTaggedUser.tag = [userInfo.fromId integerValue];
+        [btnTaggedUser setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        [btnTaggedUser addTarget:self action:@selector(userProfileBtnTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btnTaggedUser];
+        [self.view bringSubviewToFront:btnTaggedUser];
+    }
+    if (strUserNameList.length != 0) {
+
+        CGRect rect = [strUserNameList boundingRectWithSize:CGSizeMake(250, 30)
+                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                         attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                            context:nil];
+        return rect.size.height;
+    } else {
+        return 0;
+    }
+
+}
+
+- (IBAction)moreBtnTapped:(id)sender {
+
+    [self.view bringSubviewToFront:btnBlock];
+    [btnBlock setHidden:NO];
+    btnBlock.frame = CGRectMake(btnMoreTweet.frame.origin.x - 30, btnMoreTweet.frame.origin.y+30, 60, 30);
+}
+
+- (IBAction)blockTweetPost:(id)sender {
+
+    NSString *strUser = [NSString stringWithFormat:@"Are you sure to block @%@ ?", self.userInfo.strUserName];
+    UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Block" message:strUser delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Block", nil];
+    [alertVw show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+
+    if (buttonIndex == 1) {
+            // NSNumber * myNumber =[NSNumber numberWithLongLong:[self.userInfo.fromId longLongValue]];
+
+            //screen_name=theSeanCook&skip_status=1
+    NSDictionary *param = @{@"screen_name":self.userInfo.screenName,
+                            @"skip_status":@"1"};
+
+    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/blocks/create.json"];
+    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodPOST
+                                  URL:requestURL parameters:param];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+       id result = [NSJSONSerialization
+                              JSONObjectWithData:responseData
+                              options:NSJSONReadingMutableLeaves
+                              error:&error];
+       NSLog(@"***%@***", result);
+
+       if ([result isKindOfClass:[NSDictionary class]]) {
+           if (![result valueForKey:@"error"]) {
+               [self.navigationController popViewControllerAnimated:YES];
+            }
+        }
+     }];
+    }
+}
+
+- (IBAction)muteTwitterUser:(id)sender {
+
+    NSNumber * myNumber =[NSNumber numberWithLongLong:[self.userInfo.fromId longLongValue]];
+
+    NSDictionary *param = @{@"user_id": myNumber};
+
+    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/mutes/users/create.json"];
+    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodPOST
+                                  URL:requestURL parameters:param];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+      id result = [NSJSONSerialization
+                              JSONObjectWithData:responseData
+                              options:NSJSONReadingMutableLeaves
+                              error:&error];
+       NSLog(@"***%@***", [error localizedDescription]);
+
+       if (![result isKindOfClass:[NSDictionary class]]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+                       //https://api.twitter.com/1.1/mutes/users/destroy.json
+               });
+           } else {
+               NSLog(@"%@", result);
+           }
+     }];
+}
+
+- (IBAction)sharePost:(id)sender {
+
+    NSString *strUrl = [NSString stringWithFormat:@"/%@/sharedposts", self.userInfo.objectIdFB];
+    /* make the API call */
+    [FBRequestConnection startWithGraphPath:strUrl
+                                 parameters:nil
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              if (error) {
+
+                                  NSLog(@"erorr");
+                              } else {
+                                  NSLog(@"success");
+                              }
+                          }];
+
+}
+
+- (void)userProfileBtnTapped:(id)sender{
+
+        UIButton *btn = (UIButton *)sender;
+
+      UserInfo *otherUserInfo = [[UserInfo alloc]init];
+      otherUserInfo.strUserName = btn.titleLabel.text;
+    otherUserInfo.fromId  = [NSString stringWithFormat:@"%i", btn.tag];
+      otherUserInfo.strUserSocialType = @"Facebook";
+      UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+      ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+      vwController.userInfo = otherUserInfo;
+      [self.navigationController pushViewController:vwController animated:YES];
+
+//    } if ([userInfo.strUserSocialType isEqualToString:@"Twitter"])  {
+//
+//        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+//        vwController.userInfo = userInfo;
+//        [self.navigationController pushViewController:vwController animated:YES];
+//    }
+}
+
 
 - (void)setFrameOfActivityView:(NSInteger)yAxis {
 
@@ -421,9 +610,11 @@
     }
     [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x, yAxis, 20, 21)];
     [imgVwOfLikeFb setFrame:CGRectMake(imgVwOfLikeFb.frame.origin.x, yAxis, 20, 21)];
-    [btnCommentFb setFrame:CGRectMake(btnCommentFb.frame.origin.x, yAxis,  btnCommentFb.frame.size.width,  btnCommentFb.frame.size.height)];
+    [btnCommentFb setFrame:CGRectMake(btnCommentFb.frame.origin.x, yAxis+2,  btnCommentFb.frame.size.width,  btnCommentFb.frame.size.height)];
     [btnLike setFrame:CGRectMake(btnLike.frame.origin.x, yAxis+2, btnLike.frame.size.width, btnLike.frame.size.height)];
     [lblLikeCount setFrame:CGRectMake(lblLikeCount.frame.origin.x, yAxis+2, lblLikeCount.frame.size.width, lblLikeCount.frame.size.height)];
+    [btnShare setFrame:CGRectMake(btnShare.frame.origin.x, yAxis+2, btnShare.frame.size.width, btnShare.frame.size.height)];
+
 
     [lblRetweet setFrame:CGRectMake(lblRetweet.frame.origin.x, yAxis+2, lblRetweet.frame.size.width, lblRetweet.frame.size.height)];
     [lblFavourite setFrame:CGRectMake(lblFavourite.frame.origin.x, yAxis+3, lblFavourite.frame.size.width, lblFavourite.frame.size.height)];
@@ -568,6 +759,7 @@
     [btnCommentFb setHidden:NO];
     [btnLike setHidden:NO];
     [lblLikeCount setHidden:NO];
+    [btnShare setHidden:NO];
 }
 
 - (void)twitterConfiguration  {
@@ -587,6 +779,42 @@
     [btnCommentFb setHidden:NO];
     [btnLike setHidden:NO];
     [lblLikeCount setHidden:NO];
+}
+
+- (void)showUserTagged:(id)sender {
+
+    NSString *strUrl = [NSString stringWithFormat:@"/%@/tags",self.userInfo.objectIdFB];
+    /* make the API call */
+    [FBRequestConnection startWithGraphPath:strUrl
+                                 parameters:nil
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              if (error) {
+                                  NSLog(@"%2@", [error debugDescription]);
+                              } else  {
+                                  NSLog(@"%@", result);
+                                  NSArray *arry = [result objectForKey:@"data"];
+                                  [self taggedUser:arry];
+                                  [self setCommentOfUser:self.userInfo];
+
+                              }
+                          }];
+}
+
+- (void)taggedUser:(NSArray *)arryUser {
+
+    for (NSDictionary *dictUser in arryUser) {
+
+        UserInfo *userInfo = [[UserInfo alloc]init];
+        userInfo.fromId = [dictUser valueForKey:@"id"];
+        userInfo.strUserName = [dictUser valueForKey:@"name"];
+
+        [self.arryTaggedUser addObject:userInfo];
+    }
 }
 
 - (IBAction)likePost:(id)sender {
@@ -827,6 +1055,7 @@
 
        if (!error) {
            if (arryTwitte.count != 0) {
+
                dispatch_async(dispatch_get_main_queue(), ^{
                    [sharedAppDelegate.spinner hide:YES];
                    [btnFavourite setImage:[UIImage imageNamed:@"favourite_active.png"] forState:UIControlStateNormal];//selected

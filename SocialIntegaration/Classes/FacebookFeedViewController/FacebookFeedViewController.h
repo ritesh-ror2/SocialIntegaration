@@ -13,5 +13,7 @@
 @property (nonatomic) NSUInteger index;
 @property (strong, nonatomic) UINavigationItem *navItem;
 @property (strong, nonatomic) UINavigationController *navController;
+@property (nonatomic) BOOL noMoreResultsAvail;
+
 
 @end

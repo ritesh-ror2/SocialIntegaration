@@ -15,13 +15,17 @@
 
 - (void)awakeFromNib {
 
-
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTapGestureOnTableViewCell:)];
     tapGesture.numberOfTapsRequired = 1;
     tapGesture.numberOfTouchesRequired = 1;
     [self.contentView addGestureRecognizer:tapGesture];
 
     [btnPlay addTarget:self action:@selector(handleTapGestureOnTableViewCell:) forControlEvents:UIControlEventTouchUpInside];
+
+    spinner.hidden = YES;
+    spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.frame = CGRectMake(150, 10, 24, 50);
+    [self.contentView addSubview:spinner];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -183,7 +187,32 @@
 
 #pragma mark - Set value in table view
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell {
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell  withPagging:(BOOL)isPagging {
+
+    if (isPagging == YES) {
+
+
+        spinner.hidden = NO;
+        [spinner startAnimating];
+
+        imgVwOfUserProfile.hidden = YES;
+        lblSocialType.hidden = YES;
+        lblText.hidden = YES;
+        lblTime.hidden = YES;
+        lblName.hidden = YES;
+    } else {
+
+        spinner.hidden = YES;
+        [spinner stopAnimating];
+
+        imgVwOfUserProfile.hidden = NO;
+        lblSocialType.hidden = NO;
+        lblText.hidden = NO;
+        lblTime.hidden = NO;
+        lblName.hidden = NO;
+
+        [spinner stopAnimating];
+        spinner.hidden = YES;
 
     if (self.userInfo != nil) {
         self.userInfo = nil;
@@ -287,6 +316,7 @@
     [self.contentView bringSubviewToFront:btnPlay];
     lblTweet.text = objUserInfo.retweetCount;
     lblFavourate.text = objUserInfo.favourateCount;
+    }
 }
 
 - (void)setFrameOfActivityView:(NSInteger)yAxis {

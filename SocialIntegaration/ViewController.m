@@ -51,6 +51,8 @@ BOOL hasTwitter = NO;
     self.navController.navigationBar.translucent = NO;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
+    [self appIsInForeground:nil];
+
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
 }
@@ -68,7 +70,10 @@ BOOL hasTwitter = NO;
     [self.arrySelectedIndex removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
     [self.tbleVwPostList reloadData];
-    
+
+//    if (sharedAppDelegate.arryOfAllFeeds.count != 0){
+//        [self shortArryOfAllFeeds];
+//    }
     [self appIsInForeground:nil];
     self.navController.navigationBarHidden = NO;
 }
@@ -249,6 +254,7 @@ BOOL hasTwitter = NO;
             [self getTweetFromTwitter];
 		} else {
 			NSArray *arryPost = [result objectForKey:@"data"];
+            sharedAppDelegate.nextFbUrl = [[result objectForKey:@"paging"]valueForKey:@"next"];
 
             [self convertDataOfFBIntoModel:arryPost];
 		}
@@ -287,7 +293,6 @@ BOOL hasTwitter = NO;
             userInfo.videoUrl = [dictData valueForKey:@"source"];
             [sharedAppDelegate.arryOfFBNewsFeed addObject:userInfo];
 
-            NSLog(@"%@", userInfo.type);
         }
     }
         //[self shortArryOfAllFeeds];
@@ -389,12 +394,6 @@ BOOL hasTwitter = NO;
             NSLog(@"**%@", dictData);
 
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
-            /*
-             "retweet_count" = 57;
-             retweeted = 1;
-             "favorite_count" = 24;
-             favorited = 1;
-             */
             UserInfo *userInfo =[[UserInfo alloc]init];
             userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
             userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
@@ -412,6 +411,7 @@ BOOL hasTwitter = NO;
             userInfo.struserTime = [Constant convertDateOFTweeter:strDate];
             userInfo.statusId = [dictData valueForKey:@"id"];
             userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
+            userInfo.screenName = [postUserDetailDict valueForKey:@"screen_name"];
             userInfo.retweeted = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweeted"] integerValue]];
             userInfo.retweetCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweet_count"] integerValue]];
             userInfo.favourateCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorite_count"] integerValue]];
@@ -466,7 +466,7 @@ BOOL hasTwitter = NO;
 
         }
 
-    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell];
+    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
 
     return cell;
 }

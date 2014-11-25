@@ -31,4 +31,6 @@
 @property (strong, nonatomic) ACAccountStore *accountStore;
 @property (strong, nonatomic) ACAccount *facebookAccount;
 
+@property (strong, nonatomic) NSString *nextFbUrl;
+
 @end

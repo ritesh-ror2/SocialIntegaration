@@ -67,7 +67,7 @@
 
     NSString *strDiff;
     NSLog(@"%i", components.hour);
-    if (components.hour == 0) {
+    if (components.hour == 0 && components.day == 0) {
 
         strDiff = [NSString stringWithFormat:@"%ld m", diffInDate];
     } else if (components.day == 0) {

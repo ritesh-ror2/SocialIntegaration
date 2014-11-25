@@ -63,6 +63,7 @@
 		0A7EE7D21A14E2D300E5E65A /* mask_Link@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A7EE7D11A14E2D300E5E65A /* mask_Link@2x.png */; };
 		0A7EE7D61A14E8E300E5E65A /* ShowUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EE7D51A14E8E300E5E65A /* ShowUserViewController.m */; };
 		0A7EE7DA1A14F23300E5E65A /* CommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EE7D91A14F23300E5E65A /* CommentViewController.m */; };
+		0A804CFD1A23290200254746 /* ActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A804CFC1A23290200254746 /* ActivityViewController.m */; };
 		0A810FE81A1C550200D1D64D /* UserMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A810FE71A1C550200D1D64D /* UserMessage.m */; };
 		0A810FEC1A1C559300D1D64D /* MessageCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A810FEB1A1C559300D1D64D /* MessageCustomCell.m */; };
 		0A82B3B71A19B6D4009F8E7E /* Favourite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A82B3B21A19B6D4009F8E7E /* Favourite@2x.png */; };
@@ -242,6 +243,8 @@
 		0A7EE7D51A14E8E300E5E65A /* ShowUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowUserViewController.m; sourceTree = "<group>"; };
 		0A7EE7D81A14F23300E5E65A /* CommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentViewController.h; sourceTree = "<group>"; };
 		0A7EE7D91A14F23300E5E65A /* CommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentViewController.m; sourceTree = "<group>"; };
+		0A804CFB1A23290200254746 /* ActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityViewController.h; sourceTree = "<group>"; };
+		0A804CFC1A23290200254746 /* ActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityViewController.m; sourceTree = "<group>"; };
 		0A810FE61A1C550200D1D64D /* UserMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserMessage.h; sourceTree = "<group>"; };
 		0A810FE71A1C550200D1D64D /* UserMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserMessage.m; sourceTree = "<group>"; };
 		0A810FEA1A1C559300D1D64D /* MessageCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCustomCell.h; sourceTree = "<group>"; };
@@ -504,6 +507,7 @@
 				0A8D130F1A136FED00112078 /* HomePageViewController */,
 				0A781B941A10F29300685DBA /* ViewController */,
 				0A7CEB901A1E05E90094EA61 /* ShowOtherUserProfileViewController */,
+				0A804CFA1A2328E700254746 /* ActivityViewController */,
 				0A7EE7D71A14F22800E5E65A /* CommentViewController */,
 				0AE10E8C1A1A2A7100847A1A /* GiveCommentViewController */,
 				0A3933941A1CB97800B65473 /* ShowImageOrVideoViewController */,
@@ -786,6 +790,15 @@
 				0AE10E881A1A132D00847A1A /* CustomGiveCommentCell */,
 			);
 			path = CommentViewController;
+			sourceTree = "<group>";
+		};
+		0A804CFA1A2328E700254746 /* ActivityViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0A804CFB1A23290200254746 /* ActivityViewController.h */,
+				0A804CFC1A23290200254746 /* ActivityViewController.m */,
+			);
+			path = ActivityViewController;
 			sourceTree = "<group>";
 		};
 		0A810FE51A1C54E200D1D64D /* UserMessage */ = {
@@ -1227,6 +1240,7 @@
 				0A9F506E1A11DC7600BAB0D3 /* AsyncImageView.m in Sources */,
 				0A9FF06E1A10A65800FC2B39 /* UIFont+Helper.m in Sources */,
 				0A9FF05A1A10888E00FC2B39 /* ProfileViewController.m in Sources */,
+				0A804CFD1A23290200254746 /* ActivityViewController.m in Sources */,
 				0A7324641A0B527600F10476 /* UserInfo.m in Sources */,
 				0A7EE7AA1A1487F900E5E65A /* LinkViewController.m in Sources */,
 				0A7EE7D61A14E8E300E5E65A /* ShowUserViewController.m in Sources */,

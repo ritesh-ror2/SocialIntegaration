@@ -19,6 +19,7 @@
     IBOutlet AsyncImageView *asyVwOfPost;
     IBOutlet UIImageView *imgVwNavigation;
     IBOutlet UIImageView * imgVwBackground;
+    IBOutlet UILabel *lblName;
 
     IBOutlet UIButton *btnRight;
     IBOutlet UIButton *btnLeft;
@@ -31,12 +32,14 @@
     IBOutlet UIImageView *imgVwOfComentFb;
     IBOutlet UIButton *btnCommentFb;
     IBOutlet UIButton *btnLike;
+    IBOutlet UIButton *btnShare;
 
         //twitter
     IBOutlet UIButton *btnRetweet;
     IBOutlet UIButton *btnReply;
     IBOutlet UIButton *btnFavourite;
     IBOutlet UIButton *btnMoreTweet;
+    IBOutlet UIButton *btnBlock;
 
     IBOutlet UILabel *lblRetweet;
     IBOutlet UILabel *lblReply;
