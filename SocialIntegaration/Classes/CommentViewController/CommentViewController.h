@@ -33,6 +33,7 @@
     IBOutlet UIButton *btnCommentFb;
     IBOutlet UIButton *btnLike;
     IBOutlet UIButton *btnShare;
+    IBOutlet UIButton *btnDelete;
 
         //twitter
     IBOutlet UIButton *btnRetweet;

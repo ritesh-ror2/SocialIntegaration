@@ -19,7 +19,9 @@
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwTwitter;
 @property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
-
+@property (nonatomic) int since_Id;
+@property (nonatomic) int max_Id;
+@property (nonatomic)BOOL noMoreResultsAvail;
 @end
 
 @implementation TwitterFeedViewController
@@ -41,6 +43,13 @@
     self.navController.navigationBar.translucent = NO;
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
+
+
+    UserInfo *userInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:sharedAppDelegate.arryOfTwittes.count - 1];
+    self.max_Id = userInfo.statusId.intValue;
+
+    UserInfo *userInfoSince = [sharedAppDelegate.arryOfTwittes objectAtIndex:0];
+    self.since_Id = userInfoSince.statusId.intValue;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -112,12 +121,14 @@
     }
 }
 
-- (void)getTweetFromTwitter:(UserInfo *)userData {
+- (void)paggingInTwitter {
 
-    //TWITTER_TIMELINE_URL
-     NSDictionary* params = @{@"count": @"20", @"max_id": @"532861337668710400"};
+    //The max_id = top of tweets id list . since_id = bottom of tweets id list .
+    //TWITTER_TIMELINE_URL since_id=24012619984051000&max_id=250126199840518145&result_type=recent&count=10
 
-    NSURL *requestURL = [NSURL URLWithString:TWITTER_TIMELINE_URL];
+    NSDictionary* params = @{@"since_id":[NSNumber numberWithInt:self.since_Id], @"max_id":[NSNumber numberWithInt:self.max_Id], @"count":@"30"};
+
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/user_timeline.json"];
     SLRequest *timelineRequest = [SLRequest
                              requestForServiceType:SLServiceTypeTwitter
                              requestMethod:SLRequestMethodGET
@@ -130,18 +141,93 @@
     *urlResponse, NSError *error)
     {
     NSLog(@"%@ !#" , [error description]);
-    NSArray *arryTwitte = [NSJSONSerialization
+    id result = [NSJSONSerialization
                          JSONObjectWithData:responseData
                          options:NSJSONReadingMutableLeaves
                          error:&error];
 
-    if (arryTwitte.count != 0) {
-      dispatch_async(dispatch_get_main_queue(), ^{
+    if (![result isKindOfClass:[NSDictionary class]]) {
 
-              // [self convertDataOfTwitterIntoModel: arryTwitte];//convert into model class
-      });
+        NSArray *arryTwitte = (NSArray *)result;
+        [self convertDataOfTwitterIntoModel:arryTwitte];
+    } else {
+        NSLog(@"error %@", result);
     }
+
     }];
+}
+
+
+#pragma mark - Convert data of twitter in to model class
+
+- (void)convertDataOfTwitterIntoModel:(NSArray *)arryPost {
+
+    self.noMoreResultsAvail = YES;
+
+    BOOL isFirst = NO;
+    @autoreleasepool {
+
+        for (NSDictionary *dictData in arryPost) {
+
+            NSLog(@"**%@", dictData); //14055301;
+
+            NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
+            UserInfo *userInfo =[[UserInfo alloc]init];
+            userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
+            userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
+            userInfo.strUserImg = [postUserDetailDict valueForKey:@"profile_image_url"];
+
+            NSArray *arryMedia = [[dictData objectForKey:@"extended_entities"] objectForKey:@"media"];
+
+            if (arryMedia.count>0) {
+                userInfo.strPostImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
+            }
+            userInfo.strUserPost = [dictData valueForKey:@"text"];
+            userInfo.strUserSocialType = @"Twitter";
+            userInfo.type = [dictData objectForKey:@"type"];
+            NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
+            userInfo.struserTime = [Constant convertDateOFTweeter:strDate];
+            userInfo.statusId = [dictData valueForKey:@"id"];
+            userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
+            userInfo.screenName = [postUserDetailDict valueForKey:@"screen_name"];
+            userInfo.retweeted = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweeted"] integerValue]];
+            userInfo.retweetCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweet_count"] integerValue]];
+            userInfo.favourateCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorite_count"] integerValue]];
+            userInfo.isFollowing = [[postUserDetailDict valueForKey:@"following"]boolValue];
+            userInfo.dicOthertUser = postUserDetailDict;
+            [sharedAppDelegate.arryOfTwittes addObject:userInfo];
+
+            if (isFirst == NO) {
+
+                self.since_Id = userInfo.statusId.intValue;
+                isFirst = YES;
+            }
+        }
+    }
+
+    UserInfo *userInfoSince = [sharedAppDelegate.arryOfTwittes objectAtIndex:sharedAppDelegate.arryOfTwittes.count - 1];
+    self.max_Id = userInfoSince.statusId.intValue;
+
+    [self.tbleVwTwitter reloadData];
+}
+
+#pragma mark - Convert date of twitter
+
+- (NSString *)dateOfTwitter:(NSString *)createdDate {
+
+    NSString *strDateInDatabaseFormate;
+
+    NSString *strYear = [createdDate substringWithRange:NSMakeRange(createdDate.length-4, 4)];
+    NSString *strMonth = [createdDate substringWithRange:NSMakeRange(4, 3)];
+    NSString *strDate = [createdDate substringWithRange:NSMakeRange(8, 2)];
+
+    NSString *strTime = [createdDate substringWithRange:NSMakeRange(11, 8)];//14
+
+    NSString *finalDate = [NSString stringWithFormat:@"%@ %@ %@", strDate, strMonth, strYear];
+
+    strDateInDatabaseFormate = [NSString stringWithFormat:@"%@ %@", finalDate, strTime];
+
+    return strDateInDatabaseFormate;
 }
 
 - (void)makeCustomViewForNavigationTitle {
@@ -154,8 +240,8 @@
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
     [self makeCustomViewForNavigationTitle];
-    NSLog(@" ** count %icount ", sharedAppDelegate.arryOfTwittes.count);
-    return [sharedAppDelegate.arryOfTwittes count];
+    NSLog(@" ** count count %i ", sharedAppDelegate.arryOfTwittes.count);
+    return [sharedAppDelegate.arryOfTwittes count]+1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -172,13 +258,31 @@
         cell = [arryObjects objectAtIndex:0];
         cell.customCellDelegate = self;
     }
+    if(indexPath.row < [sharedAppDelegate.arryOfTwittes count]){
 
-    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+            // self.noMoreResultsAvail = NO;
 
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+    } else {
+
+
+        if (self.noMoreResultsAvail == NO) {
+
+            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
+            cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
+            [self paggingInTwitter];
+        } else {
+
+        }
+    }
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if(indexPath.row > [sharedAppDelegate.arryOfTwittes count]-1) {
+        return 60;
+    }
 
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row];
 
@@ -234,10 +338,6 @@
     [self.tbleVwTwitter reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         //your code here
     [self.tbleVwTwitter endUpdates];
-
-
-        //  NSLog(@"%@", self.arryTappedCell);
-    
 }
 
 @end

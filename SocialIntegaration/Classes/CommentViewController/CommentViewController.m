@@ -22,6 +22,9 @@
 
     NSString *strBtnTitle;
     UserProfile *userProfile;
+    NSMutableData *fbData;
+    NSMutableURLRequest *fbRequest;
+    NSURLConnection *connetion;
 }
 
 @property (nonatomic, strong) NSArray *arrayFriend;
@@ -121,7 +124,6 @@
         strBtnTitle = @"Post";
         [self facebookConfiguration];
         [self fectchAllComment];
-        [btnMoreTweet setHidden:YES];
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
 
     } else if ([self.userInfo.strUserSocialType isEqualToString:@"Instagram"]) {
@@ -448,13 +450,20 @@
 
         UIButton *btnTaggedUser = [UIButton buttonWithType:UIButtonTypeCustom];
         [btnTaggedUser setTitle:strName forState:UIControlStateNormal];
-        btnTaggedUser.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neune" size:13.0];
+        btnTaggedUser.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:13.0];
         btnTaggedUser.frame = CGRectMake(xAxis, yAxis, rect.size.width, 30);
         btnTaggedUser.tag = [userInfo.fromId integerValue];
         [btnTaggedUser setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
         [btnTaggedUser addTarget:self action:@selector(userProfileBtnTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:btnTaggedUser];
         [self.view bringSubviewToFront:btnTaggedUser];
+
+        if (xAxis < 320) {
+            xAxis = xAxis + rect.size.width;
+        } else {
+            xAxis = 30;
+            yAxis = yAxis + 33;
+        }
     }
     if (strUserNameList.length != 0) {
 
@@ -471,9 +480,16 @@
 
 - (IBAction)moreBtnTapped:(id)sender {
 
-    [self.view bringSubviewToFront:btnBlock];
-    [btnBlock setHidden:NO];
-    btnBlock.frame = CGRectMake(btnMoreTweet.frame.origin.x - 30, btnMoreTweet.frame.origin.y+30, 60, 30);
+    if([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
+
+        [self.view bringSubviewToFront:btnBlock];
+        [btnBlock setHidden:NO];
+        btnBlock.frame = CGRectMake(btnMoreTweet.frame.origin.x - 30, btnMoreTweet.frame.origin.y+30, 60, 30);
+    } else {
+        [self.view bringSubviewToFront:btnDelete];
+        [btnDelete setHidden:NO];
+        btnDelete.frame = CGRectMake(btnMoreTweet.frame.origin.x - 30, btnMoreTweet.frame.origin.y+30, 60, 30);
+    }
 }
 
 - (IBAction)blockTweetPost:(id)sender {
@@ -514,7 +530,9 @@
 
        if ([result isKindOfClass:[NSDictionary class]]) {
            if (![result valueForKey:@"error"]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
                [self.navigationController popViewControllerAnimated:YES];
+                });
             }
         }
      }];
@@ -558,26 +576,102 @@
      }];
 }
 
+- (IBAction)deleteFBComment:(id)sender {
+
+    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
+    NSArray *writePermissions = @[@"publish_actions"];
+    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
+        sharedAppDelegate.fbSession = session;
+
+            // NSLog(error.description);
+
+        if (!error) {
+        NSString *strUrl = [NSString stringWithFormat:@"/%@",self.userInfo.objectIdFB];
+        [FBRequestConnection startWithGraphPath:strUrl
+                                     parameters:nil
+                                     HTTPMethod:@"DELETE"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+                                  NSLog(error.description);
+                                  if (!error) {
+                                      NSLog(@"%@", result);
+                                  }
+                              }];
+        }
+    }];
+}
+
+
+
 - (IBAction)sharePost:(id)sender {
 
-    NSString *strUrl = [NSString stringWithFormat:@"/%@/sharedposts", self.userInfo.objectIdFB];
-    /* make the API call */
-    [FBRequestConnection startWithGraphPath:strUrl
-                                 parameters:nil
-                                 HTTPMethod:@"GET"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              if (error) {
 
-                                  NSLog(@"erorr");
-                              } else {
-                                  NSLog(@"success");
-                              }
-                          }];
+  /*  NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
+    NSArray *writePermissions = @[@"publish_actions"];
+    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
+        sharedAppDelegate.fbSession = session;
 
+            // Make the request
+        NSLog(@"** %@", self.userInfo.strPostImg);
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                                @"This is a test message", @"message",
+                                self.userInfo.strPostImg, @"picture",
+                                nil
+                                ];
+        [FBRequestConnection startWithGraphPath:@"/me/feed"
+                                     parameters:params
+                                     HTTPMethod:@"POST"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+                                  NSLog(error.description);
+                              }];
+    }];*/
+
+    NSMutableDictionary *params;
+    if (self.userInfo.strPostImg.length != 0 && self.userInfo.strUserPost.length != 0) {
+        NSString *strUrl =  [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=normal", self.userInfo.objectIdFB];
+
+        params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Build great social apps and get more installs.", @"caption",
+                 self.userInfo.strUserPost , @"description", // @"https://developers.facebook.com/ios", @"link",
+                 strUrl, @"picture",
+                 nil];
+
+    } else if (self.userInfo.strUserPost.length != 0) {
+
+        params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Build great social apps and get more installs.", @"caption",
+                  self.userInfo.strUserPost , @"description", nil];
+
+    } else if (self.userInfo.strPostImg.length != 0) {
+
+        NSString *strUrl =  [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=normal", self.userInfo.objectIdFB];
+
+        params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Build great social apps and get more installs.", @"caption",
+                    strUrl, @"picture", nil];
+    }
+        // Invoke the dialog
+    [FBWebDialogs presentFeedDialogModallyWithSession:nil
+                                           parameters:params
+                                              handler:
+     ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+         if (error) {
+                 // Error launching the dialog or publishing a story.
+             NSLog(@"Error publishing story.");
+         } else {
+             if (result == FBWebDialogResultDialogNotCompleted) {
+                     // User clicked the "x" icon
+                 NSLog(@"User canceled story publishing.");
+             } else {
+                     // Handle the publish feed callback
+                 NSLog(@"completed");
+             }
+         }
+     }];
 }
 
 - (void)userProfileBtnTapped:(id)sender{
@@ -760,6 +854,7 @@
     [btnLike setHidden:NO];
     [lblLikeCount setHidden:NO];
     [btnShare setHidden:NO];
+    [btnMoreTweet setHidden:YES];
 }
 
 - (void)twitterConfiguration  {

@@ -33,7 +33,8 @@
 {
     [super viewDidLoad];
 
-    self.navigationItem.title = @"Detail Message";
+    UserComment * comment = [self.arryDetailMessage objectAtIndex:0];
+    self.navigationItem.title = comment.titleUserName;
     userProfile = [UserProfile getProfile:@"Facebook"];
 }
 

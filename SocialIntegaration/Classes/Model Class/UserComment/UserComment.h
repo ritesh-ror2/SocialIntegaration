@@ -19,5 +19,7 @@
 @property (nonatomic, strong) NSString *fromId;
 @property (nonatomic, strong) NSString *commentId;
 @property (nonatomic, strong) NSString *socialType;
+@property (nonatomic, strong) NSString *titleUserId;
+@property (nonatomic, strong) NSString *titleUserName;
 
 @end

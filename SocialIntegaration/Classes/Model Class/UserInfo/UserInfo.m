@@ -10,6 +10,6 @@
 
 @implementation UserInfo
 
-@synthesize strUserImg, strPostImg , strUserName, strUserPost, strUserSocialType, struserTime, type;
+@synthesize strUserImg, strPostImg , strUserName, strUserPost, strUserSocialType, struserTime, type, objectIdFB, statusId, dicOthertUser, favourateCount, favourated, fbLike, fromId, isFollowing, largeImageUrl, postId, retweetCount, retweeted, screenName, videoUrl;
 
 @end

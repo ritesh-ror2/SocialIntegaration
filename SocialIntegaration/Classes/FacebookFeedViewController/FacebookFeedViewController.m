@@ -139,7 +139,6 @@
 
     NSArray *arryObjects;
 
-
     if (cell == nil) {
 
         arryObjects = [[NSBundle mainBundle]loadNibNamed:@"CustomTableCell" owner:nil options:nil];
@@ -149,6 +148,7 @@
 
     if(indexPath.row < [sharedAppDelegate.arryOfFBNewsFeed count]){
 
+        self.noMoreResultsAvail = NO;
         [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
     } else {
 
@@ -203,8 +203,6 @@
     return (rect.size.height + 60);//183 is height of other fixed content
 }
 
-
-
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -231,7 +229,7 @@
     [self.tbleVwFB endUpdates];
 }
 
-- (void) getMoreDataOfFeed {
+- (void)getMoreDataOfFeed {
 
     //Get more data of feed
 

@@ -16,6 +16,7 @@
 #import "UserProfile+DatabaseHelper.h"
 #import "CommentViewController.h"
 #import "ShowOtherUserProfileViewController.h"
+#import "Reachability.h"
 #import <Social/Social.h>
 
 NSString *const kSocialServices = @"SocialServices";
@@ -24,8 +25,15 @@ NSString *const kFBSetup = @"FBSetup";
 @interface ViewController () {
 
     BOOL isInstagramOpen;
+
+    NSMutableData *fbData;
+    NSMutableURLRequest *fbRequest;
+    NSURLConnection *connetion;
+    BOOL isFirstTimeUpload;
+    BOOL isFirstTimeDownloadTwitter;
 }
 
+@property (nonatomic)BOOL noMoreResultsAvail;
 @property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
 @end
@@ -65,11 +73,15 @@ BOOL hasTwitter = NO;
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
+
     self.navigationController.navigationBar.translucent = NO;
 
     [self.arrySelectedIndex removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
     [self.tbleVwPostList reloadData];
+
+    isFirstTimeUpload = YES;
+    isFirstTimeDownloadTwitter = YES;
 
 //    if (sharedAppDelegate.arryOfAllFeeds.count != 0){
 //        [self shortArryOfAllFeeds];
@@ -132,7 +144,18 @@ BOOL hasTwitter = NO;
 
 #pragma mark - Check session of facebook
 
-- (void) showFacebookPost {
+- (void)showFacebookPost {
+
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
 
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
     if (isFbUserLogin == NO) {
@@ -265,7 +288,9 @@ BOOL hasTwitter = NO;
 
 - (void)convertDataOfFBIntoModel:(NSArray *)arryPost {
 
-    [sharedAppDelegate.arryOfFBNewsFeed removeAllObjects];
+    if (isFirstTimeUpload == YES) {
+        [sharedAppDelegate.arryOfFBNewsFeed removeAllObjects];
+    }
     @autoreleasepool {
 
         for (NSDictionary *dictData in arryPost) {
@@ -282,7 +307,7 @@ BOOL hasTwitter = NO;
             userInfo.type = [dictData objectForKey:@"type"];
             userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
             userInfo.strPostImg = [dictData valueForKey:@"picture"];
-
+            userInfo.postId = [dictData valueForKey:@"id"];
             NSLog(@"*** %@", [dictData objectForKey:@"type"]);
             if (![[dictData objectForKey:@"type"] isEqualToString:@"video"] && ![[dictData objectForKey:@"type"] isEqualToString:@"photo"]) {
                 userInfo.objectIdFB = [dictData valueForKey:@"id"];
@@ -295,13 +320,27 @@ BOOL hasTwitter = NO;
 
         }
     }
-        //[self shortArryOfAllFeeds];
-         [self getTweetFromTwitter];
+    if (isFirstTimeUpload == YES) {
+        [self getTweetFromTwitter];
+    } else {
+        [self shortArryOfAllFeeds];
+    }
 }
 
 #pragma mark - Get Tweets from twitter
 
 - (void)getTweetFromTwitter {
+
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
 
     BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
     if (isTwitterUserLogin == NO) {
@@ -382,16 +421,61 @@ BOOL hasTwitter = NO;
     }
 }
 
+- (void)paggingInTwitter {
+
+        //The max_id = top of tweets id list . since_id = bottom of tweets id list .
+        //TWITTER_TIMELINE_URL since_id=24012619984051000&max_id=250126199840518145&result_type=recent&count=10
+
+    UserInfo *userInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:sharedAppDelegate.arryOfTwittes.count - 1];
+    int max_Id = userInfo.statusId.intValue;
+
+    UserInfo *userInfoSince = [sharedAppDelegate.arryOfTwittes objectAtIndex:0];
+    int since_Id = userInfoSince.statusId.intValue;
+
+    NSDictionary* params = @{@"since_id":[NSNumber numberWithInt:since_Id], @"max_id":[NSNumber numberWithInt:max_Id], @"count":@"30"};
+
+    NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/user_timeline.json"];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodGET
+                                  URL:requestURL parameters:params];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+       id result = [NSJSONSerialization
+                    JSONObjectWithData:responseData
+                    options:NSJSONReadingMutableLeaves
+                    error:&error];
+
+       if (![result isKindOfClass:[NSDictionary class]]) {
+
+           isFirstTimeDownloadTwitter = NO;
+           NSArray *arryTwitte = (NSArray *)result;
+           [self convertDataOfTwitterIntoModel:arryTwitte];
+       } else {
+           NSLog(@"error %@", result);
+       }
+     }];
+}
+
+
 #pragma mark - Convert data of twitter in to model class
 
 - (void)convertDataOfTwitterIntoModel:(NSArray *)arryPost {
 
-    [sharedAppDelegate.arryOfTwittes removeAllObjects];
+    if (isFirstTimeDownloadTwitter == YES) {
+        [sharedAppDelegate.arryOfTwittes removeAllObjects];
+    }
     @autoreleasepool {
 
         for (NSDictionary *dictData in arryPost) {
 
-            NSLog(@"**%@", dictData);
+            NSLog(@"**%@", dictData); //14055301;
 
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
             UserInfo *userInfo =[[UserInfo alloc]init];
@@ -420,8 +504,12 @@ BOOL hasTwitter = NO;
             [sharedAppDelegate.arryOfTwittes addObject:userInfo];
         }
     }
-        //  [self.arryOfAllFeeds addObjectsFromArray:self.arryOfTwittes];
-    [self getInstagrameIntegration];
+
+    if (isFirstTimeDownloadTwitter == YES) {
+        [self getInstagrameIntegration];
+    } else {
+            //[self shortArryOfAllFeeds];
+    }
 }
 
 #pragma mark - Convert date of twitter
@@ -448,7 +536,7 @@ BOOL hasTwitter = NO;
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
     NSLog(@" ** count %icount ", sharedAppDelegate.arryOfAllFeeds.count);
-    return [sharedAppDelegate.arryOfAllFeeds count];
+    return [sharedAppDelegate.arryOfAllFeeds count]+1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -466,7 +554,28 @@ BOOL hasTwitter = NO;
 
         }
 
-    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+    if(indexPath.row < [sharedAppDelegate.arryOfAllFeeds count]){
+
+        self.noMoreResultsAvail = NO;
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+    } else {
+
+        if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
+
+            if (self.noMoreResultsAvail == NO) {
+
+            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
+                cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
+                [self getMoreDataOfFBFeed];
+
+                if (isFirstTimeDownloadTwitter == YES) {
+                    [self paggingInTwitter];
+                }
+            } else {
+                self.noMoreResultsAvail = NO;
+            }
+        }
+    }
 
     return cell;
 }
@@ -475,6 +584,13 @@ BOOL hasTwitter = NO;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    if ( sharedAppDelegate.arryOfAllFeeds.count != 0) {
+        if(indexPath.row > [sharedAppDelegate.arryOfAllFeeds count]-1) {
+            return 44;
+        }
+    } else {
+        return 0;
+    }
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
@@ -538,6 +654,16 @@ BOOL hasTwitter = NO;
 
 - (void)getInstagrameIntegration {
 
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
           [self shortArryOfAllFeeds];
          return;
         // here i can set accessToken received on previous login
@@ -650,10 +776,8 @@ BOOL hasTwitter = NO;
 
 - (void)convertDataOfInstagramIntoModelClass:(NSArray *)arryOfInstagrame {
 
-    if (arryOfInstagrame.count != 0) {
+    if (isFirstTimeUpload == YES) {
         [sharedAppDelegate.arryOfInstagrame removeAllObjects];
-    } else {
-            //[Constant showAlert:@"Message" forMessage:@"No Post is Instagram."];
     }
 
     @autoreleasepool {
@@ -700,6 +824,7 @@ BOOL hasTwitter = NO;
     UIApplication *app = [UIApplication sharedApplication];
     app.networkActivityIndicatorVisible = NO;
 
+
     [sharedAppDelegate.arryOfAllFeeds removeAllObjects]; //first remove all object
     [self.arryTappedCell removeAllObjects];
     
@@ -721,6 +846,43 @@ BOOL hasTwitter = NO;
 
     [sharedAppDelegate.spinner hide:YES];
     [self.tbleVwPostList reloadData];
+}
+
+- (void)getMoreDataOfFBFeed {
+
+        //Get more data of feed
+    isFirstTimeUpload = NO;
+
+    NSURL *fbUrl = [NSURL URLWithString:sharedAppDelegate.nextFbUrl];
+    fbRequest = [[NSMutableURLRequest alloc]initWithURL:fbUrl];
+    connetion = [[NSURLConnection alloc]initWithRequest:fbRequest delegate:self];
+}
+
+#pragma mark NSURLConnection Delegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+
+    fbData = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+
+    [fbData appendData:data];
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
+        // Return nil to indicate not necessary to store a cached response for this connection
+    return nil;
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+
+    self.noMoreResultsAvail = YES;
+    id result = [NSJSONSerialization JSONObjectWithData:fbData options:kNilOptions error:nil];
+    NSLog(@"%@", result);
+    sharedAppDelegate.nextFbUrl = [[result objectForKey:@"paging"]valueForKey:@"next"];
+    [self convertDataOfFBIntoModel:[result objectForKey:@"data"]];
 }
 
 @end

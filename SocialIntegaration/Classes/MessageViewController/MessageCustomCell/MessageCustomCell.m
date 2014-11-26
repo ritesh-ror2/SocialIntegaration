@@ -47,7 +47,7 @@
 
     self.contentView.tag = rowIndex;
 
-    lblName.text = objUserComment.userName;
+    lblName.text = objUserComment.titleUserName;
     lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserComment.time];
 
     NSString *string = objUserComment.userComment;
@@ -73,25 +73,6 @@
         lblSocialType.textColor = [UIColor colorWithRed:93/256.0f green:122/256.0f blue:154/256.0f alpha:1.0];
         [self setProfileImageOfTwitter:objUserComment];
     }
-//    btnPlay.hidden = YES;
-//
-//    if (objUserInfo.strPostImg.length != 0) {
-//
-////        if (imgVwPostImg.image != nil) {
-////            imgVwPostImg.image = nil;
-////        }
-//        imgVwPostImg.frame = CGRectMake(imgVwPostImg.frame.origin.x,  lblText.frame.size.height + lblText.frame.origin.y, 250, 100);
-//        imgVwPostImg.hidden = NO;
-//        btnPlay.frame = imgVwPostImg.frame;
-//        
-//        [self setPostImageAndOfFB:objUserInfo];
-//    } else {
-//        imgVwPostImg.hidden = YES;
-//    }
-//
-//    if ([objUserInfo.type isEqualToString:@"video"]) {
-//        btnPlay.hidden = NO;
-//    }
 }
 
 - (void)setProfileImageOfTwitter:(UserComment *)objUserComment {
@@ -117,7 +98,7 @@
 - (void)uploadProfileImage:(UserComment *)objUserComment {
 
         // load profile picture
-	NSURL *jsonURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?redirect=false&type=normal&width=110&height=110", objUserComment.fromId]];
+	NSURL *jsonURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?redirect=false&type=normal&width=110&height=110", objUserComment.titleUserId]];
 	dispatch_queue_t profileURLQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 	dispatch_async(profileURLQueue, ^{
 		NSData *result = [NSData dataWithContentsOfURL:jsonURL];

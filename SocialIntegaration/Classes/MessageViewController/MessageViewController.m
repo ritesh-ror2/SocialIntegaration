@@ -9,12 +9,17 @@
 #import "MessageViewController.h"
 #import "UserComment.h"
 #import "Constant.h"
-#import "userProfile.h"
+#import "UserProfile.h"
 #import "UserProfile+DatabaseHelper.h"
 #import "MessageCustomCell.h"
 #import "DetailMessageViewController.h"
 
-@interface MessageViewController () <MessageCellTappedDelegate>
+
+@interface MessageViewController () <MessageCellTappedDelegate> {
+
+    UserProfile *userProfile;
+    NSString *strTitleUserName;
+}
 
 @property (nonatomic, strong) NSMutableArray *arryOfFbMessage;
 
@@ -39,6 +44,8 @@
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
     [sharedAppDelegate.spinner show:YES];
 
+    userProfile = [UserProfile getProfile:@"Facebook"];
+
     self.navigationItem.title = @"Message";
 
     UIBarButtonItem *barBtnProfile = [[UIBarButtonItem alloc]initWithCustomView:[self addUserImgAtRight]];
@@ -49,6 +56,7 @@
     self.navigationItem.rightBarButtonItem = barBtnEdit;
 
     self.arryOfFbMessage = [[NSMutableArray alloc]init];
+
     [self showInboxMessage];
 }
 
@@ -61,8 +69,6 @@
 - (UIImageView *)addUserImgAtRight {
 
         //add mask image
-    UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
-
     if (userProfile != nil) {
 
         NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
@@ -119,9 +125,9 @@
 
     @autoreleasepool {
 
-        for (NSDictionary *dictData in arryPost) {
+        for (NSDictionary *dictData1 in arryPost) {
 
-            NSArray *commmetnt = [[dictData objectForKey:@"comments"]objectForKey:@"data"];
+            NSArray *commmetnt = [[dictData1 objectForKey:@"comments"]objectForKey:@"data"];
 
             NSMutableArray *arryMessages = [[NSMutableArray alloc]init];
 
@@ -134,7 +140,20 @@
                 userComment.userComment = [dictData valueForKey:@"message"];
                 userComment.socialType = @"Facebook";
                 userComment.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+
                 [arryMessages addObject:userComment];
+                NSArray *arryUsers = [[dictData1 valueForKey:@"to"]objectForKey:@"data"];
+                for (NSDictionary *dictData in arryUsers) {
+
+                    NSString *userId = [dictData valueForKey:@"id"];
+                    if(![userId isEqualToString:userProfile.userId]) {
+
+                        userComment.titleUserId = userId;
+                        userComment.titleUserName = [dictData valueForKey:@"name"];
+
+                        break;
+                    }
+                }   
             }
             [self.arryOfFbMessage addObject:arryMessages];
         }

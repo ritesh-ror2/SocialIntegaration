@@ -10,5 +10,5 @@
 
 @implementation UserComment
 
-@synthesize userComment, userImg, postImg, userName, time;
+@synthesize userComment, userImg, postImg, userName, time, userId, commentId, fromId, socialType, titleUserId, titleUserName;
 @end

@@ -30,5 +30,6 @@
 @property (nonatomic) BOOL isFollowing;
 @property (nonatomic, strong) NSDictionary *dicOthertUser;
 @property (nonatomic, strong) NSString *screenName;
+@property (nonatomic, strong) NSString *postId;
 
 @end
