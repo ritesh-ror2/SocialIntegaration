@@ -17,6 +17,7 @@
 #import "CommentViewController.h"
 #import "ShowOtherUserProfileViewController.h"
 #import "Reachability.h"
+#import "ShareCommentAndMessageViewController.h"
 #import <Social/Social.h>
 
 NSString *const kSocialServices = @"SocialServices";
@@ -35,6 +36,7 @@ NSString *const kFBSetup = @"FBSetup";
 
 @property (nonatomic)BOOL noMoreResultsAvail;
 @property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
+@property (nonatomic, strong) NSMutableArray *arryCellTappedTwices;
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
 @end
 
@@ -49,7 +51,7 @@ BOOL hasTwitter = NO;
     [super viewDidLoad];
 
     //right button
-    UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:nil];
+    UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(composeMessage:)];
     self.navItem.rightBarButtonItem = barBtnEdit;
 
     //left button
@@ -63,6 +65,7 @@ BOOL hasTwitter = NO;
 
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
+    self.arryCellTappedTwices = [[NSMutableArray alloc]init];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -89,6 +92,7 @@ BOOL hasTwitter = NO;
     [self appIsInForeground:nil];
     self.navController.navigationBarHidden = NO;
 }
+
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
@@ -99,11 +103,18 @@ BOOL hasTwitter = NO;
 
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter]removeObserver:self];
-   }
+}
+
+- (IBAction)composeMessage:(id)sender {
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShareCommentAndMessageViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"sharecomment"];
+    [[self navigationController] pushViewController:viewController animated:YES];
+}
 
 - (UIImageView *)addUserImgAtRight {
 
-        //add mask image
+    //add mask image
     UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
 
     if (userProfile != nil) {
@@ -315,6 +326,7 @@ BOOL hasTwitter = NO;
                 userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
              }
 
+            NSLog(@"** %@", userInfo.type);
             userInfo.videoUrl = [dictData valueForKey:@"source"];
             [sharedAppDelegate.arryOfFBNewsFeed addObject:userInfo];
 
@@ -576,7 +588,7 @@ BOOL hasTwitter = NO;
             }
         }
     }
-
+    NSLog(@"%@",cell.touchCount);
     return cell;
 }
 
@@ -604,7 +616,7 @@ BOOL hasTwitter = NO;
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + 190);
+                return(rect.size.height + 197);
             }
         }
     return(rect.size.height + 160);
@@ -650,6 +662,52 @@ BOOL hasTwitter = NO;
     [self.tbleVwPostList endUpdates];
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    CustomTableCell *cell = (CustomTableCell*)[tableView cellForRowAtIndexPath:indexPath];
+
+    UserInfo *userInfo = [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row];
+    if ([cell.touchCount intValue] == 1) {
+        [cell cellTouchCountIncrement];
+        [self tappedOnCellToShowActivity:userInfo withCellIndex:indexPath.row withSelectedPrNot:YES];
+
+    } else {
+            //[cell cellTouchCountDecrement];
+        [self didSelectRowWithObject:userInfo withFBProfileImg:nil];
+    }
+
+ /*   if([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+        if (lblName.textColor == [UIColor whiteColor]) {
+            isAlreadyTapped = NO;
+            [self handleSwipeGestureOnTableView:nil];
+        } else {
+            isAlreadyTapped = YES;
+            [self didRowTapped:isAlreadyTapped];
+        }
+
+    } else  if([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
+
+        if (lblName.textColor == [UIColor whiteColor]) {
+            isAlreadyTapped = NO;
+            [self handleSwipeGestureOnTableView:nil];
+
+        } else {
+            isAlreadyTapped = YES;
+            [self didRowTapped:isAlreadyTapped];
+        }
+    } else {
+
+        if (lblName.textColor == [UIColor whiteColor]) {
+
+            isAlreadyTapped = NO;
+            [self handleSwipeGestureOnTableView:nil];
+
+        } else {
+            isAlreadyTapped = YES;
+            [self didRowTapped:isAlreadyTapped];
+        }
+    }*/
+}
 #pragma mark - Integrate instagrame
 
 - (void)getInstagrameIntegration {

@@ -16,6 +16,7 @@
     IBOutlet UIImageView *imgVwPostUser;
     IBOutlet UILabel *lblComment;
     IBOutlet UIImageView *imgVwUser;
+    IBOutlet UIImageView *imgVwPostImage;
     IBOutlet AsyncImageView *asyVwOfPost;
     IBOutlet UIImageView *imgVwNavigation;
     IBOutlet UIImageView * imgVwBackground;
@@ -25,7 +26,6 @@
     IBOutlet UIButton *btnLeft;
     IBOutlet UILabel *lblHeading;
 
-    IBOutlet UIScrollView *scrollVw;
     IBOutlet UITableView *tbleVwTagList;
 
     IBOutlet UIImageView *imgVwOfLikeFb;
@@ -51,7 +51,6 @@
         //IBOutlet UILabel *lblReply;
     IBOutlet UILabel *lblLikeCount;
 
-    IBOutlet UIPageControl *pageControl;
     IBOutlet UIImageView *imgVwOfLikeInstagram;
 
     IBOutlet UITableView *tbleVwComment;

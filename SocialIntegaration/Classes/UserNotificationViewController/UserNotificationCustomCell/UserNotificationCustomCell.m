@@ -35,41 +35,51 @@
 
 - (void)setNotificationIntableView:(UserNotification *)userNotification {
 
-    NSString *string = userNotification.title;
+    lblName.text = userNotification.name;
+
+    NSString *strSubstring = [userNotification.title substringToIndex: userNotification.title.length - 1];
+    NSString *string = [NSString stringWithFormat:@"%@ on %@", strSubstring, userNotification.notifType];
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 100)
                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                   attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                   attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
                                       context:nil];
 
-    lblTitle.frame = CGRectMake(55, 5, 250, rect.size.height);
-    lblTitle.text = userNotification.title;
+    lblTitle.frame = CGRectMake(55, 25, 250, rect.size.height);
+    lblTime.text =  [Constant  calculateTimesBetweenTwoDates:userNotification.time];
 
-    lblType.text = userNotification.notifType;
+    NSMutableAttributedString * strAttribut = [[NSMutableAttributedString alloc] initWithString:string];
+
+    //lblType.text = userNotification.notifType;
 
     if ([userNotification.notifType isEqualToString: @"Facebook"]) {
-        lblType.textColor = [UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0];
+
+        [strAttribut addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0] range:NSMakeRange(string.length - 8, 8)];
         [self uploadProfileImage:userNotification];
     } else if ([userNotification.notifType isEqualToString: @"Twitter"]) {
-        lblType.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
+
+        [strAttribut addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0] range:NSMakeRange(string.length - 7, 7)];
         [self setProfileImageOfTwitterAndInstagram:userNotification];
     } else {
-        lblType.textColor = [UIColor colorWithRed:93/256.0f green:122/256.0f blue:154/256.0f alpha:1.0];
+
+        [strAttribut addAttribute:NSForegroundColorAttributeName value:[UIColor greenColor] range:NSMakeRange(string.length - 9, 9)];
         [self setProfileImageOfTwitterAndInstagram:userNotification];
     }
 
-    lblType.frame = CGRectMake(55, lblTitle.frame.size.height+lblTitle.frame.origin.y+5, 300, 21);
+    lblTitle.attributedText = strAttribut;
 
-    lblTime.frame = CGRectMake(55, lblType.frame.size.height+lblType.frame.origin.y, 300, 21);
-    NSString *strSubstrTime = [userNotification.time substringToIndex:10];
-    int isToday = [self calculateTimesBetweenTwoDates:strSubstrTime];
+    // lblType.frame = CGRectMake(55, lblTitle.frame.size.height+lblTitle.frame.origin.y+5, 300, 21);
 
-    NSString *strTime;
-    if (isToday == 0) {
-        strTime = [self differenceBetweenDate:strSubstrTime];
-    } else {
-        strTime = [NSString stringWithFormat:@"On %@", strSubstrTime];
-    }
-    lblTime.text = strTime;
+    // lblTime.frame = CGRectMake(55, lblType.frame.size.height+lblType.frame.origin.y, 300, 21);
+    //    NSString *strSubstrTime = [userNotification.time substringToIndex:10];
+    //    int isToday = [self calculateTimesBetweenTwoDates:strSubstrTime];
+    //
+    //    NSString *strTime;
+    //    if (isToday == 0) {
+    //        strTime = [self differenceBetweenDate:strSubstrTime];
+    //    } else {
+    //        strTime = [NSString stringWithFormat:@"On %@", strSubstrTime];
+    //    }
+    //    lblTime.text = strTime;
 }
 
 #pragma mark - Set profile image of twitter and Instagram

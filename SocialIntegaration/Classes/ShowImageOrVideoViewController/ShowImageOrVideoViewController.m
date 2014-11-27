@@ -72,7 +72,6 @@
     conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
-
 #pragma mark NSURLConnection Delegate Methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {

@@ -13,7 +13,7 @@
 #import "UserProfile+DatabaseHelper.h"
 #import "MessageCustomCell.h"
 #import "DetailMessageViewController.h"
-
+#import "ShareCommentAndMessageViewController.h"
 
 @interface MessageViewController () <MessageCellTappedDelegate> {
 
@@ -52,7 +52,7 @@
     self.navigationItem.leftBarButtonItem = barBtnProfile;
 
         //right button
-    UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:nil];
+    UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(composeMessage:)];
     self.navigationItem.rightBarButtonItem = barBtnEdit;
 
     self.arryOfFbMessage = [[NSMutableArray alloc]init];
@@ -64,6 +64,13 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)composeMessage:(id)sender {
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShareCommentAndMessageViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"sharecomment"];
+    [[self navigationController] pushViewController:viewController animated:YES];
 }
 
 - (UIImageView *)addUserImgAtRight {

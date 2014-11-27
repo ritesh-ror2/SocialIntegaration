@@ -7,6 +7,7 @@
 #import <Availability.h>
 #import "AppDelegate.h"
 #import <Social/Social.h>
+#import "Constant.h"
 
 #ifndef __IPHONE_5_0
 #warning "This project uses features only available in iOS SDK 5.0 and later."

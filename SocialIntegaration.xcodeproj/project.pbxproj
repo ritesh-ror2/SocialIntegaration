@@ -18,6 +18,7 @@
 		0A39339B1A1CC3F500B65473 /* arrow-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A3933991A1CC3F500B65473 /* arrow-blue@2x.png */; };
 		0A3E6BE01A0CDE88006983B5 /* IGRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3E6BDD1A0CDE88006983B5 /* IGRequest.m */; };
 		0A3E6BE11A0CDE88006983B5 /* Instagram.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A3E6BDF1A0CDE88006983B5 /* Instagram.m */; };
+		0A4414EF1A259275003A2C60 /* ShareCommentAndMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A4414EE1A259275003A2C60 /* ShareCommentAndMessageViewController.m */; };
 		0A4C03CB1A1B77DC001E96EF /* Liked-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A4C03CA1A1B77DC001E96EF /* Liked-active@2x.png */; };
 		0A4C03CF1A1B8015001E96EF /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A4C03CE1A1B8015001E96EF /* MessageViewController.m */; };
 		0A73242A1A0B4C0000F10476 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0A7324281A0B4C0000F10476 /* InfoPlist.strings */; };
@@ -174,6 +175,8 @@
 		0A3E6BDD1A0CDE88006983B5 /* IGRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IGRequest.m; sourceTree = "<group>"; };
 		0A3E6BDE1A0CDE88006983B5 /* Instagram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Instagram.h; sourceTree = "<group>"; };
 		0A3E6BDF1A0CDE88006983B5 /* Instagram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Instagram.m; sourceTree = "<group>"; };
+		0A4414ED1A259275003A2C60 /* ShareCommentAndMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShareCommentAndMessageViewController.h; sourceTree = "<group>"; };
+		0A4414EE1A259275003A2C60 /* ShareCommentAndMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShareCommentAndMessageViewController.m; sourceTree = "<group>"; };
 		0A4C03CA1A1B77DC001E96EF /* Liked-active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Liked-active@2x.png"; sourceTree = "<group>"; };
 		0A4C03CD1A1B8015001E96EF /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
 		0A4C03CE1A1B8015001E96EF /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
@@ -412,6 +415,15 @@
 			path = "instagram-ios-sdk";
 			sourceTree = "<group>";
 		};
+		0A4414EC1A259265003A2C60 /* ShareCommentAndMessageViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0A4414ED1A259275003A2C60 /* ShareCommentAndMessageViewController.h */,
+				0A4414EE1A259275003A2C60 /* ShareCommentAndMessageViewController.m */,
+			);
+			path = ShareCommentAndMessageViewController;
+			sourceTree = "<group>";
+		};
 		0A4C03CC1A1B8009001E96EF /* MessageViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -504,10 +516,10 @@
 			children = (
 				0A7324311A0B4C0000F10476 /* Main.storyboard */,
 				0A781B951A10F2A200685DBA /* AppDelegate */,
-				0A8D130F1A136FED00112078 /* HomePageViewController */,
 				0A781B941A10F29300685DBA /* ViewController */,
 				0A7CEB901A1E05E90094EA61 /* ShowOtherUserProfileViewController */,
 				0A804CFA1A2328E700254746 /* ActivityViewController */,
+				0A4414EC1A259265003A2C60 /* ShareCommentAndMessageViewController */,
 				0A7EE7D71A14F22800E5E65A /* CommentViewController */,
 				0AE10E8C1A1A2A7100847A1A /* GiveCommentViewController */,
 				0A3933941A1CB97800B65473 /* ShowImageOrVideoViewController */,
@@ -680,6 +692,7 @@
 		0A781B951A10F2A200685DBA /* AppDelegate */ = {
 			isa = PBXGroup;
 			children = (
+				0A8D130F1A136FED00112078 /* HomePageViewController */,
 				0A73242E1A0B4C0000F10476 /* AppDelegate.h */,
 				0A73242F1A0B4C0000F10476 /* AppDelegate.m */,
 			);
@@ -1265,6 +1278,7 @@
 				0AAD4C3F1A1C744B00EAC235 /* DetailMessageShowCustomCellTableViewCell.m in Sources */,
 				0A90EF091A15C6D1005FD439 /* UserProfile+DatabaseHelper.m in Sources */,
 				0A3E6BE11A0CDE88006983B5 /* Instagram.m in Sources */,
+				0A4414EF1A259275003A2C60 /* ShareCommentAndMessageViewController.m in Sources */,
 				0A9FF07D1A10B49A00FC2B39 /* TwitterProfileViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

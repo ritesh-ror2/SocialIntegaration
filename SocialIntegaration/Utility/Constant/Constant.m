@@ -69,23 +69,23 @@
     NSLog(@"%i", components.hour);
     if (components.hour == 0 && components.day == 0) {
 
-        strDiff = [NSString stringWithFormat:@"%ld m", diffInDate];
+        strDiff = [NSString stringWithFormat:@"%ldm", diffInDate];
     } else if (components.day == 0) {
 
         diffInDate = components.hour;
-        strDiff = [NSString stringWithFormat:@"%ld h", diffInDate];
+        strDiff = [NSString stringWithFormat:@"%ldh", diffInDate];
     } else if (components.day != 0) {
 
         diffInDate = components.day;
-        strDiff = [NSString stringWithFormat:@"%ld d", diffInDate];
+        strDiff = [NSString stringWithFormat:@"%ldd", diffInDate];
     } else if (components.month != 0) {
 
         diffInDate = components.month;
-        strDiff = [NSString stringWithFormat:@"%ld m", diffInDate];
+        strDiff = [NSString stringWithFormat:@"%ldm", diffInDate];
     } else if (components.year != 0) {
 
         diffInDate = components.year;
-        strDiff = [NSString stringWithFormat:@"%ld y", diffInDate];
+        strDiff = [NSString stringWithFormat:@"%ldy", diffInDate];
     }
     return strDiff;
 }

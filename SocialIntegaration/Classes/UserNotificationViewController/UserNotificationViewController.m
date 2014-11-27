@@ -134,6 +134,7 @@
         NSString *strTitle = [NSString stringWithFormat:@"%@, %@", [dictUser objectForKey:@"name"] ,[dictData objectForKey:@"text"]];
         userNotif.title = strTitle;
         userNotif.notif_id = [dictData objectForKey:@"id"];
+        userNotif.name = [dictUser objectForKey:@"name"];
         NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
         userNotif.time = [Constant convertDateOFTweeter:strDate];
         userNotif.notifType = @"Twitter";
@@ -205,7 +206,8 @@
        userNotif.title = [dictData objectForKey:@"title"];
        userNotif.notif_id = [dictData objectForKey:@"id"];
        userNotif.fromId = [[dictData objectForKey:@"from"]objectForKey:@"id"];
-       userNotif.time = [dictData objectForKey:@"created_time"];
+       userNotif.name = [[dictData objectForKey:@"from"]objectForKey:@"name"];
+       userNotif.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
        userNotif.notifType = @"Facebook";
 
        [self.arryNotifiFB addObject:userNotif];
@@ -248,14 +250,15 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  {
 
-    UserNotification *userNoti = [self.arryNotifi objectAtIndex:indexPath.row];
-    NSString *string = userNoti.title;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 100)
+    UserNotification *userNotify = [self.arryNotifi objectAtIndex:indexPath.row];
+
+    NSString *string = [NSString stringWithFormat:@"%@ on %@", userNotify.title, userNotify.notifType];
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 200)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
                                        context:nil];
 
-    return (rect.size.height+53);
+    return (rect.size.height+30);
 }
 
 

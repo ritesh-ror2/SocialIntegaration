@@ -15,17 +15,19 @@
 
 - (void)awakeFromNib {
 
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTapGestureOnTableViewCell:)];
+   /* UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTapGestureOnTableViewCell:)];
     tapGesture.numberOfTapsRequired = 1;
     tapGesture.numberOfTouchesRequired = 1;
-    [self.contentView addGestureRecognizer:tapGesture];
+    [self.contentView addGestureRecognizer:tapGesture];*/
 
-    [btnPlay addTarget:self action:@selector(handleTapGestureOnTableViewCell:) forControlEvents:UIControlEventTouchUpInside];
+        // [btnPlay addTarget:self action:@selector(handleTapGestureOnTableViewCell:) forControlEvents:UIControlEventTouchUpInside];
 
     spinner.hidden = YES;
     spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     spinner.frame = CGRectMake(150, 10, 24, 50);
     [self.contentView addSubview:spinner];
+
+     self.touchCount = @1;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -76,8 +78,6 @@
             isAlreadyTapped = YES;
             [self didRowTapped:isAlreadyTapped];
         }
-
-            // [self InstagramCellConfiguration:YES];
     }
 }
 
@@ -139,6 +139,8 @@
         lblName.textColor = [UIColor whiteColor];
         lblTime.textColor = [UIColor whiteColor];
         lblSocialType.textColor = [UIColor whiteColor];
+
+            // [self setGradientColorOfTwitter];
     } else {
 
         [btnReply setHidden:YES];
@@ -148,7 +150,7 @@
         [lblTweet setHidden:YES];
         [lblFavourate setHidden:YES];
 
-        self.contentView.backgroundColor = [UIColor whiteColor];
+            //self.contentView.backgroundColor = [UIColor whiteColor];
         lblText.textColor = [UIColor darkGrayColor];
         lblName.textColor = [UIColor blackColor];
         lblTime.textColor = [UIColor darkGrayColor];
@@ -156,7 +158,26 @@
     }
 }
 
+- (void)cellTouchCountIncrement {
+    self.touchCount = @2;
+}
+
+- (void)cellTouchCountDecrement {
+    self.touchCount = @1;
+}
+
+- (void)setGradientColorOfTwitter {
+
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = self.bounds;
+    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:70/255.0f green:144/256.0f blue:241/256.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:74/255.0f green:146/255.0f blue:244/255.0f alpha:1.0] CGColor], (id)[[UIColor colorWithRed:75/255.0f green:160/255.0f blue:245/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:80/255.0f green:172/255.0f blue:247/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:87/255.0f green:179/255.0f blue:249/255.0f alpha:1.0] CGColor], nil];
+    [self setSelectedBackgroundView:[[UIView alloc] init]];
+    [self.selectedBackgroundView.layer insertSublayer:gradient atIndex:0];
+}
+
 - (void)InstagramCellConfiguration:(BOOL)isDisplay  {
+
+
 
     if (isDisplay == YES) {
 
@@ -164,6 +185,11 @@
         [imgVwOfLikeInstagram setHidden:NO];
         [lblCommentFb setHidden:NO];
         [lblLike setHidden:NO];
+
+        CAGradientLayer *gradient = [CAGradientLayer layer];
+        gradient.frame = self.contentView.bounds;
+        gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor blackColor] CGColor], (id)[[UIColor whiteColor] CGColor], nil];
+        [self.contentView.layer insertSublayer:gradient atIndex:0];
 
         self.contentView.backgroundColor = [UIColor colorWithRed:46/256.0f green:95/256.0f blue:136/256.0f alpha:1.0];
         lblText.textColor = [UIColor whiteColor];
@@ -188,6 +214,22 @@
 #pragma mark - Set value in table view
 
 - (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell  withPagging:(BOOL)isPagging {
+
+   if([objUserInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+
+        UIView *selectionColor = [[UIView alloc] init];
+        selectionColor.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+        self.selectedBackgroundView = selectionColor;
+
+    } else if ([objUserInfo.strUserSocialType isEqualToString:@"Twitter"]) {
+
+        [self setGradientColorOfTwitter];
+    } else {
+
+            //        UIView *selectionColor = [[UIView alloc] init];
+            //        selectionColor.backgroundColor = [UIColor colorWithRed:(245/255.0) green:(245/255.0) blue:(245/255.0) alpha:1];
+            //        self.selectedBackgroundView = selectionColor;
+    }
 
     if (isPagging == YES) {
 
@@ -226,14 +268,14 @@
 
     NSLog(@"%@", lblTime.text);
 
-    NSString *string = objUserInfo.strUserPost;
+    NSString *string = [objUserInfo.strUserPost stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
                                        context:nil];
 
-    lblText.frame = CGRectMake(63, 53, 250, rect.size.height);
-    lblText.text = objUserInfo.strUserPost;
+    lblText.frame = CGRectMake(63, 50, 250, rect.size.height);
+    lblText.text = string;
 
     lblSocialType.text = objUserInfo.strUserSocialType;
 
@@ -253,7 +295,7 @@
 
     if (objUserInfo.strPostImg.length != 0) { //set post image
 
-        imgVwPostImg.frame = CGRectMake(imgVwPostImg.frame.origin.x,  lblText.frame.size.height + lblText.frame.origin.y, 250, 100);
+        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 7, 320, 100);
         imgVwPostImg.hidden = NO;
         btnPlay.frame = imgVwPostImg.frame;
         
@@ -332,8 +374,8 @@
     [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x, yAxis, btnRetweet.frame.size.width, btnRetweet.frame.size.height)];
     [btnMoreTweet setFrame:CGRectMake(btnMoreTweet.frame.origin.x, yAxis, btnMoreTweet.frame.size.width, btnMoreTweet.frame.size.height)];
 
-    [lblFavourate setFrame:CGRectMake(lblFavourate.frame.origin.x, yAxis+4, 70, 21)];
-    [lblTweet setFrame:CGRectMake(lblTweet.frame.origin.x, yAxis+4, 70, 21)];
+    [lblFavourate setFrame:CGRectMake(lblFavourate.frame.origin.x, yAxis, 70, lblFavourate.frame.size.height)];
+    [lblTweet setFrame:CGRectMake(lblTweet.frame.origin.x, yAxis, 70, lblTweet.frame.size.height)];
 
     [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 21)];
 }

@@ -14,6 +14,7 @@
     IBOutlet UILabel *lblTitle;
     IBOutlet UILabel *lblTime;
     IBOutlet UILabel *lblType;
+    IBOutlet UILabel *lblName;
     IBOutlet UIImageView *imgVwProfile;
 }
 

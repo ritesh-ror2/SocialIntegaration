@@ -47,11 +47,14 @@
         //IBOutlet UITextView *txtVwMessage;
 }
 
-@property (nonatomic, strong)NSString *strProfileImg;
+@property (nonatomic, strong) NSNumber *touchCount;
+@property (nonatomic, strong) NSString *strProfileImg;
 @property (unsafe_unretained)id <CustomTableCellDelegate> customCellDelegate;
 @property (nonatomic, strong) UserInfo *userInfo;
 @property (nonatomic)NSInteger cellIndex;
 
+- (void)cellTouchCountIncrement;
+- (void)cellTouchCountDecrement;
 - (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell withPagging:(BOOL)isPagging;
 
 @end
