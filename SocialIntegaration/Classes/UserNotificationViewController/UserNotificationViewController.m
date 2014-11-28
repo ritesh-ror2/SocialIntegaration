@@ -215,7 +215,6 @@
     [self twitterNotification];
 }
 
-
 - (void)shortArryOfAllFeeds {
 
     [self.arryNotifi removeAllObjects]; //first remove all object

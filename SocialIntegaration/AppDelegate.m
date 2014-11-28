@@ -21,8 +21,8 @@
     self.instagram = [[Instagram alloc] initWithClientId:APP_ID
                                                 delegate:nil];
     self.hasFacebook = NO;
-
-        //loading view
+    self.isFirstTimeLaunch = YES;
+    //loading view
 	self.spinner = [[MBProgressHUD alloc] init];
     [self.window addSubview:self.spinner];
     [self.window bringSubviewToFront:self.spinner];

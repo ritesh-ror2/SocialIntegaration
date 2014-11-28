@@ -27,4 +27,6 @@
 
 @property (nonatomic)NSUInteger index;
 
+@property (nonatomic, strong) UINavigationController *navController;
+
 @end

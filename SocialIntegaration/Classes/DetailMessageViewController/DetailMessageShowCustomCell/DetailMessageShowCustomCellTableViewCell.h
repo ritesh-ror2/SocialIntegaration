@@ -12,6 +12,8 @@
 @interface DetailMessageShowCustomCellTableViewCell : UITableViewCell {
 
     UILabel *lblMessage;
+    UILabel *lblTime;
+
     UIImageView *imgVwUser;
     UIImageView *imgVwArrow;
 

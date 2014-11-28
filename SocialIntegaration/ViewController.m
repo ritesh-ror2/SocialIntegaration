@@ -101,6 +101,12 @@ BOOL hasTwitter = NO;
 
     [super viewDidAppear:animated];
     self.navItem.title = @"Timeline";
+    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
+
+        self.tbleVwPostList.alpha = 0.0;
+        sharedAppDelegate.isFirstTimeLaunch = NO;
+        [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -135,6 +141,18 @@ BOOL hasTwitter = NO;
     imgVwProile.frame = CGRectMake(0, 0, 35, 35);
     return imgVwProile;
 }
+
+- (void)animationOfTimeline {
+
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:3.0];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [self.tbleVwPostList setHidden:NO];
+    [self.tbleVwPostList setAlpha:1];
+
+    [UIView commitAnimations];
+
+ }
 
 - (void)appIsInForeground:(id)sender {
 
@@ -261,7 +279,7 @@ BOOL hasTwitter = NO;
                                       }
                                   }];*/
 
-    [FBSession openActiveSessionWithReadPermissions:@[ @"basic_info",  @"read_stream"]  allowLoginUI:YES
+    [FBSession openActiveSessionWithReadPermissions:@[ @"basic_info",  @"read_stream", @"email", @"user_friends", @"user_likes"]  allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
 	                                                  FBSessionState state,
 	                                                  NSError *error) {

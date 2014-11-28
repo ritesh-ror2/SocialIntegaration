@@ -46,10 +46,6 @@
 
     [self.pageViewController becomeFirstResponder];
 
-
-    
-
-        //  self.navigationController.title = @"Timeline";
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -108,6 +104,7 @@
 #pragma mark - Page View Controller Data Source
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
+
     [self updateNavigationPageControl];
     NSUInteger pageIndex;
 
@@ -130,6 +127,7 @@
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
+
     [self updateNavigationPageControl];
     NSUInteger pageIndex;
 

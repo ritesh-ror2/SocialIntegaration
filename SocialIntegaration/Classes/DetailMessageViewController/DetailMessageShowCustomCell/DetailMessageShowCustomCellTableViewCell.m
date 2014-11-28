@@ -8,6 +8,7 @@
 
 #import "DetailMessageShowCustomCellTableViewCell.h"
 #import "Constant.h"
+#import "NSDate+Helper.h"
 #import <QuartzCore/QuartzCore.h>
 
 @implementation DetailMessageShowCustomCellTableViewCell
@@ -42,6 +43,10 @@
 
     imgVwUser = [[UIImageView alloc]init];
     [self.contentView addSubview:imgVwUser];
+
+    lblTime = [[UILabel alloc]init];
+    lblTime.textColor = [UIColor whiteColor];
+    lblTime.numberOfLines = 0;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -61,11 +66,27 @@
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
+
+        NSString *strSubstrTime = [objComment.time substringToIndex:10];
+        int isToday = [self calculateTimesBetweenTwoDates:strSubstrTime];
+
+        NSString *strTime;
+        if (isToday == 0) {
+            strTime = [self differenceBetweenDate:strSubstrTime];
+        } else {
+            strTime = [NSString stringWithFormat:@"On %@", strSubstrTime];
+        }
+    lblTime.text = strTime;
+
     if (![objComment.fromId isEqualToString:userId]) {
 
         lblMessage.text = objComment.userComment;
         lblMessage.backgroundColor = [UIColor clearColor];
         lblMessage.frame = CGRectMake(60, 5, rect.size.width, rect.size.height);
+
+        lblTime.text = objComment.userComment;
+        lblTime.backgroundColor = [UIColor clearColor];
+        lblTime.frame = CGRectMake(65, 5, rect.size.width, rect.size.height);
 
         imgVwBackground.frame = CGRectMake(55, 3, rect.size.width+10, rect.size.height+6);
         imgVwBackground.backgroundColor = [UIColor colorWithRed:107/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
@@ -79,6 +100,10 @@
         lblMessage.frame = CGRectMake((263 - rect.size.width), 5, rect.size.width, rect.size.height+2);
         lblMessage.backgroundColor = [UIColor clearColor];
 
+        lblTime.text = objComment.userComment;
+        lblTime.frame = CGRectMake((255 - rect.size.width), 5, rect.size.width, rect.size.height+2);
+        lblTime.backgroundColor = [UIColor clearColor];
+
         imgVwBackground.frame = CGRectMake((258 - rect.size.width), 3, rect.size.width+10, rect.size.height+6);
         imgVwBackground.backgroundColor = [UIColor lightGrayColor];
 
@@ -89,6 +114,58 @@
     [self uploadProfileImage:objComment];
     NSLog(@"%@", objComment.userComment);
 }
+
+
+#pragma mark - Calculate time between two dates
+
+- (int)calculateTimesBetweenTwoDates:(NSString *)strGivenDate {
+
+    NSDate *date = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:DatabaseDateFormate];
+    NSString *strDate = [dateFormatter stringFromDate:date];
+    NSDate *toDate = [NSDate dateFromString:strDate];
+
+    NSDate *fromDate = [NSDate dateFromStringInUserNotify:strGivenDate];
+    NSLog(@"%@  from %@", toDate, fromDate);
+
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *components = [gregorianCalendar components:NSMinuteCalendarUnit| NSHourCalendarUnit|NSDayCalendarUnit
+                                                        fromDate:fromDate toDate:toDate options:0];
+    int diffInDate = components.day;
+    NSLog(@"%i", components.day);
+    if (diffInDate != 0)  {
+        return diffInDate;
+    } else {
+        return 0;
+    }
+}
+
+- (NSString *)differenceBetweenDate:(NSString *)strGivenDate {
+
+    NSDate *date = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:DatabaseDateFormate];
+    NSString *strDate = [dateFormatter stringFromDate:date];
+    NSDate *toDate = [NSDate dateFromString:strDate];
+
+    NSDate *fromDate = [NSDate dateFromStringInUserNotify:strGivenDate];
+    NSLog(@"%@  from %@", toDate, fromDate);
+
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *components = [gregorianCalendar components:NSMinuteCalendarUnit| NSHourCalendarUnit|NSDayCalendarUnit
+                                                        fromDate:fromDate toDate:toDate options:0];
+    int diffInDate = components.hour;
+    NSString *strTime;
+
+    if (diffInDate == 0)  {
+        strTime = [NSString stringWithFormat:@"Before %d minute",diffInDate];
+    } else {
+        strTime = [NSString stringWithFormat:@"Before %d hour",diffInDate];
+    }
+    return strTime;
+}
+
 
 - (void)uploadProfileImage:(UserComment *)objUserComment {
 

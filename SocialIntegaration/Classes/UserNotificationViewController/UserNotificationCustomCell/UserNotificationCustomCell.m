@@ -66,20 +66,6 @@
     }
 
     lblTitle.attributedText = strAttribut;
-
-    // lblType.frame = CGRectMake(55, lblTitle.frame.size.height+lblTitle.frame.origin.y+5, 300, 21);
-
-    // lblTime.frame = CGRectMake(55, lblType.frame.size.height+lblType.frame.origin.y, 300, 21);
-    //    NSString *strSubstrTime = [userNotification.time substringToIndex:10];
-    //    int isToday = [self calculateTimesBetweenTwoDates:strSubstrTime];
-    //
-    //    NSString *strTime;
-    //    if (isToday == 0) {
-    //        strTime = [self differenceBetweenDate:strSubstrTime];
-    //    } else {
-    //        strTime = [NSString stringWithFormat:@"On %@", strSubstrTime];
-    //    }
-    //    lblTime.text = strTime;
 }
 
 #pragma mark - Set profile image of twitter and Instagram
@@ -145,54 +131,6 @@
 }
 
 
-#pragma mark - Calculate time between two dates
 
-- (int)calculateTimesBetweenTwoDates:(NSString *)strGivenDate {
-
-    NSDate *date = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
-    [dateFormatter setDateFormat:DatabaseDateFormate];
-    NSString *strDate = [dateFormatter stringFromDate:date];
-    NSDate *toDate = [NSDate dateFromString:strDate];
-
-    NSDate *fromDate = [NSDate dateFromStringInUserNotify:strGivenDate];
-    NSLog(@"%@  from %@", toDate, fromDate);
-
-    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *components = [gregorianCalendar components:NSMinuteCalendarUnit| NSHourCalendarUnit|NSDayCalendarUnit
-                                                        fromDate:fromDate toDate:toDate options:0];
-    int diffInDate = components.day;
-    NSLog(@"%i", components.day);
-    if (diffInDate != 0)  {
-        return diffInDate;
-    } else {
-        return 0;
-    }
-}
-
-- (NSString *)differenceBetweenDate:(NSString *)strGivenDate {
-
-    NSDate *date = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
-    [dateFormatter setDateFormat:DatabaseDateFormate];
-    NSString *strDate = [dateFormatter stringFromDate:date];
-    NSDate *toDate = [NSDate dateFromString:strDate];
-
-    NSDate *fromDate = [NSDate dateFromStringInUserNotify:strGivenDate];
-    NSLog(@"%@  from %@", toDate, fromDate);
-
-    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *components = [gregorianCalendar components:NSMinuteCalendarUnit| NSHourCalendarUnit|NSDayCalendarUnit
-                                                        fromDate:fromDate toDate:toDate options:0];
-    int diffInDate = components.hour;
-    NSString *strTime;
-
-    if (diffInDate == 0)  {
-        strTime = [NSString stringWithFormat:@"Before %d minute",diffInDate];
-    } else {
-        strTime = [NSString stringWithFormat:@"Before %d hour",diffInDate];
-    }
-    return strTime;
-}
 
 @end

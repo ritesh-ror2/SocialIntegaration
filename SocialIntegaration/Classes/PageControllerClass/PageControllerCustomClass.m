@@ -38,7 +38,7 @@
 -(void)setupNavigationPageControl{
     UINavigationController *navController = self.navigationController;
 
-        //navController.navigationBar.barTintColor = [UIColor colorWithRed:.2 green:.4 blue:.9 alpha:1];
+    navController.navigationBar.barTintColor = [UIColor whiteColor];
 
     CGSize navBarSize = navController.navigationBar.bounds.size;
     CGPoint origin = CGPointMake( navBarSize.width/2, (navBarSize.height/3)*2.5 );
@@ -76,10 +76,9 @@
     }
 }
 
-- (void)setupNavigationPageControlFrame {
+- (void)setupNavigationPageControlFrame:(UIView *)vwPageController {
 
-    self.navigationPageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 200 ,0, 0)];
-
+    [vwPageController addSubview:self.navigationPageControl];
 }
 
 @end

@@ -32,5 +32,6 @@
 @property (strong, nonatomic) ACAccount *facebookAccount;
 
 @property (strong, nonatomic) NSString *nextFbUrl;
+@property (nonatomic) BOOL isFirstTimeLaunch;
 
 @end

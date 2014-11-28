@@ -55,12 +55,21 @@
 
     pageControl.currentPage = 0;
     pageControl.numberOfPages = 2;
+    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+    pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
+
     self.arryUsers = [[NSMutableArray alloc]init];
 
 //    self.tbleVwUser.layer.borderColor = [[UIColor blackColor]CGColor];
 //    self.tbleVwUser.layer.borderWidth = 1.0;
     [self setHeadingAndNavigationColor];
     [self getListOfFollowers];
+    [self addPageControl];
+}
+
+- (void) addPageControl {
+
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -429,9 +438,14 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     UserInfo *userInfo = [self.arryUsers objectAtIndex:indexPath.row];
-    NSString *strTagged = userInfo.strUserName;
-        // self.txtVwTwitter.text = @"";
-    self.txtVwTwitter.text = [self.txtVwTwitter.text stringByAppendingString:strTagged];
+    NSString *strTaggedName = userInfo.strUserName;
+    NSString *strTaggedUser = [self.txtVwTwitter.text stringByAppendingString:strTaggedName];
+
+        //  NSMutableAttributedString *strTwitterTags = [[NSMutableAttributedString alloc]initWithString:strTaggedUser];
+
+        // [strTwitterTags addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0] range:NSMakeRange(strTaggedUser.length - strTaggedName.length, strTaggedName.length)];
+    self.txtVwTwitter.text = @"";
+    self.txtVwTwitter.text = strTaggedUser;
 }
 
 - (void)openUsersListInTwitter {
@@ -538,6 +552,8 @@
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
 
+    self.tbleVwUser.hidden = YES;
+    self.tbleVwUser.frame = CGRectMake(0, self.view.frame.size.height, 320, 210);
     lblComment.hidden = YES;
     lblCommentTwitter.hidden = YES;
     self.navBar.hidden = NO;
@@ -556,19 +572,20 @@
     }
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+- (void)textViewDidChange:(UITextView *)textView {
 
-//    textView.text = text;
-//
-//    if ([text isEqualToString:@"@"]) {
-//
-//        [self openUsersListInTwitter];
-//    } else {
-//
-//        self.txtVwTwitter.text = [self.txtVwTwitter.text stringByAppendingString:text];
-//    }
-    return YES;
+    NSString *strLastText = [textView.text substringFromIndex: textView.text.length - 1];
+
+    if (textView == self.txtVwTwitter) {
+
+        if ([strLastText isEqualToString:@"@"]) {
+            [self openUsersListInTwitter];
+        } else {
+                self.navBar.hidden = NO;
+        }
+    }
 }
+
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 

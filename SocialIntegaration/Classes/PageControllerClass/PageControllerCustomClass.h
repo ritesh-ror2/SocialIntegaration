@@ -17,7 +17,7 @@
 -(void)autoConfigureNavigationPageControlWithPageViewController:(UIPageViewController*) pageViewController;
 -(void)updateNavigationPageControl;
 -(void)setupNavigationPageControl;
-- (void)setupNavigationPageControlFrame;
+-(void)setupNavigationPageControlFrame:(UIView *)vwPageController;
 
 
 @end

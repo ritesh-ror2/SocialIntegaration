@@ -79,7 +79,7 @@
         if (![SLComposeViewController
               isAvailableForServiceType:SLServiceTypeFacebook]) {
 
-            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER_SETTING];
+                // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER_SETTING];
             [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISFBLOGIN];
             [[NSUserDefaults standardUserDefaults]synchronize];
             [UserProfile deleteProfile:@"Facebook"];
@@ -290,7 +290,7 @@
 	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
 		if (error) {
 
-            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+                //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
             [sharedAppDelegate.spinner hide:YES];
 		} else {
 
@@ -308,7 +308,7 @@
 
 	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
 		if (error) {
-            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+                // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
 		} else {
 
             NSDictionary *dictInfo = (NSDictionary *)result;
@@ -428,7 +428,7 @@
 
                         if (error) {
 
-                            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
+                                //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
                             return ;
                         } else {
 
@@ -452,7 +452,7 @@
                  }
            } else {
                
-               [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
+                   // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
            }
          }];
     }

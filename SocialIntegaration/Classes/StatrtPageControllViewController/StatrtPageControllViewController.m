@@ -41,13 +41,18 @@
     [self.pageViewController didMoveToParentViewController:self];
     [self.pageViewController becomeFirstResponder];
 
-    [self setupNavigationPageControlFrame];
-
     [self setupNavigationPageControl];
+
+    UIView *vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 270, 60, 40)];
+    [self.view addSubview:vwPageControl];
+    [self.view bringSubviewToFront:vwPageControl];
+
+    [self setupNavigationPageControlFrame:vwPageControl];
+
 
     UIPageControl *pageControl = [UIPageControl appearance];
     pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-    pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
+    pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
 }
 
 - (void)didReceiveMemoryWarning {
