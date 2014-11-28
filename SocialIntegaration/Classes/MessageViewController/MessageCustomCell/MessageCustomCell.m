@@ -53,7 +53,7 @@
     NSString *string = objUserComment.userComment;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
     lblText.frame = CGRectMake(63, 45, 250, rect.size.height+2);

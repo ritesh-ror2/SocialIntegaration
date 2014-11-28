@@ -24,7 +24,7 @@
 #define ERROR_CONNECTING        @"Connection Error"
 #define ERROR_TWITTER           @"To see twittes of Twitter from this app, the accounts must be setup under settings of app."
 #define ERROR_TWITTER_SETTING        @"The accounts must be setup under settings. After login from settings again tapped this button to connect through Twitter via app."
-#define ERROR_INSTAGRAM         @"To see post of Instagram from this app, the accounts must be setup under settings of app."
+#define ERROR_INSTAGRAM         @"To see post of Instagram from this app, the accounts must be setup using safari or app."
 #define ERROR_AUTHEN            @"There is some authentication problem."
 //Twitter url
 #define TWITTER_TIMELINE_URL    @"https://api.twitter.com/1/statuses/home_timeline.json"
@@ -40,6 +40,7 @@
 #define TWEETERDATEFORMATE  @"dd MMM yyyy HH:mm:ss"
     //
 #define APP_ID @"08b82c71973148ffbc52cb6e75102721"//b8d2f232eddb4593b9f333ddfe8bb876"//08b82c71973148ffbc52cb6e75102721
+#define IS_IOS7	(([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) ? YES : NO)
 
 #define sharedAppDelegate ((AppDelegate*)[[UIApplication sharedApplication] delegate])
 

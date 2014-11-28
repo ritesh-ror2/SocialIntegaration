@@ -11,9 +11,9 @@
 #import "TwitterFeedViewController.h"
 #import "InstagramFeedViewController.h"
 #import "ViewController.h"
+#import "PageControllerCustomClass.h"
 
-@interface FeedPagesViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
+@interface FeedPagesViewController : PageControllerCustomClass <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, strong) UIPageViewController *pageViewController;
-
 @end

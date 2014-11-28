@@ -58,6 +58,10 @@
     self.arryOfFbMessage = [[NSMutableArray alloc]init];
 
     [self showInboxMessage];
+
+    if (IS_IOS7) {
+        [self.tbleVwFbMessage setSeparatorInset:UIEdgeInsetsZero];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -197,7 +201,7 @@
     NSString *string = objUserComment.userComment;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
     return (rect.size.height + 50);//183 is height of other fixed content

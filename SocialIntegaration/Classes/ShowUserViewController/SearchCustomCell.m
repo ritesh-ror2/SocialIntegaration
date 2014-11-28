@@ -56,12 +56,14 @@
         lblResult.frame = CGRectMake(55, 5, 250, 21);
         lblDescription.text = userInfo.strUserPost;
         lblDescription.frame = CGRectMake(55, 27, 250, rect.size.height);
-            //txtVwDescription.text = userInfo.strUserPost;
-            // txtVwDescription.frame = CGRectMake(55, 27, 250, rect.size.height);
     } else {
         btnFollow.hidden = NO;
         lblResult.frame = CGRectMake(55, 10, 250, 21);
     }
+
+    btnFollow.layer.cornerRadius = 5.0;
+    btnFollow.layer.borderWidth = 0.5;
+    btnFollow.layer.borderColor = [[UIColor lightGrayColor]CGColor];
 
         //follow or unfollow
     if (userInfo.isFollowing == 1){

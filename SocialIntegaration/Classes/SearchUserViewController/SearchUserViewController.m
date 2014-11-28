@@ -44,6 +44,9 @@
     UserProfile *userProfiltInst = [UserProfile getProfile:@"Instagram"];
     userNameInstagram = userProfiltInst.userName;
 
+    if (IS_IOS7) {
+        [self.tbleVwSearch setSeparatorInset:UIEdgeInsetsZero];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -69,18 +72,27 @@
 
         cell.textLabel.text = userNameFb;
         cell.detailTextLabel.text = @"Facebook";
+        cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:17.0];
+        cell.detailTextLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:15.0];
+
         cell.detailTextLabel.textColor = [UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0];
     }
     if (indexPath.row == 1) {
 
         cell.textLabel.text = userNameTwitter;
         cell.detailTextLabel.text = @"Twitter";
+        cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:17.0];
+        cell.detailTextLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:15.0];
+
         cell.detailTextLabel.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
     }
     if (indexPath.row == 2) {
 
         cell.textLabel.text = userNameInstagram;
+        cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:17.0];
         cell.detailTextLabel.text = @"Instagram";
+        cell.detailTextLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:15.0];
+
         cell.detailTextLabel.textColor = [UIColor colorWithRed:93/256.0f green:122/256.0f blue:154/256.0f alpha:1.0];
     }
     return cell;

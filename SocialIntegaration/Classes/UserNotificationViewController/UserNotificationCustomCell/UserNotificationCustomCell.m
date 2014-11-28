@@ -41,7 +41,7 @@
     NSString *string = [NSString stringWithFormat:@"%@ on %@", strSubstring, userNotification.notifType];
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 100)
                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                   attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                   attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                       context:nil];
 
     lblTitle.frame = CGRectMake(55, 25, 250, rect.size.height);

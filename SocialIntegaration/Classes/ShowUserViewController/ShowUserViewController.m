@@ -247,7 +247,7 @@
                dispatch_async(dispatch_get_main_queue(), ^{
 
                    [sharedAppDelegate.spinner hide:YES];
-                   [Constant showAlert:@"Message" forMessage:@"No notification in Twitter account."];
+                   [Constant showAlert:@"Message" forMessage:@"No match found."];
                });
            }
        }

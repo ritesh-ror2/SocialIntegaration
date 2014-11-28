@@ -22,7 +22,7 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-    
+
     // Create page view controller
     self.pageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"PageViewController"];
     self.pageViewController.dataSource = self;
@@ -34,12 +34,16 @@
     [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
 
     // Change the size of page view controller
-    self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-36);
+    self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     
     [self addChildViewController:_pageViewController];
     [self.view addSubview:_pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
     [self.pageViewController becomeFirstResponder];
+
+    [self setupNavigationPageControlFrame];
+
+    [self setupNavigationPageControl];
 
     UIPageControl *pageControl = [UIPageControl appearance];
     pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
@@ -51,6 +55,11 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+-(void)viewDidAppear:(BOOL)animated{
+    [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
+}
+
 
 #pragma mark - View controller array
 
@@ -83,6 +92,8 @@
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
 
+    [self updateNavigationPageControl];
+
     NSUInteger pageIndex;
 
     if ([viewController isKindOfClass:[ProfileViewController class]]) {
@@ -102,6 +113,8 @@
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
+
+    [self updateNavigationPageControl];
 
     NSUInteger pageIndex;
 

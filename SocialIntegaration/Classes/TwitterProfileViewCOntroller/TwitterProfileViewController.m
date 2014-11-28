@@ -41,6 +41,10 @@
 
     self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:89/256.0f green:157/256.0f blue:247/256.0f alpha:1.0];
     self.arryTweeterProfileInfo = [[NSMutableArray alloc]init];
+
+    if (IS_IOS7) {
+        [self.tbleVwTweeterFeeds setSeparatorInset:UIEdgeInsetsZero];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -280,7 +284,7 @@
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
     if (objUserInfo.strPostImg.length != 0) {

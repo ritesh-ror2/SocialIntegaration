@@ -37,6 +37,10 @@
     self.navController.navigationBar.translucent = NO;
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
+
+    if (IS_IOS7) {
+        [self.tbleVwInstagram setSeparatorInset:UIEdgeInsetsZero];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -103,16 +107,21 @@
     return cell;
 }
 
-#pragma mark - UITableViewDelegate
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    if ( sharedAppDelegate.arryOfInstagrame.count != 0) {
+        if(indexPath.row > [sharedAppDelegate.arryOfInstagrame count]-1) {
+            return 44;
+        }
+    } else {
+        return 0;
+    }
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
     if (objUserInfo.strPostImg.length != 0) {
@@ -120,10 +129,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + 190);
+                return(rect.size.height + 197);
             }
         }
-        return(rect.size.height + 160);
+        return(rect.size.height + 165);
     }
 
     for (NSString *index in self.arrySelectedIndex) {
@@ -132,7 +141,7 @@
             return(rect.size.height + 90);
         }
     }
-    return (rect.size.height + 60);//183 is height of other fixed content
+    return (rect.size.height + 58);//183 is height of other fixed content
 }
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {

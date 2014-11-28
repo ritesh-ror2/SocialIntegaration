@@ -42,6 +42,10 @@
 
     self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:70/256.0f green:106/256.0f blue:181/256.0f alpha:1.0];
     self.arryOfFBUserFeed = [[NSMutableArray alloc]init];
+
+    if (IS_IOS7) {
+        [self.tbleVwFeeds setSeparatorInset:UIEdgeInsetsZero];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -257,7 +261,7 @@
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
     if (objUserInfo.strPostImg.length != 0) {

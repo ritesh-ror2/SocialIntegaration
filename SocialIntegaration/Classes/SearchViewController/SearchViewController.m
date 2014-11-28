@@ -34,6 +34,10 @@
     array = @[@"User", @"Keyword", @"HashTag"];
     self.navigationController.navigationBar.hidden = NO;
     self.title = @"User";
+
+    if (IS_IOS7) {
+        [self.tbleVwSearch setSeparatorInset:UIEdgeInsetsZero];
+    }
 }
 
 
@@ -57,6 +61,8 @@
     }
 
     cell.textLabel.text = [array objectAtIndex:indexPath.row];
+    cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:17.0];
+
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

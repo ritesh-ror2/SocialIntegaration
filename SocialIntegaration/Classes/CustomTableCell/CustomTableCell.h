@@ -20,6 +20,8 @@
 
 @interface CustomTableCell : UITableViewCell {
 
+    IBOutlet UIImageView *imgVwBgColor;
+
     IBOutlet UILabel *lblName;
     IBOutlet UILabel *lblSocialType;
     IBOutlet UILabel *lblText;

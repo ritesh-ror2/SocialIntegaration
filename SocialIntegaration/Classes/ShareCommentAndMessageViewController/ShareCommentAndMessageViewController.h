@@ -33,5 +33,6 @@
 @property (nonatomic, strong) IBOutlet UITextView *txtVwFB;
 @property (nonatomic, strong) IBOutlet UITextView *txtVwTwitter;
 @property (nonatomic, strong) IBOutlet NSString *strShareOrMessage;
+@property (nonatomic, strong) IBOutlet UITableView *tbleVwUser;
 
 @end

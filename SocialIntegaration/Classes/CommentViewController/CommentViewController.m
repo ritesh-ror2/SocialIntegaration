@@ -54,9 +54,10 @@
     [super viewDidLoad];
 
     self.navigationController.navigationBarHidden = YES;
-        // imgVwBackground.backgroundColor =  [UIColor whiteColor]; //
-        //imgVwBackground.userInteractionEnabled = YES;
-        //  imgVwBackground.multipleTouchEnabled = YES;
+
+    if (IS_IOS7) {
+        [tbleVwComment setSeparatorInset:UIEdgeInsetsZero];
+    }
 
     vwOfComment.backgroundColor = [UIColor colorWithRed:240/256.0f green:240/256.0f blue:240/256.0f alpha:1.0];
     tbleVwComment.backgroundColor = [UIColor clearColor];
@@ -66,9 +67,6 @@
     [self.view bringSubviewToFront:lblHeading];
     [self.view bringSubviewToFront:btnRight];
     [self.view bringSubviewToFront:btnLeft];
-
-        // scrollVw.contentSize = CGSizeMake(scrollVw.frame.size.width, 420);
-        // scrollVw.pagingEnabled = YES;
 
     self.arrayFriend = @[@"@qwe123", @"qwe123", @"qwe123"];
 
@@ -99,6 +97,7 @@
 
     [self getLargeImageOfFacebook];
     [self getLikeCountOfFb];
+    [self setLargeImageOfTwitter:self.userInfo];
 
 }
 
@@ -148,6 +147,7 @@
         [self setCommentOfUser:self.userInfo];
         [self fetchRetewwtOfTwitter];
         [self twitterConfiguration];
+
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
     }
 }
@@ -397,7 +397,7 @@
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
     lblComment.frame = CGRectMake(70, 21, 245, rect.size.height+10);
@@ -414,7 +414,6 @@
         asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
         asyVwOfPost.backgroundColor = [UIColor clearColor];
 
-        btnShowImageOrVideo.hidden = NO;
         btnShowImageOrVideo.frame = asyVwOfPost.frame;
         [self setFrameOfActivityView:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 10];
         int taggedUser =  [self setFramesOfTaggedUsers:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 95];
@@ -431,7 +430,10 @@
     imgVwUser.frame = CGRectMake(10, imgVwBackground.frame.size.height+5 , 45, 45);
 
     if ([objUserInfo.type isEqualToString:@"video"]) {
+
+        btnShowImageOrVideo.hidden = NO;
         [btnShowImageOrVideo setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+        [self.view bringSubviewToFront:btnShowImageOrVideo];
     }
 }
 
@@ -447,45 +449,26 @@
     lblWith.textColor = [UIColor lightGrayColor];
     [self.view addSubview:lblWith];
 
-    int xAxis = 40;
-    for (UserInfo *userInfo  in self.arryTaggedUser) {
+    UILabel *lblNameTagges = [[UILabel alloc]initWithFrame:CGRectMake(40, yAxis, 280, 21)];
+    lblNameTagges.textColor = [UIColor lightGrayColor];
+    lblNameTagges.font = [UIFont fontWithName:@"Helvetica-Neue" size:13.0];
+    lblNameTagges.textColor = [UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0];
+    [self.view addSubview:lblNameTagges];
 
+    UIButton *btnTaggedUser = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnTaggedUser.frame = CGRectMake(40, yAxis, 280, 30);
+    [btnTaggedUser addTarget:self action:@selector(userProfileBtnTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btnTaggedUser];
+    [self.view bringSubviewToFront:btnTaggedUser];
+
+    for (UserInfo *userInfo  in self.arryTaggedUser) {
         NSString *strName = userInfo.strUserName;
         [strUserNameList appendString:strName];
-
-        CGRect rect = [strName boundingRectWithSize:CGSizeMake(250, 30)
-                                            options:NSStringDrawingUsesLineFragmentOrigin
-                                         attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
-                                            context:nil];
-
-        UIButton *btnTaggedUser = [UIButton buttonWithType:UIButtonTypeCustom];
-        [btnTaggedUser setTitle:strName forState:UIControlStateNormal];
-        btnTaggedUser.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:13.0];
-        btnTaggedUser.frame = CGRectMake(xAxis, yAxis, rect.size.width, 30);
-        btnTaggedUser.tag = [userInfo.fromId integerValue];
-        [btnTaggedUser setTitleColor:[UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0] forState:UIControlStateNormal];
-        [btnTaggedUser addTarget:self action:@selector(userProfileBtnTapped:) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:btnTaggedUser];
-        [self.view bringSubviewToFront:btnTaggedUser];
-
-        if (xAxis < 320) {
-            xAxis = xAxis + rect.size.width;
-        } else {
-            xAxis = 30;
-            yAxis = yAxis + 33;
-        }
-    }
-    if (strUserNameList.length != 0) {
-
-        CGRect rect = [strUserNameList boundingRectWithSize:CGSizeMake(250, 30)
-                                            options:NSStringDrawingUsesLineFragmentOrigin
-                                         attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
-                                            context:nil];
-        return rect.size.height;
-    } else {
-        return 0;
     }
 
+    lblNameTagges.text = strUserNameList;
+
+    return 30;
 }
 
 - (IBAction)moreBtnTapped:(id)sender {
@@ -667,7 +650,7 @@
 
       UserInfo *otherUserInfo = [[UserInfo alloc]init];
       otherUserInfo.strUserName = btn.titleLabel.text;
-    otherUserInfo.fromId  = [NSString stringWithFormat:@"%i", btn.tag];
+      otherUserInfo.fromId  = [NSString stringWithFormat:@"%i", btn.tag];
       otherUserInfo.strUserSocialType = @"Facebook";
       UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
       ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
@@ -694,11 +677,11 @@
     [btnCommentFb setFrame:CGRectMake(btnCommentFb.frame.origin.x, yAxis+2,  btnCommentFb.frame.size.width,  btnCommentFb.frame.size.height)];
     [btnLike setFrame:CGRectMake(btnLike.frame.origin.x, yAxis+2, btnLike.frame.size.width, btnLike.frame.size.height)];
     [lblLikeCount setFrame:CGRectMake(lblLikeCount.frame.origin.x, yAxis+2, lblLikeCount.frame.size.width, lblLikeCount.frame.size.height)];
-    [btnShare setFrame:CGRectMake(btnShare.frame.origin.x, yAxis+2, btnShare.frame.size.width, btnShare.frame.size.height)];
+    [btnShare setFrame:CGRectMake(btnShare.frame.origin.x, yAxis, btnShare.frame.size.width, btnShare.frame.size.height)];
 
 
-    [lblRetweet setFrame:CGRectMake(lblRetweet.frame.origin.x, yAxis+2, lblRetweet.frame.size.width, lblRetweet.frame.size.height)];
-    [lblFavourite setFrame:CGRectMake(lblFavourite.frame.origin.x, yAxis+3, lblFavourite.frame.size.width, lblFavourite.frame.size.height)];
+    [lblRetweet setFrame:CGRectMake(lblRetweet.frame.origin.x, yAxis, lblRetweet.frame.size.width, lblRetweet.frame.size.height)];
+    [lblFavourite setFrame:CGRectMake(lblFavourite.frame.origin.x, yAxis, lblFavourite.frame.size.width, lblFavourite.frame.size.height)];
 
     [btnFavourite setFrame:CGRectMake(btnFavourite.frame.origin.x, yAxis, btnFavourite.frame.size.width, btnFavourite.frame.size.height)];
     [btnReply setFrame:CGRectMake(btnReply.frame.origin.x, yAxis, btnReply.frame.size.width, btnReply.frame.size.height)];
@@ -712,6 +695,19 @@
 - (IBAction)cancelBtnTapped:(id)sender {
 
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)setLargeImageOfTwitter:(UserInfo *)userInfo {
+
+    dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(postImageQueue, ^{
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userInfo.strPostImg]];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+           imgVwPostImage.image = [UIImage imageWithData:image];
+        });
+    });
 }
 
 - (void)setProfilePicOfPostUser:(UserInfo *)userInfo  {
@@ -792,6 +788,8 @@
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     cell.textLabel.text = [self.arrayFriend objectAtIndex:indexPath.row];
+    cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:17.0];
+
     return cell;
 }
 
@@ -804,7 +802,7 @@
         NSString *string = userComment.userComment;
         CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                            options:NSStringDrawingUsesLineFragmentOrigin
-                                        attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                        attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                            context:nil];
 
         return (rect.size.height + 35);//183 is height of other fixed content
@@ -835,6 +833,7 @@
     [btnFavourite setHidden:NO];
     [btnReply setHidden:NO];
     [btnMoreTweet setHidden:NO];
+
 }
 
 - (void)instagramConfiguration  {
@@ -860,6 +859,7 @@
                                               ) {
                               if (error) {
                                   NSLog(@"%2@", [error debugDescription]);
+                                  [self setCommentOfUser:self.userInfo];
                               } else  {
                                   NSLog(@"%@", result);
                                   NSArray *arry = [result objectForKey:@"data"];
@@ -988,15 +988,17 @@
     if (touchMove.y > touchBegin.y) {
 
         NSLog(@"image show");
-
-        [UIView animateWithDuration:0.4 animations:^{
+        [vwOfComment bringSubviewToFront:imgVwPostImage];
+        [UIView animateWithDuration:0.5 animations:^{
 
             [imgVwPostImage setHidden:NO];
-            [imgVwPostImage setFrame:CGRectMake(imgVwBackground.frame.origin.x, imgVwBackground.frame.origin.y, imgVwBackground.frame.size.width, imgVwBackground.frame.size.height)];        }];
+            [imgVwPostImage setFrame:CGRectMake(imgVwBackground.frame.origin.x, imgVwBackground.frame.origin.y, imgVwBackground.frame.size.width, imgVwBackground.frame.size.height)];
+
+        }];
 
     } else {
         NSLog(@"not show");
-        [UIView animateWithDuration:0.4 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
 
             [imgVwPostImage setHidden:YES];
             [imgVwPostImage setFrame:CGRectMake(50, 0, 226,128)];
@@ -1004,6 +1006,7 @@
 
     }
 }
+
 
 - (void)touchesEnded: (NSSet *)touches withEvent: (UIEvent *) event {
 
@@ -1070,15 +1073,6 @@
 
 - (void)retweetOnTwitter:(id)sender {
 
-    btnRetweet.transform = CGAffineTransformMakeScale(0.01, 0.01);
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-            // animate it to the identity transform (100% scale)
-        btnRetweet.transform = CGAffineTransformIdentity;
-    } completion:^(BOOL finished){
-            [btnRetweet setImage:[UIImage imageNamed:@"Retweet_active.png"]forState:UIControlStateNormal];//selected
-    }];
-
-    return;
     NSString *strRetweet = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/retweet/%@.json", self.userInfo.statusId];
         //api.twitter.com/1.1/statuses/update.json"];
 
@@ -1106,19 +1100,19 @@
                dispatch_async(dispatch_get_main_queue(), ^{
 
                    btnRetweet.transform = CGAffineTransformMakeScale(0.01, 0.01);
-                   [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                   [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
                            // animate it to the identity transform (100% scale)
-                    btnRetweet.transform = CGAffineTransformIdentity;
+                       btnRetweet.transform = CGAffineTransformIdentity;
                    } completion:^(BOOL finished){
-                           // if you want to do something once the animation finishes, put it here
+                       [btnRetweet setImage:[UIImage imageNamed:@"Retweet_active.png"]forState:UIControlStateNormal];//selected
+                       [Constant showAlert:@"Success" forMessage:@"Retweet has post successfully."];
+                       [sharedAppDelegate.spinner hide:YES];
                    }];
-                   [btnRetweet setImage:[UIImage imageNamed:@"Retweet_active.png"]forState:UIControlStateNormal];//selected
-                       //[Constant showAlert:@"Success" forMessage:@"Retweet has done successfully."];
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
 
-                   [Constant showAlert:@"Message" forMessage:@"No Tweet in your account."];
+                   [Constant showAlert:@"Message" forMessage:@"Error to retweet"];
                    [sharedAppDelegate.spinner hide:YES];
 
                });
@@ -1170,6 +1164,8 @@
     NSNumber * myNumber =[NSNumber numberWithLongLong:[self.userInfo.statusId longLongValue]];
 
     NSDictionary *param = @{@"id": myNumber};
+
+        //[NSString stringWithFormat:@"http://api.twitter.com/1/favorites/create/%d.json", tweetID];
 
     NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/favorites/create.json"];
     NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];

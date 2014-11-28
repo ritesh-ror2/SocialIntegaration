@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "TwitterProfileViewController.h"
 #import "InstagramProfileViewController.h"
+#import "PageControllerCustomClass.h"
 
-@interface StatrtPageControllViewController: UIViewController <UIPageViewControllerDataSource>
+@interface StatrtPageControllViewController: PageControllerCustomClass <UIPageViewControllerDataSource>
 
 @property (strong, nonatomic) UIPageViewController *pageViewController;
 

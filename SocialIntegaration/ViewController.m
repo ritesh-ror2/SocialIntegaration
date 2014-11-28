@@ -61,11 +61,15 @@ BOOL hasTwitter = NO;
     self.navController.navigationBar.translucent = NO;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
-    [self appIsInForeground:nil];
+        // [self appIsInForeground:nil];
 
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arryCellTappedTwices = [[NSMutableArray alloc]init];
+
+    if (IS_IOS7) {
+        [self.tbleVwPostList setSeparatorInset:UIEdgeInsetsZero];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -237,7 +241,7 @@ BOOL hasTwitter = NO;
 
 - (void)loginFacebook {
 
-    [FBSession openActiveSessionWithReadPermissions:@[
+   /* [FBSession openActiveSessionWithReadPermissions:@[
                                                       @"basic_info",
                                                       @"read_stream", @"email", @"user_friends", @"user_likes"
                                                       ]
@@ -255,7 +259,27 @@ BOOL hasTwitter = NO;
                                           sharedAppDelegate.hasFacebook = YES;
                                           [self updatePosts];
                                       }
-                                  }];
+                                  }];*/
+
+    [FBSession openActiveSessionWithReadPermissions:@[ @"basic_info",  @"read_stream"]  allowLoginUI:YES
+                                  completionHandler:^(FBSession *session,
+	                                                  FBSessionState state,
+	                                                  NSError *error) {
+                                      if (error) {
+
+                                          sharedAppDelegate.hasFacebook = NO;
+                                          [sharedAppDelegate.spinner hide:YES];
+                                      } else {
+
+                                          sharedAppDelegate.fbSession = session;
+                                          sharedAppDelegate.hasFacebook = YES;
+
+                                          [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISFBLOGIN];
+                                          [[NSUserDefaults standardUserDefaults]synchronize];
+
+                                          [self getNewsfeedOfFB];
+                                      }
+		                          }];
 }
 
 #pragma mark - get posts
@@ -274,6 +298,7 @@ BOOL hasTwitter = NO;
 		return;
 	}
 
+    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	parameters[@"access_token"] = sharedAppDelegate.fbSession.accessTokenData;
 
@@ -608,7 +633,7 @@ BOOL hasTwitter = NO;
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
     if (objUserInfo.strPostImg.length != 0) {
@@ -619,7 +644,7 @@ BOOL hasTwitter = NO;
                 return(rect.size.height + 197);
             }
         }
-    return(rect.size.height + 160);
+    return(rect.size.height + 165);
     }
 
     for (NSString *index in self.arrySelectedIndex) {
@@ -628,7 +653,7 @@ BOOL hasTwitter = NO;
             return(rect.size.height + 90);
         }
     }
-    return (rect.size.height + 60);//183 is height of other fixed content
+    return (rect.size.height + 58);//183 is height of other fixed content
 }
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
@@ -662,52 +687,21 @@ BOOL hasTwitter = NO;
     [self.tbleVwPostList endUpdates];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+/*- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    CustomTableCell *cell = (CustomTableCell*)[tableView cellForRowAtIndexPath:indexPath];
-
+        // CustomTableCell *cell = (CustomTableCell*)[tableView cellForRowAtIndexPath:indexPath];
+        // [cell setSelected:YES animated:NO];
     UserInfo *userInfo = [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row];
-    if ([cell.touchCount intValue] == 1) {
-        [cell cellTouchCountIncrement];
+    if ([[self.arryCellTappedTwices objectAtIndex:indexPath.row] isEqualToString:@"1"]) {
+
+        [self.arryCellTappedTwices replaceObjectAtIndex:indexPath.row withObject:@"2"];
         [self tappedOnCellToShowActivity:userInfo withCellIndex:indexPath.row withSelectedPrNot:YES];
 
     } else {
-            //[cell cellTouchCountDecrement];
+        [self.arryCellTappedTwices replaceObjectAtIndex:indexPath.row withObject:@"1"];
         [self didSelectRowWithObject:userInfo withFBProfileImg:nil];
     }
-
- /*   if([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
-        if (lblName.textColor == [UIColor whiteColor]) {
-            isAlreadyTapped = NO;
-            [self handleSwipeGestureOnTableView:nil];
-        } else {
-            isAlreadyTapped = YES;
-            [self didRowTapped:isAlreadyTapped];
-        }
-
-    } else  if([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
-
-        if (lblName.textColor == [UIColor whiteColor]) {
-            isAlreadyTapped = NO;
-            [self handleSwipeGestureOnTableView:nil];
-
-        } else {
-            isAlreadyTapped = YES;
-            [self didRowTapped:isAlreadyTapped];
-        }
-    } else {
-
-        if (lblName.textColor == [UIColor whiteColor]) {
-
-            isAlreadyTapped = NO;
-            [self handleSwipeGestureOnTableView:nil];
-
-        } else {
-            isAlreadyTapped = YES;
-            [self didRowTapped:isAlreadyTapped];
-        }
-    }*/
-}
+}*/
 #pragma mark - Integrate instagrame
 
 - (void)getInstagrameIntegration {
@@ -722,8 +716,8 @@ BOOL hasTwitter = NO;
         [alert show];
         return;
     }
-          [self shortArryOfAllFeeds];
-         return;
+        // [self shortArryOfAllFeeds];
+        // return;
         // here i can set accessToken received on previous login
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     sharedAppDelegate.instagram.sessionDelegate = self;
@@ -751,7 +745,7 @@ BOOL hasTwitter = NO;
         if ([sharedAppDelegate.instagram isSessionValid]) {
 
             isInstagramOpen = YES;
-            NSString *strUrl = [NSString stringWithFormat:@"users/%@/media/recent",[ [NSUserDefaults standardUserDefaults]valueForKey:@"InstagramId"]];
+            NSString *strUrl = [NSString stringWithFormat:@"users/self/feed"];//@"users/%@/media/recent",[ [NSUserDefaults standardUserDefaults]valueForKey:@"InstagramId"]];
             NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strUrl, @"method", nil]; //fetch feed
             [sharedAppDelegate.instagram requestWithParams:params
                                             delegate:self];
@@ -900,6 +894,7 @@ BOOL hasTwitter = NO;
     for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {
         NSLog(@"%@", cellSelected);
         [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
+        [self.arryCellTappedTwices addObject:@"1"];
     }
 
     [sharedAppDelegate.spinner hide:YES];

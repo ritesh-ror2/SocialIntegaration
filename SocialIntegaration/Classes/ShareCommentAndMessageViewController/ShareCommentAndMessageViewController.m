@@ -8,8 +8,9 @@
 
 #import "ShareCommentAndMessageViewController.h"
 #import "UserProfile.h"
+#import "UserInfo.h"
 
-@interface ShareCommentAndMessageViewController () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate> {
+@interface ShareCommentAndMessageViewController () <UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate> {
 
     UIImage *imgSelected;
 }
@@ -18,6 +19,7 @@
 @property (nonatomic, strong) UserProfile *profileTwitter;
 @property (nonatomic, strong) UserProfile *profileInstagram;
 @property (nonatomic, strong) UIImagePickerController *imagePickerController;
+@property (nonatomic, strong) NSMutableArray *arryUsers;
 
 @end
 
@@ -53,7 +55,10 @@
 
     pageControl.currentPage = 0;
     pageControl.numberOfPages = 2;
+    self.arryUsers = [[NSMutableArray alloc]init];
 
+//    self.tbleVwUser.layer.borderColor = [[UIColor blackColor]CGColor];
+//    self.tbleVwUser.layer.borderWidth = 1.0;
     [self setHeadingAndNavigationColor];
     [self getListOfFollowers];
 }
@@ -321,29 +326,39 @@
                     options:NSJSONReadingMutableLeaves
                     error:&error];
        NSLog(@"***%@***", [error localizedDescription]);
-
-       if (!error) {
-           if ([result isKindOfClass:[NSDictionary class]]) {
+           if (![result isKindOfClass:[NSDictionary class]]) {
                dispatch_async(dispatch_get_main_queue(), ^{
 
-
-                   
+                   NSArray *arryUser = [result valueForKey:@"users"];
+                   [self convertDataOfFriend:arryUser];
+                   [self getListOfFriend];
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
+
+                   NSArray *arryUser = [result valueForKey:@"users"];
+                   [self convertDataOfFriend:arryUser];
+                   [self getListOfFriend];
                });
-           }
        }
      }];
 }
 
+- (void)convertDataOfFriend:(NSArray*)arryResult {
 
-- (void)getListOfFriend {
+    NSLog(@"%@", arryResult);
 
-    if (self.txtVwTwitter.text.length == 0) {
-        [Constant showAlert:@"Message" forMessage:@"Please enter message"];
-        return;
+    for (NSDictionary *dictUser in arryResult) {
+
+        UserInfo *info = [[UserInfo alloc]init];
+        info.strUserName = [dictUser valueForKey:@"name"];
+        info.fromId = [dictUser valueForKey:@"id"];
+        [self.arryUsers addObject:info];
     }
+}
+
+- (void)getListOfFriends {
+
     NSDictionary *param = @{@"user_id":self.profileTwitter.userId};
 
     NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/friends/list.json"];
@@ -367,13 +382,108 @@
        NSLog(@"***%@***", [error localizedDescription]);
 
        if (!error) {
-           if ([result isKindOfClass:[NSDictionary class]]) {
+           if (![result isKindOfClass:[NSDictionary class]]) {
                dispatch_async(dispatch_get_main_queue(), ^{
 
+                   NSArray *arryUser = [result valueForKey:@"users"];
+                   [self convertDataOfFriend:arryUser];
+                   [self getListOfFriend];
 
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
+
+                   NSDictionary *dictUser = (NSDictionary *)result;
+
+                   UserInfo *info = [[UserInfo alloc]init];
+                   info.strUserName = [dictUser valueForKey:@"name"];
+                   info.fromId = [dictUser valueForKey:@"id"];
+                   [self.arryUsers addObject:info];
+               });
+           }
+       }
+     }];
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+
+    NSLog(@"%i", self.arryUsers.count);
+    return [self.arryUsers count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"userlist"];
+    if(cell == nil) {
+
+        cell = [[UITableViewCell alloc]initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier:@"userlist"];
+    }
+
+    cell.textLabel.text = [[self.arryUsers objectAtIndex:indexPath.row] strUserName];
+    cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:17.0];
+    cell.textLabel.textColor = [UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0] ;
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    UserInfo *userInfo = [self.arryUsers objectAtIndex:indexPath.row];
+    NSString *strTagged = userInfo.strUserName;
+        // self.txtVwTwitter.text = @"";
+    self.txtVwTwitter.text = [self.txtVwTwitter.text stringByAppendingString:strTagged];
+}
+
+- (void)openUsersListInTwitter {
+
+    [self.view endEditing:YES];
+    [self.navBar setHidden:YES];
+
+    [UIView animateWithDuration:0.5 animations:^{
+
+        [self.tbleVwUser reloadData];
+        [self.tbleVwUser setHidden:NO];
+        self.tbleVwUser.frame = CGRectMake(0, self.view.frame.size.height - 260, 320, 210);
+    }];
+}
+
+
+- (void)getListOfFriend {
+
+    NSDictionary *param = @{@"user_id":self.profileTwitter.userId};
+
+    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/friends/list.json"];
+    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodGET
+                                  URL:requestURL parameters:param];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+       id result = [NSJSONSerialization
+                    JSONObjectWithData:responseData
+                    options:NSJSONReadingMutableLeaves
+                    error:&error];
+       NSLog(@"***%@***", [error localizedDescription]);
+
+       if (!error) {
+           if (![result isKindOfClass:[NSDictionary class]]) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+
+                   NSArray *arryUser = [result valueForKey:@"users"];
+                   [self convertDataOfFriend:arryUser];
+               });
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+
+                   NSArray *arryUser = [result valueForKey:@"users"];
+                   [self convertDataOfFriend:arryUser];
                });
            }
        }
@@ -446,6 +556,19 @@
     }
 }
 
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+
+//    textView.text = text;
+//
+//    if ([text isEqualToString:@"@"]) {
+//
+//        [self openUsersListInTwitter];
+//    } else {
+//
+//        self.txtVwTwitter.text = [self.txtVwTwitter.text stringByAppendingString:text];
+//    }
+    return YES;
+}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 

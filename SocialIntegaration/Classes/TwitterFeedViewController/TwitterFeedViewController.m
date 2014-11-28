@@ -44,12 +44,18 @@
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
 
+    if (IS_IOS7) {
+        [self.tbleVwTwitter setSeparatorInset:UIEdgeInsetsZero];
+    }
 
-    UserInfo *userInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:sharedAppDelegate.arryOfTwittes.count - 1];
-    self.max_Id = userInfo.statusId.intValue;
+    if (sharedAppDelegate.arryOfTwittes.count != 0) {
 
-    UserInfo *userInfoSince = [sharedAppDelegate.arryOfTwittes objectAtIndex:0];
-    self.since_Id = userInfoSince.statusId.intValue;
+        UserInfo *userInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:sharedAppDelegate.arryOfTwittes.count - 1];
+        self.max_Id = userInfo.statusId.intValue;
+
+        UserInfo *userInfoSince = [sharedAppDelegate.arryOfTwittes objectAtIndex:0];
+        self.since_Id = userInfoSince.statusId.intValue;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -260,8 +266,7 @@
     }
     if(indexPath.row < [sharedAppDelegate.arryOfTwittes count]){
 
-            // self.noMoreResultsAvail = NO;
-
+        // self.noMoreResultsAvail = NO;
         [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
     } else {
 
@@ -280,16 +285,19 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    if(indexPath.row > [sharedAppDelegate.arryOfTwittes count]-1) {
-        return 60;
+    if ( sharedAppDelegate.arryOfTwittes.count != 0) {
+        if(indexPath.row > [sharedAppDelegate.arryOfTwittes count]-1) {
+            return 44;
+        }
+    } else {
+        return 0;
     }
-
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
     if (objUserInfo.strPostImg.length != 0) {
@@ -297,10 +305,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + 190);
+                return(rect.size.height + 197);
             }
         }
-        return(rect.size.height + 160);
+        return(rect.size.height + 165);
     }
 
     for (NSString *index in self.arrySelectedIndex) {
@@ -309,7 +317,7 @@
             return(rect.size.height + 90);
         }
     }
-    return (rect.size.height + 60);//183 is height of other fixed content
+    return (rect.size.height + 58);//183 is height of other fixed content
 }
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
