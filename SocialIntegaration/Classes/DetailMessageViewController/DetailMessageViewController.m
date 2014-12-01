@@ -81,7 +81,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    return (rect.size.height+25);//183 is height of other fixed content
+    return (rect.size.height+40);//183 is height of other fixed content
 }
 
 /*

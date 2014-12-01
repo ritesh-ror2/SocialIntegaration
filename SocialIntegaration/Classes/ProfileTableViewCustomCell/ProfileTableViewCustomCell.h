@@ -20,6 +20,23 @@
     IBOutlet AsyncImageView *imgVwPostImg;
     IBOutlet UIButton *btnPlay;
     IBOutlet UITextView *txtVwMessage;
+
+    IBOutlet UIImageView *imgVwOfLikeFb;
+    IBOutlet UIImageView *imgVwOfComentFb;
+    IBOutlet UILabel *lblCommentFb;
+    IBOutlet UILabel *lblLike;
+    IBOutlet UILabel *lblFbLikeCount;
+
+    IBOutlet UIButton *btnReply;
+    IBOutlet UIButton *btnRetweet;
+    IBOutlet UIButton *btnFavourate;
+    IBOutlet UIButton *btnMoreTweet;
+    IBOutlet UILabel *lblTweet;
+    IBOutlet UILabel *lblFavourate;
+    IBOutlet UIButton *btnProfile;
+
+    IBOutlet UIImageView *imgVwOfLikeInstagram;
+    UIActivityIndicatorView *spinner;
 }
 
 - (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo;

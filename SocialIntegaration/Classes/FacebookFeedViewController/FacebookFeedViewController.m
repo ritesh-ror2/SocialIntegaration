@@ -248,7 +248,6 @@
     connetion = [[NSURLConnection alloc]initWithRequest:fbRequest delegate:self];
 }
 
-
 #pragma mark NSURLConnection Delegate Methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {

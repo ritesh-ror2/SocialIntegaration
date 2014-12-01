@@ -28,7 +28,6 @@
     [self.contentView addSubview:imgVwArrow];
     [self.contentView sendSubviewToBack:imgVwArrow];
 
-
     imgVwBackground = [[UIImageView alloc]init];
     imgVwBackground.layer.cornerRadius = 5.0;
     imgVwBackground.clipsToBounds = YES;
@@ -37,16 +36,16 @@
     lblMessage = [[UILabel alloc]init];
     lblMessage.textColor = [UIColor whiteColor];
     lblMessage.numberOfLines = 0;
-
-    //lblMessage.layer.borderWidth = 3.0;
     [self.contentView addSubview:lblMessage];
 
     imgVwUser = [[UIImageView alloc]init];
     [self.contentView addSubview:imgVwUser];
 
     lblTime = [[UILabel alloc]init];
-    lblTime.textColor = [UIColor whiteColor];
+    lblTime.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:13.0];
+    lblTime.textColor = [UIColor lightGrayColor];
     lblTime.numberOfLines = 0;
+    [self.contentView addSubview:lblTime];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -67,15 +66,15 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-        NSString *strSubstrTime = [objComment.time substringToIndex:10];
-        int isToday = [self calculateTimesBetweenTwoDates:strSubstrTime];
+    long isToday = [self calculateTimesBetweenTwoDates:objComment.time];
 
-        NSString *strTime;
-        if (isToday == 0) {
-            strTime = [self differenceBetweenDate:strSubstrTime];
-        } else {
-            strTime = [NSString stringWithFormat:@"On %@", strSubstrTime];
-        }
+    NSString *strTime;
+    if (isToday == 0) {
+        strTime = [NSString stringWithFormat:@"Today %@",[self convertTime:[objComment.time substringFromIndex:10] ]];
+    } else {
+        NSString *strSubstrTime = [objComment.time substringToIndex:10];
+        strTime = [NSString stringWithFormat:@"On %@",[self convertDateFormate:strSubstrTime]];
+    }
     lblTime.text = strTime;
 
     if (![objComment.fromId isEqualToString:userId]) {
@@ -84,9 +83,8 @@
         lblMessage.backgroundColor = [UIColor clearColor];
         lblMessage.frame = CGRectMake(60, 5, rect.size.width, rect.size.height);
 
-        lblTime.text = objComment.userComment;
-        lblTime.backgroundColor = [UIColor clearColor];
-        lblTime.frame = CGRectMake(65, 5, rect.size.width, rect.size.height);
+        lblTime.textAlignment = NSTextAlignmentLeft;
+        lblTime.frame = CGRectMake(61, rect.size.height + 7,130 , 21);
 
         imgVwBackground.frame = CGRectMake(55, 3, rect.size.width+10, rect.size.height+6);
         imgVwBackground.backgroundColor = [UIColor colorWithRed:107/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
@@ -100,9 +98,8 @@
         lblMessage.frame = CGRectMake((263 - rect.size.width), 5, rect.size.width, rect.size.height+2);
         lblMessage.backgroundColor = [UIColor clearColor];
 
-        lblTime.text = objComment.userComment;
-        lblTime.frame = CGRectMake((255 - rect.size.width), 5, rect.size.width, rect.size.height+2);
-        lblTime.backgroundColor = [UIColor clearColor];
+        lblTime.frame = CGRectMake((264 -130), rect.size.height + 7, 130 , 21);
+        lblTime.textAlignment = NSTextAlignmentRight;
 
         imgVwBackground.frame = CGRectMake((258 - rect.size.width), 3, rect.size.width+10, rect.size.height+6);
         imgVwBackground.backgroundColor = [UIColor lightGrayColor];
@@ -115,10 +112,22 @@
     NSLog(@"%@", objComment.userComment);
 }
 
+- (NSString *)convertTime:(NSString*)time {
+
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"hh:mm:ss"];
+
+    NSDate *date = [dateFormatter dateFromString:time];
+
+    [dateFormatter setDateFormat:@"hh:mm a"];
+
+    NSString *formattedDate = [dateFormatter stringFromDate:date];
+    return formattedDate;
+}
 
 #pragma mark - Calculate time between two dates
 
-- (int)calculateTimesBetweenTwoDates:(NSString *)strGivenDate {
+- (long)calculateTimesBetweenTwoDates:(NSString *)strGivenDate {
 
     NSDate *date = [NSDate date];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
@@ -126,13 +135,13 @@
     NSString *strDate = [dateFormatter stringFromDate:date];
     NSDate *toDate = [NSDate dateFromString:strDate];
 
-    NSDate *fromDate = [NSDate dateFromStringInUserNotify:strGivenDate];
+    NSDate *fromDate = [NSDate dateFromString:strGivenDate];
     NSLog(@"%@  from %@", toDate, fromDate);
 
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *components = [gregorianCalendar components:NSMinuteCalendarUnit| NSHourCalendarUnit|NSDayCalendarUnit
                                                         fromDate:fromDate toDate:toDate options:0];
-    int diffInDate = components.day;
+    long diffInDate = components.day;
     NSLog(@"%i", components.day);
     if (diffInDate != 0)  {
         return diffInDate;
@@ -141,14 +150,25 @@
     }
 }
 
-- (NSString *)differenceBetweenDate:(NSString *)strGivenDate {
+- (NSString *)convertDateFormate:(NSString *)strDate {
+
+    NSDateFormatter *formate = [[NSDateFormatter alloc]init];
+    [formate setDateFormat:@"yyyy-MM-dd"];
+    NSDate *date = [formate dateFromString:strDate];
+
+    [formate setDateFormat:@"dd-MM-yyyy"];
+    NSString *strConvertDate = [formate stringFromDate:date];
+    return strConvertDate;
+}
+
+/*- (NSString *)differenceBetweenDate:(NSString *)strGivenDate {
 
     NSDate *date = [NSDate date];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
     [dateFormatter setDateFormat:DatabaseDateFormate];
     NSString *strDate = [dateFormatter stringFromDate:date];
-    NSDate *toDate = [NSDate dateFromString:strDate];
-
+    NSDate *toDate = [NSDate dateFromString:strGivenDate];
+//
     NSDate *fromDate = [NSDate dateFromStringInUserNotify:strGivenDate];
     NSLog(@"%@  from %@", toDate, fromDate);
 
@@ -165,7 +185,7 @@
     }
     return strTime;
 }
-
+*/
 
 - (void)uploadProfileImage:(UserComment *)objUserComment {
 

@@ -34,6 +34,7 @@
     IBOutlet UIImageView *imgVwOfComentFb;
     IBOutlet UILabel *lblCommentFb;
     IBOutlet UILabel *lblLike;
+    IBOutlet UILabel *lblFbLikeCount;
 
     IBOutlet UIButton *btnReply;
     IBOutlet UIButton *btnRetweet;
@@ -41,8 +42,8 @@
     IBOutlet UIButton *btnMoreTweet;
     IBOutlet UILabel *lblTweet;
     IBOutlet UILabel *lblFavourate;
-    IBOutlet UILabel *lblFbLikeCount;
     IBOutlet UIButton *btnProfile;
+    IBOutlet UIButton *btnMoreFb;
 
     IBOutlet UIImageView *imgVwOfLikeInstagram;
     UIActivityIndicatorView *spinner;

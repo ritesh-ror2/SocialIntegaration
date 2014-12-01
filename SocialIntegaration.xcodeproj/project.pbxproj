@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0A02A2D41A0BA58F00A1738F /* NSDate+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A02A2D31A0BA58F00A1738F /* NSDate+Helper.m */; };
+		0A1E53781A2C7F0C0031529E /* ActivityCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A1E53771A2C7F0C0031529E /* ActivityCustomCell.m */; };
+		0A1E537C1A2C83290031529E /* UserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A1E537B1A2C83290031529E /* UserActivity.m */; };
 		0A1F70F31A1F72B400EC69DD /* Notify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A1F70F21A1F72B400EC69DD /* Notify@2x.png */; };
 		0A39338D1A1C9F7700B65473 /* favourite_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A39338C1A1C9F7700B65473 /* favourite_active@2x.png */; };
 		0A39338F1A1CA6C000B65473 /* mask_message@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A39338E1A1CA6C000B65473 /* mask_message@2x.png */; };
@@ -166,6 +168,10 @@
 /* Begin PBXFileReference section */
 		0A02A2D21A0BA58F00A1738F /* NSDate+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Helper.h"; sourceTree = "<group>"; };
 		0A02A2D31A0BA58F00A1738F /* NSDate+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Helper.m"; sourceTree = "<group>"; };
+		0A1E53761A2C7F0C0031529E /* ActivityCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityCustomCell.h; sourceTree = "<group>"; };
+		0A1E53771A2C7F0C0031529E /* ActivityCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityCustomCell.m; sourceTree = "<group>"; };
+		0A1E537A1A2C83290031529E /* UserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserActivity.h; sourceTree = "<group>"; };
+		0A1E537B1A2C83290031529E /* UserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserActivity.m; sourceTree = "<group>"; };
 		0A1F70F21A1F72B400EC69DD /* Notify@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Notify@2x.png"; sourceTree = "<group>"; };
 		0A39338C1A1C9F7700B65473 /* favourite_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "favourite_active@2x.png"; sourceTree = "<group>"; };
 		0A39338E1A1CA6C000B65473 /* mask_message@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mask_message@2x.png"; sourceTree = "<group>"; };
@@ -405,6 +411,24 @@
 			path = "Nsdate + Helper";
 			sourceTree = "<group>";
 		};
+		0A1E53751A2C7F0C0031529E /* ActivityCustomCell */ = {
+			isa = PBXGroup;
+			children = (
+				0A1E53761A2C7F0C0031529E /* ActivityCustomCell.h */,
+				0A1E53771A2C7F0C0031529E /* ActivityCustomCell.m */,
+			);
+			path = ActivityCustomCell;
+			sourceTree = "<group>";
+		};
+		0A1E53791A2C83020031529E /* UserActivity */ = {
+			isa = PBXGroup;
+			children = (
+				0A1E537A1A2C83290031529E /* UserActivity.h */,
+				0A1E537B1A2C83290031529E /* UserActivity.m */,
+			);
+			path = UserActivity;
+			sourceTree = "<group>";
+		};
 		0A3933941A1CB97800B65473 /* ShowImageOrVideoViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -572,6 +596,7 @@
 		0A7324601A0B524400F10476 /* Model Class */ = {
 			isa = PBXGroup;
 			children = (
+				0A1E53791A2C83020031529E /* UserActivity */,
 				0AF12B481A1F09F3005EA084 /* UserNotification */,
 				0A810FE51A1C54E200D1D64D /* UserMessage */,
 				0A82B3C21A19F53D009F8E7E /* UserComment */,
@@ -826,6 +851,7 @@
 			children = (
 				0A804CFB1A23290200254746 /* ActivityViewController.h */,
 				0A804CFC1A23290200254746 /* ActivityViewController.m */,
+				0A1E53751A2C7F0C0031529E /* ActivityCustomCell */,
 			);
 			path = ActivityViewController;
 			sourceTree = "<group>";
@@ -888,9 +914,9 @@
 		0A8D130F1A136FED00112078 /* HomePageViewController */ = {
 			isa = PBXGroup;
 			children = (
-				0A7EE7BB1A1493B200E5E65A /* FeedPagesViewController */,
 				0A8D13101A136FFE00112078 /* HomePageViewController.h */,
 				0A8D13111A136FFE00112078 /* HomePageViewController.m */,
+				0A7EE7BB1A1493B200E5E65A /* FeedPagesViewController */,
 			);
 			path = HomePageViewController;
 			sourceTree = "<group>";
@@ -1303,7 +1329,9 @@
 				0A73245E1A0B4E5600F10476 /* CustomTableCell.m in Sources */,
 				0A9F50711A11DC7600BAB0D3 /* UIImage+RoundedCorner.m in Sources */,
 				0A3E6BE01A0CDE88006983B5 /* IGRequest.m in Sources */,
+				0A1E53781A2C7F0C0031529E /* ActivityCustomCell.m in Sources */,
 				0A7EE7BA1A14923C00E5E65A /* InstagramFeedViewController.m in Sources */,
+				0A1E537C1A2C83290031529E /* UserActivity.m in Sources */,
 				0A7EE7DA1A14F23300E5E65A /* CommentViewController.m in Sources */,
 				0AAD4C3F1A1C744B00EAC235 /* DetailMessageShowCustomCellTableViewCell.m in Sources */,
 				0A90EF091A15C6D1005FD439 /* UserProfile+DatabaseHelper.m in Sources */,

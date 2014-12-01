@@ -98,6 +98,7 @@
         [lblCommentFb setHidden:NO];
         [lblLike setHidden:NO];
         [lblFbLikeCount setHidden:NO];
+        [btnMoreFb setHidden:NO];
 
         [self setGradientColorOfFB];
         lblText.textColor = [UIColor whiteColor];
@@ -113,6 +114,7 @@
         [lblLike setHidden:YES];
         [lblFbLikeCount setHidden:YES];
         [imgVwBgColor setHidden:YES];
+        [btnMoreFb setHidden:YES];
 
         self.contentView.backgroundColor =  [UIColor whiteColor];
         lblText.textColor = [UIColor darkGrayColor];
@@ -221,7 +223,7 @@
 
 #pragma mark - Set value in table view
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell  withPagging:(BOOL)isPagging {
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell withPagging:(BOOL)isPagging {
 
     if (isPagging == YES) {
 
@@ -286,8 +288,17 @@
 
     if (objUserInfo.strPostImg.length != 0) { //set post image
 
-        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 7, 320, 100);
+    if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
+
+        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 7, 320, 320);
+    } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
+         imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 7, 320, 320);
+    } else {
+        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 7, 320, 320);
+    }
         imgVwPostImg.hidden = NO;
+
+
         btnPlay.frame = imgVwPostImg.frame;
         
         [self setPostImage:objUserInfo];
@@ -301,14 +312,6 @@
         imgVwBgColor.frame = CGRectMake(0, 0, self.frame.size.width, lblText.frame.size.height + lblText.frame.origin.y + 38);
 
     }
-
-//    for (NSString *index in arrayOfSelectedIndex) {
-//
-//        if (row == index.integerValue) {
-//            [self facebookCellConfiguration:YES];
-//            break;
-//        }
-//    }
 
     if (objUserInfo.fbLike == 1) {
 
@@ -369,6 +372,7 @@
     [lblCommentFb setFrame:CGRectMake(lblCommentFb.frame.origin.x, yAxis, 80, 20)];
     [lblLike setFrame:CGRectMake(lblLike.frame.origin.x, yAxis, 70, 20)];
     [lblFbLikeCount setFrame:CGRectMake(lblFbLikeCount.frame.origin.x, yAxis, 70, 20)];
+    [btnMoreFb setFrame:CGRectMake(btnMoreFb.frame.origin.x, yAxis, btnMoreFb.frame.size.width, btnMoreFb.frame.size.height)];
 
     [btnFavourate setFrame:CGRectMake(btnFavourate.frame.origin.x, yAxis-2, btnFavourate.frame.size.width, btnFavourate.frame.size.height)];
     [btnReply setFrame:CGRectMake(btnReply.frame.origin.x, yAxis-2, btnReply.frame.size.width, btnReply.frame.size.height)];

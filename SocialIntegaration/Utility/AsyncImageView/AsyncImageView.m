@@ -914,8 +914,8 @@ CGContextRef CKBitmapContextAndDataCreate(CGSize size, void ** data) {
 	
 	super.image = image;
         
-    self.contentMode = UIViewContentModeScaleAspectFit;
-    super.contentMode = UIViewContentModeScaleAspectFit;
+    self.contentMode = UIViewContentModeScaleToFill;
+    super.contentMode = UIViewContentModeScaleToFill;
 
 	[activityView stopAnimating];
 }

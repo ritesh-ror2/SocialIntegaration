@@ -10,4 +10,6 @@
 
 @interface ActivityViewController : UIViewController
 
+@property (nonatomic, strong) IBOutlet UITableView *tbleVwActivity;
+
 @end

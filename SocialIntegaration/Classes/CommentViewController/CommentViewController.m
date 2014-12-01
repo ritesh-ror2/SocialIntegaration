@@ -21,17 +21,28 @@
 @interface CommentViewController () <UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, IGRequestDelegate, IGRequestDelegate, UIAlertViewDelegate, NSURLConnectionDelegate> {
 
     NSString *strBtnTitle;
+    NSString *nextTagedUrl;
+
     UserProfile *userProfile;
     NSMutableData *fbData;
+
+    UILabel *lblTaggesName;
+    UILabel *lblWith;
 
     NSMutableData *_responseData;
     NSURLConnection *connFBLagreImage;
 
     CGPoint touchBegin;
     CGPoint touchMove;
+
+    NSMutableURLRequest *fbTaggedUserRequest;
+    NSURLConnection *connetionTaggedUser;
+    UITableView *tbleVwTaggedUser;
+
+    UIActivityIndicatorView *activityIndicator;
+    UIView *vwTaggedUser;
 }
 
-@property (nonatomic, strong) NSArray *arrayFriend;
 @property (nonatomic, strong) NSMutableArray *arryComment;
 @property (nonatomic, strong) NSMutableArray *arryTaggedUser;
 
@@ -62,14 +73,13 @@
 
     vwOfComment.backgroundColor = [UIColor colorWithRed:240/256.0f green:240/256.0f blue:240/256.0f alpha:1.0];
     tbleVwComment.backgroundColor = [UIColor clearColor];
+        //  [self.view sendSubviewToBack:tbleVwComment];
 
         //[btnMoreTweet setBackgroundColor:[UIColor redColor]];
     [self.view bringSubviewToFront:imgVwNavigation];
     [self.view bringSubviewToFront:lblHeading];
     [self.view bringSubviewToFront:btnRight];
     [self.view bringSubviewToFront:btnLeft];
-
-    self.arrayFriend = @[@"@qwe123", @"qwe123", @"qwe123"];
 
     self.arryComment = [[NSMutableArray alloc]init];
     [tbleVwComment setBackgroundColor: [UIColor clearColor]];
@@ -93,6 +103,21 @@
     } else {
         [btnFavourite setImage:[UIImage imageNamed:@"favourite1.png"] forState:UIControlStateNormal];//deselected
     }
+
+    activityIndicator = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 35)/2, (self.view.frame.size.height - 35)/2, 35, 35)];
+    activityIndicator.center = self.view.center;
+
+    vwTaggedUser = [[UIView alloc]initWithFrame:self.view.frame];
+    vwTaggedUser.hidden = YES;
+    vwTaggedUser.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.5];
+    [self.view addSubview:vwTaggedUser];
+
+
+    tbleVwTaggedUser = [[UITableView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 200)/2, (self.view.frame.size.height - 250)/2, 200, 250)];
+    tbleVwTaggedUser.dataSource = self;
+    tbleVwTaggedUser.delegate = self;
+    [tbleVwTaggedUser setBackgroundColor:[UIColor whiteColor]];
+    [vwTaggedUser addSubview:tbleVwTaggedUser];
 
     self.arryTaggedUser = [[NSMutableArray alloc]init];
 
@@ -445,31 +470,39 @@
     }
     NSMutableString *strUserNameList = [[NSMutableString alloc]init];
 
-    UILabel *lblWith = [[UILabel alloc]initWithFrame:CGRectMake(2, yAxis, 40, 21)];
+    lblWith = [[UILabel alloc]initWithFrame:CGRectMake(2, yAxis+5, 40, 21)];
     lblWith.text = @"with";
     lblWith.textColor = [UIColor lightGrayColor];
     [self.view addSubview:lblWith];
 
-    UILabel *lblNameTagges = [[UILabel alloc]initWithFrame:CGRectMake(40, yAxis, 280, 21)];
-    lblNameTagges.textColor = [UIColor lightGrayColor];
-    lblNameTagges.font = [UIFont fontWithName:@"Helvetica-Neue" size:13.0];
-    lblNameTagges.textColor = [UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0];
-    [self.view addSubview:lblNameTagges];
+    lblTaggesName = [[UILabel alloc]initWithFrame:CGRectMake(40, yAxis+5, 280, 21)];
+    lblTaggesName.textColor = [UIColor lightGrayColor];
+    lblTaggesName.font = [UIFont fontWithName:@"Helvetica-Neue" size:13.0];
+    lblTaggesName.textColor = [UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0];
+    [self.view addSubview:lblTaggesName];
 
     UIButton *btnTaggedUser = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnTaggedUser.frame = CGRectMake(40, yAxis, 280, 30);
-    [btnTaggedUser addTarget:self action:@selector(userProfileBtnTapped:) forControlEvents:UIControlEventTouchUpInside];
+    btnTaggedUser.frame = CGRectMake(40, yAxis+5, 280, 30);
+    [btnTaggedUser addTarget:self action:@selector(taggedUserBtnTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btnTaggedUser];
-    [self.view bringSubviewToFront:btnTaggedUser];
+
+    [self.view bringSubviewToFront:imgVwPostImage];
 
     for (UserInfo *userInfo  in self.arryTaggedUser) {
         NSString *strName = userInfo.strUserName;
-        [strUserNameList appendString:strName];
+        NSString *strAppendName = [NSString stringWithFormat:@"%@,", strName];
+        [strUserNameList appendString:strAppendName];
     }
 
-    lblNameTagges.text = strUserNameList;
+    lblTaggesName.text = strUserNameList;
 
     return 30;
+}
+
+- (void)taggedUserBtnTapped {
+
+    [vwTaggedUser setHidden:NO];
+    [self.view bringSubviewToFront:vwTaggedUser];
 }
 
 - (IBAction)moreBtnTapped:(id)sender {
@@ -480,10 +513,13 @@
         [btnBlock setHidden:NO];
         btnBlock.frame = CGRectMake(btnMoreTweet.frame.origin.x - 30, btnMoreTweet.frame.origin.y+30, 60, 30);
     } else {
-        [self.view bringSubviewToFront:btnDelete];
 
-            // [btnDelete setHidden:NO];
-            // btnDelete.frame = CGRectMake(btnMoreTweet.frame.origin.x - 30, btnMoreTweet.frame.origin.y+30, 60, 30);
+        if (self.userInfo.fromId.integerValue == userProfile.userId.integerValue) {
+
+            [self.view bringSubviewToFront:btnDelete];
+            [btnDelete setHidden:NO];
+            btnDelete.frame = CGRectMake(btnMoreTweet.frame.origin.x - 30, btnMoreTweet.frame.origin.y+30, 60, 30);
+        }
     }
 }
 
@@ -573,7 +609,8 @@
 }
 
 - (IBAction)deleteFBComment:(id)sender {
-
+    
+    [btnDelete setHidden:YES];
     NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
     NSArray *writePermissions = @[@"publish_actions"];
     [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
@@ -591,9 +628,14 @@
                                                   id result,
                                                   NSError *error
                                                   ) {
-                                      // NSLog(error.description);
+                                       NSLog(@"%@",error.description);
+
                                   if (!error) {
+
                                       NSLog(@"%@", result);
+                                      [self.navigationController popViewControllerAnimated:YES];
+                                  } else {
+                                       [Constant showAlert:@"Message" forMessage:@"You can only delete those post, which are post by app."];
                                   }
                               }];
         }
@@ -645,26 +687,26 @@
      }];
 }
 
-- (void)userProfileBtnTapped:(id)sender{
+- (IBAction)userProfileBtnTapped:(id)sender{
 
-        UIButton *btn = (UIButton *)sender;
+    if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"])  {
 
-      UserInfo *otherUserInfo = [[UserInfo alloc]init];
-      otherUserInfo.strUserName = btn.titleLabel.text;
-      otherUserInfo.fromId  = [NSString stringWithFormat:@"%i", btn.tag];
-      otherUserInfo.strUserSocialType = @"Facebook";
-      UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-      ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
-      vwController.userInfo = otherUserInfo;
-      [self.navigationController pushViewController:vwController animated:YES];
+//        UIButton *btn = (UIButton *)sender;
+//        UserInfo *otherUserInfo = [[UserInfo alloc]init];
+//        otherUserInfo.strUserName = btn.titleLabel.text;
+//        otherUserInfo.fromId  = [NSString stringWithFormat:@"%i", btn.tag];
+//        otherUserInfo.strUserSocialType = @"Facebook";
+        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+        vwController.userInfo = self.userInfo;
+        [self.navigationController pushViewController:vwController animated:YES];
+    } else if ([self.userInfo.strUserSocialType isEqualToString:@"Twitter"])  {
 
-//    } if ([userInfo.strUserSocialType isEqualToString:@"Twitter"])  {
-//
-//        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
-//        vwController.userInfo = userInfo;
-//        [self.navigationController pushViewController:vwController animated:YES];
-//    }
+        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+        vwController.userInfo = self.userInfo;
+        [self.navigationController pushViewController:vwController animated:YES];
+    }
 }
 
 
@@ -765,7 +807,7 @@
     if (tableView == tbleVwComment) {
         return [self.arryComment count];
     }
-    return [self.arrayFriend count];
+    return [self.arryTaggedUser count]+1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -788,8 +830,25 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
-    cell.textLabel.text = [self.arrayFriend objectAtIndex:indexPath.row];
-    cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:17.0];
+
+    if (indexPath.row < self.arryTaggedUser.count) {
+
+        [activityIndicator stopAnimating];
+        [activityIndicator setHidden:YES];
+
+        UserInfo *userTagged = [self.arryTaggedUser objectAtIndex:indexPath.row];
+        cell.textLabel.text = userTagged.strUserName;
+        cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:15.0];
+    } else {
+
+        [activityIndicator setHidden:NO];
+        [activityIndicator startAnimating];
+        [cell addSubview:activityIndicator];
+
+        if (nextTagedUrl.length != 0) {
+            [self getMoreTaggedUser];
+        }
+    }
 
     return cell;
 }
@@ -808,11 +867,19 @@
 
         return (rect.size.height + 35);//183 is height of other fixed content
     }
-    return 44;
+    return 30;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    if (tableView == tbleVwTaggedUser) {
+
+        UserInfo *userInfo = [self.arryTaggedUser objectAtIndex:indexPath.row];
+        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+        vwController.userInfo = userInfo;
+        [self.navigationController pushViewController:vwController animated:YES];
+    }
 }
 
 - (void)facebookConfiguration {
@@ -823,7 +890,7 @@
     [btnLike setHidden:NO];
     [lblLikeCount setHidden:NO];
     [btnShare setHidden:NO];
-    [btnMoreTweet setHidden:YES];
+    [btnMoreTweet setHidden:NO];
 }
 
 - (void)twitterConfiguration  {
@@ -834,7 +901,6 @@
     [btnFavourite setHidden:NO];
     [btnReply setHidden:NO];
     [btnMoreTweet setHidden:NO];
-
 }
 
 - (void)instagramConfiguration  {
@@ -863,24 +929,83 @@
                                   [self setCommentOfUser:self.userInfo];
                               } else  {
                                   NSLog(@"%@", result);
+                                  nextTagedUrl = [[result objectForKey:@"paging"]valueForKey:@"next"];
                                   NSArray *arry = [result objectForKey:@"data"];
-                                  [self taggedUser:arry];
+                                  [self.arryTaggedUser removeAllObjects];
+                                  [self getTaggedUser:arry];
                                   [self setCommentOfUser:self.userInfo];
 
                               }
                           }];
 }
 
-- (void)taggedUser:(NSArray *)arryUser {
+- (void)getTaggedUser:(NSArray *)arryUser {
 
-    [self.arryTaggedUser removeAllObjects];
     for (NSDictionary *dictUser in arryUser) {
 
-        UserInfo *userInfo = [[UserInfo alloc]init];
-        userInfo.fromId = [dictUser valueForKey:@"id"];
-        userInfo.strUserName = [dictUser valueForKey:@"name"];
+        if ([[dictUser valueForKey:@"name"] length] != 0) {
 
-        [self.arryTaggedUser addObject:userInfo];
+            UserInfo *userInfo = [[UserInfo alloc]init];
+            userInfo.fromId = [dictUser valueForKey:@"id"];
+            userInfo.strUserName = [dictUser valueForKey:@"name"];
+            userInfo.strUserSocialType = @"Facebook";
+
+            [self.arryTaggedUser addObject:userInfo];
+        }
+    }
+
+    [tbleVwTaggedUser reloadData];
+}
+
+- (void)getMoreTaggedUser {
+
+    //Get more data of feed
+    NSURL *fbUrl = [NSURL URLWithString:sharedAppDelegate.nextFbUrl];
+    fbTaggedUserRequest = [[NSMutableURLRequest alloc]initWithURL:fbUrl];
+    connetionTaggedUser = [[NSURLConnection alloc]initWithRequest:fbTaggedUserRequest delegate:self];
+}
+
+
+#pragma mark NSURLConnection Delegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+
+    if(connection == connFBLagreImage) {
+         _responseData = [[NSMutableData alloc] init];
+    } else {
+        fbData = [[NSMutableData alloc] init];
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+
+    if (connection == connFBLagreImage) {
+        [_responseData appendData:data];
+    } else {
+        [fbData appendData:data];
+    }
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
+        // Return nil to indicate not necessary to store a cached response for this connection
+    return nil;
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+
+    if (connection == connFBLagreImage) {
+
+        [sharedAppDelegate.spinner hide:YES];
+        UIImage *image = [UIImage imageWithData:_responseData];
+        imgVwPostImage.image = image;
+
+    } else {
+        id result = [NSJSONSerialization JSONObjectWithData:fbData options:kNilOptions error:nil];
+        NSLog(@"%@", result);
+        nextTagedUrl = [[result objectForKey:@"paging"]valueForKey:@"next"];
+        [self getTaggedUser:[result objectForKey:@"data"]];
+
     }
 }
 
@@ -934,34 +1059,23 @@
 
                               } else {
                                  [self likeUserList:[[result objectForKey:@"summary"] valueForKey:@"total_count"]];
-
-//                                  if ([[result valueForKey:@"paging"] count] >= 1) {
-//                                      NSString *strNextPage = [[result valueForKey:@"paging"] valueForKey:@"next"];
-//
-//                                      [FBRequestConnection startWithGraphPath:strNextPage
-//                                                                   parameters:nil
-//                                                                   HTTPMethod:@"GET"
-//                                                            completionHandler:^(
-//                                                                                FBRequestConnection *connection,
-//                                                                                id result1,
-//                                                                                NSError *error
-//                                                                                ) {
-//                                                                if (error) {
-//
-//                                                                    NSLog(@"error");
-//                                                                } else {
-//
-//                                                                    NSLog(@"sucess");
-//                                                                }
-//
-//                                       }];
-//                                       }
                               }
-                          }];
-        //   }];
+    }];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+
+    [vwTaggedUser setHidden:YES]; //hide on tapped any where
+
+    if ([self.userInfo.type isEqualToString:@"video"]) {
+
+        [self playBtnTapped:nil];
+        return;
+    }
+        // [self.view bringSubviewToFront:imgVwPostImage];
+
+    [lblTaggesName setHidden:YES];
+    [lblWith setHidden:YES];
 
     NSLog(@"touch ** ");
     UITouch *touch = [[event allTouches]anyObject];
@@ -1016,7 +1130,8 @@
         [imgVwPostImage setHidden:YES];
         [imgVwPostImage setFrame:CGRectMake(50, 0, 226,128)];
     }];
-
+    [lblTaggesName setHidden:NO];
+    [lblWith setHidden:NO];
 }
 
 - (void)likeUserList:(NSString*)strCount {
@@ -1044,7 +1159,7 @@
     UIStoryboard *storyBoard = [UIStoryboard  storyboardWithName:@"Main" bundle:nil];
     ShowImageOrVideoViewController *viewController = [storyBoard instantiateViewControllerWithIdentifier:@"ShowImageOrVideo"];
     viewController.userInfo = self.userInfo;
-        // [self.navigationController pushViewController:viewController animated:YES];
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 
@@ -1311,36 +1426,6 @@
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:strUrl]];
     connFBLagreImage = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-}
-
-#pragma mark NSURLConnection Delegate Methods
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-
-    _responseData = [[NSMutableData alloc] init];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-
-    [_responseData appendData:data];
-}
-
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
-                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
-        // Return nil to indicate not necessary to store a cached response for this connection
-    return nil;
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-
-    [sharedAppDelegate.spinner hide:YES];
-    UIImage *image = [UIImage imageWithData:_responseData];
-    imgVwPostImage.image = image;
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-        // The request has failed for some reason!
-    
 }
 
 @end

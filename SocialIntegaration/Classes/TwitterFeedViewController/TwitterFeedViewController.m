@@ -79,9 +79,11 @@
     self.navItem.title = @"Twitter";
 
     [self.arryTappedCell removeAllObjects];
-    for (NSString *cellSelected in sharedAppDelegate.arryOfTwittes) {
-        NSLog(@"%@", cellSelected);
-        [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
+    if (sharedAppDelegate.arryOfTwittes.count > 0) {
+        for (NSString *cellSelected in sharedAppDelegate.arryOfTwittes) {
+            NSLog(@"%@", cellSelected);
+            [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
+        }
     }
 }
 

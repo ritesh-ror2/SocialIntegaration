@@ -43,7 +43,7 @@
 
     [self setupNavigationPageControl];
 
-    UIView *vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 270, 60, 40)];
+    UIView *vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 230, 60, 40)];
     [self.view addSubview:vwPageControl];
     [self.view bringSubviewToFront:vwPageControl];
 
@@ -51,7 +51,7 @@
 
 
     UIPageControl *pageControl = [UIPageControl appearance];
-    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+    pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:1.0 alpha:0.4];
     pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
 }
 

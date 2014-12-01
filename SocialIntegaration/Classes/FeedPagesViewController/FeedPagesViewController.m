@@ -26,6 +26,7 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
+
     [self setupNavigationPageControl];
         // Create page view controller
     self.pageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FeedPageView"];
@@ -37,8 +38,8 @@
 
     [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
 
-        // Change the size of page view controller
-    self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-10);
+    // Change the size of page view controller
+    self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
     [self addChildViewController:_pageViewController];
     [self.view addSubview:_pageViewController.view];
@@ -46,9 +47,30 @@
 
     [self.pageViewController becomeFirstResponder];
 
+    NSArray *subviews = self.pageViewController.view.subviews;
+    UIPageControl *thisControl = nil;
+
+    for (int i=0; i<[subviews count]; i++) {
+        if ([[subviews objectAtIndex:i] isKindOfClass:[UIPageControl class]]) {
+            thisControl = (UIPageControl *)[subviews objectAtIndex:i];
+            thisControl.hidden = true;
+        }
+    }
+        // self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height+40);
+}
+
+- (void)appIsInBg:(id)sender {
+
+    self.navigationController.navigationBarHidden = YES;
+    self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x,-self.navigationController.navigationBar.frame.size.height, self.navigationController.navigationBar.frame.size.width,  self.navigationController.navigationBar.frame.size.height);
+        // self.tabBarController.tabBar.hidden = YES;
+        // self.tabBarController.tabBar.frame = CGRectMake(tabbar.frame.origin.x, 568, tabbar.frame.size.width,  tabbar.frame.size.height);
+
+        // self.tbleVwPostList.hidden = YES;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
+
     [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
 }
 
@@ -157,6 +179,5 @@
     
     return 0;
 }
-
 
 @end

@@ -11,14 +11,18 @@
 #import "Constant.h"
 #import "UserInfo.h"
 #import "UserProfile.h"
+#import "CustomTableCell.h"
 #import "UserProfile+DatabaseHelper.h"
 #import "ProfileTableViewCustomCell.h"
+#import "CommentViewController.h"
 #import <Social/Social.h>
 #import <Accounts/Accounts.h>
 
-@interface ProfileViewController ()
+@interface ProfileViewController () <CustomTableCellDelegate>
 
 @property (nonatomic, strong) NSMutableArray *arryOfFBUserFeed;
+@property (nonatomic, strong) NSMutableArray *arryTappedCell;
+@property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
 @property (nonatomic, strong) NSArray *arryOfViewController;
 
 @end
@@ -42,6 +46,8 @@
 
     self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:70/256.0f green:106/256.0f blue:181/256.0f alpha:1.0];
     self.arryOfFBUserFeed = [[NSMutableArray alloc]init];
+    self.arrySelectedIndex = [[NSMutableArray alloc]init];
+    self.arryTappedCell = [[NSMutableArray alloc]init];
 
     if (IS_IOS7) {
         [self.tbleVwFeeds setSeparatorInset:UIEdgeInsetsZero];
@@ -66,6 +72,10 @@
     [self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
     [sharedAppDelegate.spinner show:YES];
+
+    [self.arryTappedCell removeAllObjects];
+    [self.arrySelectedIndex removeAllObjects];
+    //[self.tbleVwFeeds reloadData];
 
     [self getFBUserInfo];
     UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
@@ -183,17 +193,23 @@
 
         for (NSDictionary *dictData in arryPost) {
 
-            NSDictionary *fromUser = [dictData objectForKey:@"from"];
+            if ([[dictData valueForKey:@"story"] length] == 0) {
 
-            UserInfo *userInfo =[[UserInfo alloc]init];
-            userInfo.strUserName = [fromUser valueForKey:@"name"];
-            userInfo.fromId = [fromUser valueForKey:@"id"];
-            userInfo.strUserPost = [dictData valueForKey:@"message"];
-            userInfo.strUserSocialType = @"Facebook";
-            userInfo.type = [dictData objectForKey:@"type"];
-            userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-            userInfo.strPostImg = [dictData valueForKey:@"picture"];
-            [self.arryOfFBUserFeed addObject:userInfo];
+                NSDictionary *fromUser = [dictData objectForKey:@"from"];
+
+                UserInfo *userInfo =[[UserInfo alloc]init];
+                userInfo.strUserName = [fromUser valueForKey:@"name"];
+                userInfo.fromId = [fromUser valueForKey:@"id"];
+                userInfo.strUserPost = [dictData valueForKey:@"message"];
+                userInfo.strUserSocialType = @"Facebook";
+                userInfo.objectIdFB = [dictData objectForKey:@"id"];
+                userInfo.type = [dictData objectForKey:@"type"];
+                userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+                userInfo.strPostImg = [dictData valueForKey:@"picture"];
+                [self.arryOfFBUserFeed addObject:userInfo];
+
+                [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
+            }
         }
     }
     [sharedAppDelegate.spinner hide:YES];
@@ -242,15 +258,49 @@
 
     [self.tbleVwFeeds setHidden:NO];
     
-    NSString *cellIdentifier = @"cellFeeds";
+ /*   NSString *cellIdentifier = @"cellFeeds";
     ProfileTableViewCustomCell *cell;
 
     cell = (ProfileTableViewCustomCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 
     [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]];
 
+    return cell;*/
+
+    NSString *cellIdentifier = @"cellIdentifier";
+    CustomTableCell *cell;
+
+    cell = (CustomTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    NSArray *arryObjects;
+    if (cell == nil) {
+
+        arryObjects = [[NSBundle mainBundle]loadNibNamed:@"CustomTableCell" owner:nil options:nil];
+        cell = [arryObjects objectAtIndex:0];
+        cell.customCellDelegate = self;
+
+    }
+
+    if(indexPath.row < [self.arryOfFBUserFeed count]){
+
+            //  self.noMoreResultsAvail = NO;
+        [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+    } else {
+
+        if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
+
+                //  if (self.noMoreResultsAvail == NO) {
+
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
+                cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
+                    //  [self getMoreDataOfFBFeed];
+                    // }
+        }
+    }
+    NSLog(@"%@",cell.touchCount);
     return cell;
 }
+
+#pragma mark - UITableViewDelegate
 
 #pragma mark - UITableViewDelegate
 
@@ -265,10 +315,72 @@
                                        context:nil];
 
     if (objUserInfo.strPostImg.length != 0) {
+
+        for (NSString *index in self.arrySelectedIndex) {
+
+            if (index.integerValue == indexPath.row) {
+                return(rect.size.height + 197);
+            }
+        }
+        return(rect.size.height + 165);
+    }
+
+    for (NSString *index in self.arrySelectedIndex) {
+
+        if (index.integerValue == indexPath.row) {
+            return(rect.size.height + 90);
+        }
+    }
+    return (rect.size.height + 58);//183 is height of other fixed content
+}
+
+- (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    CommentViewController *commentVw = [storyboard instantiateViewControllerWithIdentifier:@"CommentView"];
+    commentVw.userInfo = objuserInfo;
+    commentVw.postUserImg = imgName;
+    [[self navigationController] pushViewController:commentVw animated:YES];
+}
+
+- (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
+
+    UIApplication *app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = NO;
+
+    [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
+
+    NSLog(@"****%@***", self.arrySelectedIndex);
+        //your code here
+
+    if (isSelected == YES) {
+        [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
+    } else {
+        [self.arryTappedCell insertObject:[NSNumber numberWithBool:NO] atIndex:cellIndex];
+    }
+    [self.tbleVwFeeds beginUpdates];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];
+    [self.tbleVwFeeds reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        //your code here
+    [self.tbleVwFeeds endUpdates];
+}
+
+
+/*- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    UserInfo *objUserInfo = [self.arryOfFBUserFeed objectAtIndex:indexPath.row];
+
+    NSString *string = objUserInfo.strUserPost;
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                       context:nil];
+
+    if (objUserInfo.strPostImg.length != 0) {
         return(rect.size.height + 160);
     }
     return (rect.size.height + 60);//183 is height of other fixed content
-}
+}*/
 
 /*
 #pragma mark - Navigation

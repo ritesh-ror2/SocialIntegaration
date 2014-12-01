@@ -23,6 +23,8 @@
 NSString *const kSocialServices = @"SocialServices";
 NSString *const kFBSetup = @"FBSetup";
 
+#define TABLE_HEIGHT 385
+
 @interface ViewController () {
 
     BOOL isInstagramOpen;
@@ -30,8 +32,10 @@ NSString *const kFBSetup = @"FBSetup";
     NSMutableData *fbData;
     NSMutableURLRequest *fbRequest;
     NSURLConnection *connetion;
+
     BOOL isFirstTimeUpload;
     BOOL isFirstTimeDownloadTwitter;
+
     UINavigationBar *navBar;
     UITabBar *tabbar;
 }
@@ -52,7 +56,10 @@ BOOL hasTwitter = NO;
 
     [super viewDidLoad];
 
-        // self.view.backgroundColor = [UIColor whiteColor];
+    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
+        self.navController.navigationBarHidden = YES;
+    }
+
     //right button
     UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(composeMessage:)];
     self.navItem.rightBarButtonItem = barBtnEdit;
@@ -64,7 +71,7 @@ BOOL hasTwitter = NO;
     self.navController.navigationBar.translucent = NO;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInBg:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
@@ -85,11 +92,7 @@ BOOL hasTwitter = NO;
     [super viewWillAppear:animated];
 
     self.navigationController.navigationBar.translucent = NO;
-    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
-        self.navigationController.navigationBarHidden = YES;
-    }
 
-    [self.arrySelectedIndex removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
     [self.tbleVwPostList reloadData];
 
@@ -97,7 +100,7 @@ BOOL hasTwitter = NO;
     isFirstTimeDownloadTwitter = YES;
 
     [self appIsInForeground:nil];
-    self.navController.navigationBarHidden = NO;
+        // self.navController.navigationBarHidden = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -139,10 +142,21 @@ BOOL hasTwitter = NO;
     return imgVwProile;
 }
 
+- (void)appIsInBg:(id)sender {
+
+    self.navController.navigationBarHidden = YES;
+    navBar.frame = CGRectMake(navBar.frame.origin.x,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
+    tabbar.hidden = YES;
+    tabbar.frame = CGRectMake(tabbar.frame.origin.x, 568, tabbar.frame.size.width,  tabbar.frame.size.height);
+
+    self.tbleVwPostList.hidden = YES;
+}
+
 - (void)appIsInForeground:(id)sender {
 
     if (sharedAppDelegate.isFirstTimeLaunch == YES) {
 
+        self.navController.navigationBarHidden = YES;
         self.navController.navigationBar.translucent = YES;
         navBar.frame = CGRectMake(navBar.frame.origin.x,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
 
@@ -150,7 +164,8 @@ BOOL hasTwitter = NO;
         sharedAppDelegate.isFirstTimeLaunch = NO;
         [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0];
     }
-    
+
+    return;
     NSLog(@"%i %i, %i ", sharedAppDelegate.arryOfAllFeeds.count , sharedAppDelegate.arryOfInstagrame.count, sharedAppDelegate.arryOfFBNewsFeed.count);
     if (sharedAppDelegate.arryOfAllFeeds.count == 0) {
 
@@ -194,7 +209,10 @@ BOOL hasTwitter = NO;
     }
 
     navBar = self.navController.navigationBar;
+    self.navController.navigationBarHidden = NO;
+
     navBar.frame = CGRectMake(navBar.frame.origin.x,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
+    tabbar.hidden = NO;
 
     tabbar = self.tabBarController.tabBar;
     tabbar.frame = CGRectMake(tabbar.frame.origin.x, 568, tabbar.frame.size.width,  tabbar.frame.size.height);
@@ -297,26 +315,6 @@ BOOL hasTwitter = NO;
 #pragma mark - Login with facebook
 
 - (void)loginFacebook {
-
-   /* [FBSession openActiveSessionWithReadPermissions:@[
-                                                      @"basic_info",
-                                                      @"read_stream", @"email", @"user_friends", @"user_likes"
-                                                      ]
-                                       allowLoginUI:YES
-                                  completionHandler:^(FBSession *session,
-                                                      FBSessionState state,
-                                                      NSError *error) {
-                                      if (error) {
-
-                                          sharedAppDelegate.hasFacebook = NO;
-                                          [sharedAppDelegate.spinner hide:YES];
-                                      } else {
-
-                                          sharedAppDelegate.fbSession = session;
-                                          sharedAppDelegate.hasFacebook = YES;
-                                          [self updatePosts];
-                                      }
-                                  }];*/
 
     [FBSession openActiveSessionWithReadPermissions:@[ @"basic_info",  @"read_stream", @"email", @"user_friends", @"user_likes"]  allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
@@ -698,10 +696,14 @@ BOOL hasTwitter = NO;
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + 197);
+                return(rect.size.height + TABLE_HEIGHT+30);
             }
         }
-    return(rect.size.height + 165);
+        if ([objUserInfo.strUserSocialType isEqualToString:@"Instagram"]) {
+            return(rect.size.height + TABLE_HEIGHT);
+        } else {
+            return(rect.size.height + TABLE_HEIGHT);
+        }
     }
 
     for (NSString *index in self.arrySelectedIndex) {
