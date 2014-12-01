@@ -48,6 +48,8 @@
         [self.tbleVwTwitter setSeparatorInset:UIEdgeInsetsZero];
     }
 
+    sharedAppDelegate.isFirstTimeLaunch = NO;
+
     if (sharedAppDelegate.arryOfTwittes.count != 0) {
 
         UserInfo *userInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:sharedAppDelegate.arryOfTwittes.count - 1];
@@ -72,7 +74,7 @@
 
     [super viewDidAppear:animated];
     if (sharedAppDelegate.arryOfTwittes.count == 0) {
-        [Constant showAlert:@"Message" forMessage:ERROR_TWITTER_SETTING];
+            // [Constant showAlert:@"Message" forMessage:ERROR_TWITTER_SETTING];
     }
     self.navItem.title = @"Twitter";
 
@@ -208,6 +210,7 @@
                 self.since_Id = userInfo.statusId.intValue;
                 isFirst = YES;
             }
+            [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
         }
     }
 
@@ -270,14 +273,14 @@
         [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
     } else {
 
+        if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
 
-        if (self.noMoreResultsAvail == NO) {
+            if (self.noMoreResultsAvail == NO) {
 
-            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
-            cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
-            [self paggingInTwitter];
-        } else {
-
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
+                cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
+                [self paggingInTwitter];
+            }
         }
     }
     return cell;

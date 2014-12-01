@@ -62,6 +62,7 @@
     if (IS_IOS7) {
         [self.tbleVwFbMessage setSeparatorInset:UIEdgeInsetsZero];
     }
+    sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
 - (void)didReceiveMemoryWarning
@@ -101,6 +102,7 @@
     if (isFbUserLogin == NO) {
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+        [sharedAppDelegate.spinner hide:YES];
         return;
     }
 

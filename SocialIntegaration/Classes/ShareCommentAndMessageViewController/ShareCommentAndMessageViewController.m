@@ -65,6 +65,8 @@
     [self setHeadingAndNavigationColor];
     [self getListOfFollowers];
     [self addPageControl];
+
+    sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
 - (void) addPageControl {

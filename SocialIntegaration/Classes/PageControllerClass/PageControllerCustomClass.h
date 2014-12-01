@@ -13,11 +13,11 @@
 @property (nonatomic, strong) UIPageControl *navigationPageControl;
 @property (nonatomic, strong) UIPageControl *origanalPageControl;
 
--(void)configureNavigationPageControlWithPageControl:(UIPageControl*) pageControl;
--(void)autoConfigureNavigationPageControlWithPageViewController:(UIPageViewController*) pageViewController;
--(void)updateNavigationPageControl;
--(void)setupNavigationPageControl;
--(void)setupNavigationPageControlFrame:(UIView *)vwPageController;
+- (void)configureNavigationPageControlWithPageControl:(UIPageControl*) pageControl;
+- (void)autoConfigureNavigationPageControlWithPageViewController:(UIPageViewController*) pageViewController;
+- (void)updateNavigationPageControl;
+- (void)setupNavigationPageControl;
+- (void)setupNavigationPageControlFrame:(UIView *)vwPageController;
 
 
 @end

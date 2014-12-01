@@ -45,6 +45,7 @@
         imgVwBgImg.image = [UIImage imageNamed:@"instagram-bg.png"];
     }
     [self.view bringSubviewToFront:ImgVwCircle];
+    sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {

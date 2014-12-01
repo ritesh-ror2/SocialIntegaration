@@ -58,6 +58,7 @@
     if (IS_IOS7) {
         [tbleVwComment setSeparatorInset:UIEdgeInsetsZero];
     }
+    sharedAppDelegate.isFirstTimeLaunch = NO;
 
     vwOfComment.backgroundColor = [UIColor colorWithRed:240/256.0f green:240/256.0f blue:240/256.0f alpha:1.0];
     tbleVwComment.backgroundColor = [UIColor clearColor];

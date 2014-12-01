@@ -38,7 +38,7 @@
     [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
 
         // Change the size of page view controller
-    self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-10);
 
     [self addChildViewController:_pageViewController];
     [self.view addSubview:_pageViewController.view];
@@ -158,46 +158,5 @@
     return 0;
 }
 
-/*
--(void)setupNavigationPageControl{
-    UINavigationController *navController = self.navigationController;
 
-        //navController.navigationBar.barTintColor = [UIColor colorWithRed:.2 green:.4 blue:.9 alpha:1];
-
-    CGSize navBarSize = navController.navigationBar.bounds.size;
-    CGPoint origin = CGPointMake( navBarSize.width/2, (navBarSize.height/3)*2.5 );
-
-    self.navigationPageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(origin.x, origin.y,0, 0)];
-
-    [navController.navigationBar addSubview:self.navigationPageControl];
-}
-
--(void)configureNavigationPageControlWithPageControl:(UIPageControl*) pageControl{
-    self.origanalPageControl = pageControl;
-    if(self.origanalPageControl){
-        self.navigationPageControl.numberOfPages = self.origanalPageControl.numberOfPages;
-        [self.origanalPageControl removeFromSuperview];
-    }
-}
-
--(void)autoConfigureNavigationPageControlWithPageViewController:(UIPageViewController*) pageViewController{
-    NSArray *subviews = pageViewController.view.subviews;
-    for (int i=0; i<[subviews count]; i++) {
-        if ([[subviews objectAtIndex:i] isKindOfClass:[UIPageControl class]]) {
-            self.origanalPageControl = (UIPageControl *)[subviews objectAtIndex:i];
-        }
-    }
-    if(self.origanalPageControl){
-        self.navigationPageControl.numberOfPages = self.origanalPageControl.numberOfPages;
-        [self.origanalPageControl removeFromSuperview];
-    }
-}
-
-
--(void)updateNavigationPageControl{
-    if(self.origanalPageControl){
-        self.navigationPageControl.currentPage = self.origanalPageControl.currentPage;
-    }
-}
-*/
 @end

@@ -93,6 +93,8 @@
 		0A8D130C1A1368BD00112078 /* profile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A8D13091A1368BD00112078 /* profile@2x.png */; };
 		0A8D130E1A136F6F00112078 /* home@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A8D130D1A136F6F00112078 /* home@2x.png */; };
 		0A8D13121A136FFE00112078 /* HomePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8D13111A136FFE00112078 /* HomePageViewController.m */; };
+		0A8FFFAD1A28B40600211BCE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8E11A134A4F008221A8 /* Foundation.framework */; };
+		0A8FFFAE1A28B41800211BCE /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8D81A13483F008221A8 /* CoreFoundation.framework */; };
 		0A90EF001A15BA5B005FD439 /* plus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A90EEFF1A15BA5B005FD439 /* plus@2x.png */; };
 		0A90EF021A15BD38005FD439 /* Cross@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A90EF011A15BD38005FD439 /* Cross@2x.png */; };
 		0A90EF061A15C67E005FD439 /* Database.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A90EF051A15C67E005FD439 /* Database.m */; };
@@ -144,10 +146,8 @@
 		0AAD4C3F1A1C744B00EAC235 /* DetailMessageShowCustomCellTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AAD4C3E1A1C744B00EAC235 /* DetailMessageShowCustomCellTableViewCell.m */; };
 		0AE10E8B1A1A134200847A1A /* CustomGiveCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE10E8A1A1A134200847A1A /* CustomGiveCommentCell.m */; };
 		0AE10E8F1A1A2A9A00847A1A /* GiveCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE10E8E1A1A2A9A00847A1A /* GiveCommentViewController.m */; };
-		0AECF8D91A13483F008221A8 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8D81A13483F008221A8 /* CoreFoundation.framework */; };
 		0AECF8DE1A134912008221A8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8DD1A134912008221A8 /* UIKit.framework */; };
 		0AECF8E01A134952008221A8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8DF1A134952008221A8 /* CoreGraphics.framework */; };
-		0AECF8E31A134AD8008221A8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AECF8E11A134A4F008221A8 /* Foundation.framework */; };
 		0AF12B4B1A1F0A24005EA084 /* UserNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF12B4A1A1F0A24005EA084 /* UserNotification.m */; };
 		0AF12B4F1A1F0E30005EA084 /* UserNotificationCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF12B4E1A1F0E30005EA084 /* UserNotificationCustomCell.m */; };
 		0AFAD5BA1A1F52BD00E2D237 /* SearchCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AFAD5B91A1F52BD00E2D237 /* SearchCustomCell.m */; };
@@ -373,12 +373,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A8FFFAE1A28B41800211BCE /* CoreFoundation.framework in Frameworks */,
+				0A8FFFAD1A28B40600211BCE /* Foundation.framework in Frameworks */,
 				0A3933931A1CB3C700B65473 /* QuartzCore.framework in Frameworks */,
 				0A90EF0D1A15CD53005FD439 /* libsqlite3.0.dylib in Frameworks */,
-				0AECF8E31A134AD8008221A8 /* Foundation.framework in Frameworks */,
 				0AECF8E01A134952008221A8 /* CoreGraphics.framework in Frameworks */,
 				0AECF8DE1A134912008221A8 /* UIKit.framework in Frameworks */,
-				0AECF8D91A13483F008221A8 /* CoreFoundation.framework in Frameworks */,
 				0A9F50851A121C1900BAB0D3 /* AdSupport.framework in Frameworks */,
 				0A9F50831A121C1400BAB0D3 /* Accounts.framework in Frameworks */,
 				0A73247C1A0B8A1C00F10476 /* FacebookSDK.framework in Frameworks */,
@@ -530,6 +530,9 @@
 				0A8D130F1A136FED00112078 /* HomePageViewController */,
 				0A814BB41A275AC900F874D9 /* PageControllerClass */,
 				0A781B941A10F29300685DBA /* ViewController */,
+				0A7EE7B41A14922400E5E65A /* FacebookFeedViewController */,
+				0A7EE7AB1A1491A800E5E65A /* TwitterFeedViewController */,
+				0A7EE7AC1A1491B600E5E65A /* InstagramFeedViewController */,
 				0A7CEB901A1E05E90094EA61 /* ShowOtherUserProfileViewController */,
 				0A804CFA1A2328E700254746 /* ActivityViewController */,
 				0A4414EC1A259265003A2C60 /* ShareCommentAndMessageViewController */,
@@ -542,9 +545,6 @@
 				0A7EE7C31A14D6D400E5E65A /* SearchViewController */,
 				0A7EE7CB1A14DAED00E5E65A /* SearchUserViewController */,
 				0A7EE7D31A14E8D200E5E65A /* ShowUserViewController */,
-				0A7EE7B41A14922400E5E65A /* FacebookFeedViewController */,
-				0A7EE7AB1A1491A800E5E65A /* TwitterFeedViewController */,
-				0A7EE7AC1A1491B600E5E65A /* InstagramFeedViewController */,
 				0A7EE7BF1A14BF8100E5E65A /* SettingViewController */,
 				0A7639DA1A1339510034D604 /* StatrtPageControllViewController */,
 				0A9FF0571A10887400FC2B39 /* ProfileViewController */,

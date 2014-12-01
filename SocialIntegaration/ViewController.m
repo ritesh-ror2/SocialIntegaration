@@ -32,6 +32,8 @@ NSString *const kFBSetup = @"FBSetup";
     NSURLConnection *connetion;
     BOOL isFirstTimeUpload;
     BOOL isFirstTimeDownloadTwitter;
+    UINavigationBar *navBar;
+    UITabBar *tabbar;
 }
 
 @property (nonatomic)BOOL noMoreResultsAvail;
@@ -50,6 +52,7 @@ BOOL hasTwitter = NO;
 
     [super viewDidLoad];
 
+        // self.view.backgroundColor = [UIColor whiteColor];
     //right button
     UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(composeMessage:)];
     self.navItem.rightBarButtonItem = barBtnEdit;
@@ -61,7 +64,7 @@ BOOL hasTwitter = NO;
     self.navController.navigationBar.translucent = NO;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
-        // [self appIsInForeground:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillResignActiveNotification object:nil];
 
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
@@ -82,6 +85,9 @@ BOOL hasTwitter = NO;
     [super viewWillAppear:animated];
 
     self.navigationController.navigationBar.translucent = NO;
+    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
+        self.navigationController.navigationBarHidden = YES;
+    }
 
     [self.arrySelectedIndex removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
@@ -90,9 +96,6 @@ BOOL hasTwitter = NO;
     isFirstTimeUpload = YES;
     isFirstTimeDownloadTwitter = YES;
 
-//    if (sharedAppDelegate.arryOfAllFeeds.count != 0){
-//        [self shortArryOfAllFeeds];
-//    }
     [self appIsInForeground:nil];
     self.navController.navigationBarHidden = NO;
 }
@@ -101,12 +104,6 @@ BOOL hasTwitter = NO;
 
     [super viewDidAppear:animated];
     self.navItem.title = @"Timeline";
-    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
-
-        self.tbleVwPostList.alpha = 0.0;
-        sharedAppDelegate.isFirstTimeLaunch = NO;
-        [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0];
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -142,20 +139,18 @@ BOOL hasTwitter = NO;
     return imgVwProile;
 }
 
-- (void)animationOfTimeline {
-
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:3.0];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    [self.tbleVwPostList setHidden:NO];
-    [self.tbleVwPostList setAlpha:1];
-
-    [UIView commitAnimations];
-
- }
-
 - (void)appIsInForeground:(id)sender {
 
+    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
+
+        self.navController.navigationBar.translucent = YES;
+        navBar.frame = CGRectMake(navBar.frame.origin.x,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
+
+        self.tbleVwPostList.alpha = 0.0;
+        sharedAppDelegate.isFirstTimeLaunch = NO;
+        [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0];
+    }
+    
     NSLog(@"%i %i, %i ", sharedAppDelegate.arryOfAllFeeds.count , sharedAppDelegate.arryOfInstagrame.count, sharedAppDelegate.arryOfFBNewsFeed.count);
     if (sharedAppDelegate.arryOfAllFeeds.count == 0) {
 
@@ -173,6 +168,50 @@ BOOL hasTwitter = NO;
 
         // [self getInstagrameIntegration];
     [self showFacebookPost];
+}
+
+- (void)animationOfTimeline {
+
+    [self toggleFullscreen];
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:3.0];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [self.tbleVwPostList setHidden:NO];
+    [self.tbleVwPostList setAlpha:1];
+
+    [UIView commitAnimations];
+    
+}
+
+- (void)toggleFullscreen {
+
+    CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+    float animationDuration;
+    if(statusBarFrame.size.height > 20) { // in-call
+        animationDuration = 0.8;
+    } else { // normal status bar
+        animationDuration = 0.8;
+    }
+
+    navBar = self.navController.navigationBar;
+    navBar.frame = CGRectMake(navBar.frame.origin.x,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
+
+    tabbar = self.tabBarController.tabBar;
+    tabbar.frame = CGRectMake(tabbar.frame.origin.x, 568, tabbar.frame.size.width,  tabbar.frame.size.height);
+    if (YES) {
+        [[UIApplication sharedApplication]setStatusBarHidden:NO];
+        [UIView animateWithDuration:animationDuration animations:^{
+
+            navBar.frame = CGRectMake(0, 20,  navBar.frame.size.width,  navBar.frame.size.height);
+            NSLog(@"%@", NSStringFromCGRect(navBar.frame));
+
+            tabbar.frame = CGRectMake(tabbar.frame.origin.x,568 - tabbar.frame.size.height, tabbar.frame.size.width,  tabbar.frame.size.height);
+            self.navController.navigationBar.hidden = NO;
+
+        } completion:^(BOOL finished) {
+            self.navController.navigationBar.translucent = NO;
+        }];
+    }
 }
 
 #pragma mark - Check session of facebook
@@ -198,7 +237,7 @@ BOOL hasTwitter = NO;
                 // [sharedAppDelegate.spinner hide:YES];
             [sharedAppDelegate.arryOfFBNewsFeed removeAllObjects];
 
-            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB ];
+                //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB ];
 
             [self getTweetFromTwitter];// getInstagrameIntegration];
         });
@@ -326,7 +365,7 @@ BOOL hasTwitter = NO;
 	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         NSLog(@"%@", [error description]);
 		if (error) {
-            [Constant showAlert:ERROR_CONNECTING forMessage:@"Feeds is not comming"];
+                // [Constant showAlert:ERROR_CONNECTING forMessage:@"Feeds is not comming"];
                 // [sharedAppDelegate.spinner hide:YES];
             [self getTweetFromTwitter];
 		} else {
@@ -406,7 +445,7 @@ BOOL hasTwitter = NO;
         if ([vwController isKindOfClass:[FeedPagesViewController class]]) { //if this view controller is currently tapped
             if (self.tabBarController.selectedViewController == self.navigationController) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+                        //  [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
                 });
             }
         }
@@ -463,7 +502,7 @@ BOOL hasTwitter = NO;
                           dispatch_async(dispatch_get_main_queue(), ^{
 
                               [sharedAppDelegate.spinner hide:YES];
-                              [Constant showAlert:@"Message" forMessage:@"No Tweet in your account."];
+                                  // [Constant showAlert:@"Message" forMessage:@"No Tweet in your account."];
                           });
                           [self getInstagrameIntegration];
                       }
@@ -641,7 +680,7 @@ BOOL hasTwitter = NO;
 
     if ( sharedAppDelegate.arryOfAllFeeds.count != 0) {
         if(indexPath.row > [sharedAppDelegate.arryOfAllFeeds count]-1) {
-            return 44;
+            return 50;
         }
     } else {
         return 0;
@@ -750,7 +789,7 @@ BOOL hasTwitter = NO;
         if ([vwController isKindOfClass:[FeedPagesViewController class]]) { //if this view controller is currently tapped
             if (self.tabBarController.selectedViewController == self.navigationController) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_INSTAGRAM];
+                        //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_INSTAGRAM];
                 });
             }
         }

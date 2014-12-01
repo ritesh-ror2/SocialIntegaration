@@ -45,6 +45,7 @@
 
     self.navigationPageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(origin.x, origin.y,0, 0)];
 
+        //self.navigationPageControl.hidden = YES;
     [navController.navigationBar addSubview:self.navigationPageControl];
 }
 

@@ -202,15 +202,18 @@
 
    for (NSDictionary *dictData in arryNotification) {
 
-       UserNotification *userNotif = [[UserNotification alloc]init];
-       userNotif.title = [dictData objectForKey:@"title"];
-       userNotif.notif_id = [dictData objectForKey:@"id"];
-       userNotif.fromId = [[dictData objectForKey:@"from"]objectForKey:@"id"];
-       userNotif.name = [[dictData objectForKey:@"from"]objectForKey:@"name"];
-       userNotif.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-       userNotif.notifType = @"Facebook";
+       if ([[dictData valueForKey:@"unread"]integerValue] == 1) {
 
-       [self.arryNotifiFB addObject:userNotif];
+           UserNotification *userNotif = [[UserNotification alloc]init];
+           userNotif.title = [dictData objectForKey:@"title"];
+           userNotif.notif_id = [dictData objectForKey:@"id"];
+           userNotif.fromId = [[dictData objectForKey:@"from"]objectForKey:@"id"];
+           userNotif.name = [[dictData objectForKey:@"from"]objectForKey:@"name"];
+           userNotif.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+           userNotif.notifType = @"Facebook";
+
+           [self.arryNotifiFB addObject:userNotif];
+       }
     }
     [self twitterNotification];
 }

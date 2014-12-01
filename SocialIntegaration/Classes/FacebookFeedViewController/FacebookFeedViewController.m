@@ -47,6 +47,7 @@
     if (IS_IOS7) {
         [self.tbleVwFB setSeparatorInset:UIEdgeInsetsZero];
     }
+    sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
 - (void)didReceiveMemoryWarning
@@ -73,7 +74,7 @@
     [super viewDidAppear:animated];
 
     if (sharedAppDelegate.arryOfFBNewsFeed.count == 0) {
-        [Constant showAlert:@"Message" forMessage:ERROR_FB_SETTING];
+            // [Constant showAlert:@"Message" forMessage:ERROR_FB_SETTING];
     }
     self.navItem.title = @"Facebook";
 }
@@ -156,13 +157,16 @@
         [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
     } else {
 
-        if (self.noMoreResultsAvail == NO) {
+        if (sharedAppDelegate.arryOfFBNewsFeed.count != 0) {
 
-            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
-            cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
-            [self getMoreDataOfFeed];
-        } else {
-            self.noMoreResultsAvail = NO;
+            if (self.noMoreResultsAvail == NO) {
+
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
+                cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
+                [self getMoreDataOfFeed];
+            } else {
+                self.noMoreResultsAvail = NO;
+            }
         }
     }
 
@@ -302,6 +306,8 @@
 
             userInfo.videoUrl = [dictData valueForKey:@"source"];
             [sharedAppDelegate.arryOfFBNewsFeed addObject:userInfo];
+
+            [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
         }
     }
         [self.tbleVwFB reloadData];

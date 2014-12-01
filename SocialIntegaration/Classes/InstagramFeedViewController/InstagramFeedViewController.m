@@ -41,6 +41,8 @@
     if (IS_IOS7) {
         [self.tbleVwInstagram setSeparatorInset:UIEdgeInsetsZero];
     }
+
+    sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
 - (void)didReceiveMemoryWarning
@@ -54,7 +56,7 @@
     [super viewWillAppear:animated];
     if (sharedAppDelegate.arryOfInstagrame.count == 0) {
 
-        [Constant showAlert:@"Message" forMessage:@"No Feeds."];
+            //[Constant showAlert:@"Message" forMessage:@"No Feeds."];
         return;
     }
     [self.arrySelectedIndex removeAllObjects];
@@ -74,7 +76,7 @@
     [super viewDidAppear:animated];
 
     if (sharedAppDelegate.arryOfInstagrame.count == 0) {
-        [Constant showAlert:@"Message" forMessage:ERROR_INSTAGRAM];
+            // [Constant showAlert:@"Message" forMessage:ERROR_INSTAGRAM];
     }
     self.navItem.title = @"Instagram";
 }
