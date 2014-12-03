@@ -50,6 +50,12 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBarHidden = YES;
+
+}
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
@@ -214,9 +220,9 @@
 
 - (IBAction)facebookBtnTapped:(id)sender {
 
-    [self.view addSubview:sharedAppDelegate.spinner];
+   /* [self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
+    [sharedAppDelegate.spinner show:YES];*/
 
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
 

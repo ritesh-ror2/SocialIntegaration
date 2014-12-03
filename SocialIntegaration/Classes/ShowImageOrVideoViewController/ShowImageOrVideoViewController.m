@@ -46,10 +46,7 @@
 
         if([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
 
-            [self.view addSubview:sharedAppDelegate.spinner];
-            [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-            [sharedAppDelegate.spinner show:YES];
-
+            [Constant showNetworkIndicator];
             [self getLargeImageOfFacebook];
             return;
         }
@@ -93,7 +90,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
 
     self.imgVwLagre.hidden = NO;
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
     UIImage *image = [UIImage imageWithData:_responseData];
     self.imgVwLagre.image = image;
     

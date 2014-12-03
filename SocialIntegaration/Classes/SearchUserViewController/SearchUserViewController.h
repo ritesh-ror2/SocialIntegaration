@@ -11,7 +11,6 @@
 @interface SearchUserViewController : UIViewController
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwSearch;
-@property (nonatomic, strong) IBOutlet UISearchBar *searchBarUser;
 @property (nonatomic, strong) NSString *searchKeyword;
 
 @end

@@ -37,6 +37,11 @@
     self.navigationItem.title = self.searchKeywordType;
     self.arrySearchUserList = [[NSMutableArray alloc]init];
     NSLog(@"%@", self.searchKeywordType);
+
+    [self removeUISearchBarBackgroundInViewHierarchy:self.searchDisplayController.searchBar];
+    UITextField *txfSearchField = [self.searchDisplayController.searchBar valueForKey:@"_searchField"];
+    txfSearchField.backgroundColor = [UIColor colorWithWhite:.9 alpha:1.0];
+    self.searchDisplayController.searchBar.backgroundColor = [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -45,6 +50,17 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) removeUISearchBarBackgroundInViewHierarchy:(UIView *)view
+{
+    for (UIView *subview in [view subviews]) {
+        if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
+            [subview removeFromSuperview];
+            break; //To avoid an extra loop as there is only one UISearchBarBackground
+        } else {
+            [self removeUISearchBarBackgroundInViewHierarchy:subview];
+        }
+    }
+}
 
 - (void)viewWillAppear:(BOOL)animated {
 
@@ -72,7 +88,7 @@
     BOOL isInstagramUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
     if (isInstagramUserLogin == NO) {
 
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_INSTAGRAM];
     } else {
 
@@ -150,7 +166,7 @@
     NSArray *arry = [result objectForKey:@"data"];
     [self convertInstagramData:arry];
     NSLog(@"Instagram did load: %@", result);
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
 }
 
 - (void)convertInstagramData:(NSArray *)arry {
@@ -246,7 +262,7 @@
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
 
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                    [Constant showAlert:@"Message" forMessage:@"No match found."];
                });
            }
@@ -285,7 +301,7 @@
     }
 
     [self.tbleVwUser reloadData];
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
 }
 
 - (void)searchFriendOnFb:(NSString *)strKeyword {
@@ -330,7 +346,7 @@
         [self.arrySearchUserList addObject:userInfo];
     }
     [self.tbleVwUser reloadData];
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
 }
 
 
@@ -464,15 +480,12 @@
     }
     [self.searchDisplayController setActive:NO];
 
-    [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
+    [Constant showNetworkIndicator];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
 
 }
-
 
 - (void)userProfileBtnTapped:(UserInfo *)userInfo {
 

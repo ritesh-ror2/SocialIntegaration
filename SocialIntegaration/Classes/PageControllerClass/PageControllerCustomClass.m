@@ -36,17 +36,22 @@
 }
 
 -(void)setupNavigationPageControl{
+
     UINavigationController *navController = self.navigationController;
 
-    navController.navigationBar.barTintColor = [UIColor whiteColor];
+    navController.navigationBar.barTintColor = [UIColor redColor];
 
     CGSize navBarSize = navController.navigationBar.bounds.size;
-    CGPoint origin = CGPointMake( navBarSize.width/2, (navBarSize.height/3)*2.5 );
+    CGPoint origin = CGPointMake(navBarSize.width/2, (navBarSize.height/3)*2.5 );
 
     self.navigationPageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(origin.x, origin.y,0, 0)];
-
-        //self.navigationPageControl.hidden = YES;
+    self.navigationPageControl.hidden = NO;
+    self.navigationPageControl.backgroundColor = [UIColor redColor];
     [navController.navigationBar addSubview:self.navigationPageControl];
+}
+
+- (void)setPageNumber:(int)pageNumber {
+    self.navigationPageControl.currentPage = pageNumber;
 }
 
 -(void)configureNavigationPageControlWithPageControl:(UIPageControl*) pageControl{
@@ -69,7 +74,6 @@
         [self.origanalPageControl removeFromSuperview];
     }
 }
-
 
 -(void)updateNavigationPageControl{
     if(self.origanalPageControl){

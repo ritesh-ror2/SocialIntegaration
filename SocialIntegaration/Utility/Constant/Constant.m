@@ -141,4 +141,19 @@
     return strConvertedDate;
 }
 
+#pragma mark - Hide and show network indicator
+
++ (void)showNetworkIndicator {
+
+    UIApplication *app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = YES;
+}
+
++ (void)hideNetworkIndicator {
+
+    UIApplication *app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = NO;
+}
+
+
 @end

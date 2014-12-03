@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Constant : NSObject
+@interface Constant : NSObject 
 
 + (UIImage*)maskImage:(UIImage *)image withMask:(UIImage *)maskImage;
 + (void)showAlert:(NSString *)title forMessage:(NSString *)message;
@@ -18,4 +18,7 @@
 + (NSString *)convertDateOFInstagram:(NSDate*)date;
 
 + (NSString *)calculateTimesBetweenTwoDates:(NSString *)strGivenDate;
+
++ (void)showNetworkIndicator;
++ (void)hideNetworkIndicator;
 @end

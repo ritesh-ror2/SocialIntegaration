@@ -15,8 +15,11 @@
 #import "UserProfile+DatabaseHelper.h"
 #import "ProfileTableViewCustomCell.h"
 #import "CommentViewController.h"
+#import "ShowOtherUserProfileViewController.h"
 #import <Social/Social.h>
 #import <Accounts/Accounts.h>
+
+#define TABLE_HEIGHT 385
 
 @interface ProfileViewController () <CustomTableCellDelegate>
 
@@ -49,9 +52,7 @@
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
 
-    if (IS_IOS7) {
-        [self.tbleVwFeeds setSeparatorInset:UIEdgeInsetsZero];
-    }
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -69,9 +70,12 @@
 
     [super viewDidAppear:animated];
 
-    [self.view addSubview:sharedAppDelegate.spinner];
+   /* [self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
     [sharedAppDelegate.spinner show:YES];
+    */
+
+    [Constant showNetworkIndicator];
 
     [self.arryTappedCell removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
@@ -82,6 +86,35 @@
     [self setFBUserInfo:userProfile];
 }
 
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+    NSString *strUserId = [NSString stringWithFormat:@"/%@",userInfo.fromId];
+    /* make the API call */
+    [FBRequestConnection startWithGraphPath:strUserId
+                                 parameters:nil
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              if (error) {
+
+                              } else {
+
+                                  NSDictionary *dictProfile = (NSDictionary *)result;
+
+                                  UserInfo *otherUserInfo = [[UserInfo alloc]init];
+                                  otherUserInfo.strUserName = [dictProfile valueForKey:@"name"];
+                                  otherUserInfo.fromId  = [dictProfile valueForKey:@"id"];
+                                  otherUserInfo.strUserSocialType = @"Facebook";
+                                  UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                                  ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+                                  vwController.userInfo = otherUserInfo;
+                                  [self.navigationController pushViewController:vwController animated:YES];
+                              }
+                          }];
+}
 #pragma mark - Get FB User Info
 
 - (void)getFBUserInfo {
@@ -94,19 +127,20 @@
                                               cancelButtonTitle:NSLocalizedString(@"OK", @"")
                                               otherButtonTitles:nil];
         [alert show];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
         return;
     }
 
-    [self.view addSubview:sharedAppDelegate.spinner];
+   /* [self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
+    [sharedAppDelegate.spinner show:YES];*/
+
 
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
     if (isFbUserLogin == NO) {
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
         return;
     } else {
 
@@ -212,7 +246,7 @@
             }
         }
     }
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
 
      [self.tbleVwFeeds reloadData];
 }
@@ -283,14 +317,14 @@
     if(indexPath.row < [self.arryOfFBUserFeed count]){
 
             //  self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+        [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:YES];
     } else {
 
         if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
 
                 //  if (self.noMoreResultsAvail == NO) {
 
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES withOtherTimeline:YES];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
                     //  [self getMoreDataOfFBFeed];
                     // }
@@ -319,10 +353,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + 197);
+                return(rect.size.height + TABLE_HEIGHT + 35);
             }
         }
-        return(rect.size.height + 165);
+        return(rect.size.height + TABLE_HEIGHT - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {
@@ -331,7 +365,7 @@
             return(rect.size.height + 90);
         }
     }
-    return (rect.size.height + 58);//183 is height of other fixed content
+    return (rect.size.height + 65);//183 is height of other fixed content
 }
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {

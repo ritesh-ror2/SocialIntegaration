@@ -66,9 +66,8 @@
 
     self.navigationController.navigationBarHidden = YES;
 
-    if (IS_IOS7) {
-        [tbleVwComment setSeparatorInset:UIEdgeInsetsZero];
-    }
+    scrollVwShowComment.parentVw = self;
+
     sharedAppDelegate.isFirstTimeLaunch = NO;
 
     vwOfComment.backgroundColor = [UIColor colorWithRed:240/256.0f green:240/256.0f blue:240/256.0f alpha:1.0];
@@ -84,9 +83,12 @@
     self.arryComment = [[NSMutableArray alloc]init];
     [tbleVwComment setBackgroundColor: [UIColor clearColor]];
     
-    [self.view addSubview:sharedAppDelegate.spinner];
+    /*[self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
+    [sharedAppDelegate.spinner show:YES];*/
+
+    [Constant showNetworkIndicator];
+
     [btnLike addTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
 
     lblFavourite.text = self.userInfo.favourateCount;
@@ -111,7 +113,6 @@
     vwTaggedUser.hidden = YES;
     vwTaggedUser.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.5];
     [self.view addSubview:vwTaggedUser];
-
 
     tbleVwTaggedUser = [[UITableView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 200)/2, (self.view.frame.size.height - 250)/2, 200, 250)];
     tbleVwTaggedUser.dataSource = self;
@@ -144,9 +145,9 @@
     [self setProfilePic:self.userInfo];
     [self setProfilePicOfPostUser:self.userInfo];
 
-    UIApplication* app = [UIApplication sharedApplication];
-    app.networkActivityIndicatorVisible = YES;
+    [Constant showNetworkIndicator];
 }
+
 - (void)setHeadingAndRightBtn {
 
     if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
@@ -196,8 +197,9 @@
 
          if (error) {
 
-             [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
-             [sharedAppDelegate.spinner hide:YES];
+                 //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
+             [Constant hideNetworkIndicator];
+
              return ;
          } else {
 
@@ -217,8 +219,8 @@
              });
              } else {
                   dispatch_async(dispatch_get_main_queue(), ^{
-                      [sharedAppDelegate.spinner hide:YES];
-                      [Constant showAlert:@"Message" forMessage:@"No Comment is there."];
+                      [Constant showNetworkIndicator];
+                          // [Constant showAlert:@"Message" forMessage:@"No Comment is there."];
                   });
              }
      }
@@ -255,13 +257,12 @@
     }
 
     if(self.arryComment.count == 0) {
-        [Constant showAlert:@"Messgae" forMessage:@"No comment found"];
-        [sharedAppDelegate.spinner setHidden:YES];
+            // [Constant showAlert:@"Messgae" forMessage:@"No comment found."];
+        [Constant showNetworkIndicator];
+        scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
         return;
     }
-    [sharedAppDelegate.spinner hide:YES];
-    UIApplication* app = [UIApplication sharedApplication];
-    app.networkActivityIndicatorVisible = NO;
+    [Constant hideNetworkIndicator];
     [tbleVwComment reloadData];
 }
 
@@ -306,7 +307,7 @@
                                               cancelButtonTitle:@"Ok"
                                               otherButtonTitles:nil];
     [alertView show];
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
 }
 
 - (void)request:(IGRequest *)request didLoad:(id)result {
@@ -328,15 +329,13 @@
 
             UserComment *userComment =[[UserComment alloc]init];
 
-            NSDictionary *postUserDetailDict = [dictData objectForKey:@"caption"];
-
-            NSDictionary *dictUserInfo = [postUserDetailDict objectForKey:@"from"];
+            NSDictionary *dictUserInfo = [dictData objectForKey:@"from"];
             userComment.userName = [dictUserInfo valueForKey:@"username"];
             userComment.userId = [dictUserInfo valueForKey:@"id"];
             userComment.userImg = [dictUserInfo valueForKey:@"profile_picture"];
 
-            userComment.userComment = [postUserDetailDict valueForKey:@"text"];
-            NSString *strDate = [postUserDetailDict objectForKey:@"created_time"];
+            userComment.userComment = [dictData valueForKey:@"text"];
+             NSString *strDate = [dictData objectForKey:@"created_time"];
 
             NSTimeInterval interval = strDate.doubleValue;
             NSDate *convertedDate = [NSDate dateWithTimeIntervalSince1970: interval];
@@ -355,11 +354,12 @@
     }
 
     if(self.arryComment.count == 0) {
-        [Constant showAlert:@"Messgae" forMessage:@"No comment found"];
-        [sharedAppDelegate.spinner setHidden:YES];
+            //[Constant showAlert:@"Messgae" forMessage:@"No comment found."];
+        [Constant hideNetworkIndicator];
+        scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
         return;
     }
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
     [tbleVwComment reloadData];
 }
 
@@ -405,17 +405,14 @@
         }
     }
     if (self.arryComment.count == 0) {
-        [Constant showAlert:@"Message" forMessage:@"No Comment is there."];
-        [sharedAppDelegate.spinner setHidden:YES];
+            //  [Constant showAlert:@"Message" forMessage:@"No Comment is there."];
+        [Constant hideNetworkIndicator];
+        scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
         return;
     }
 
-    [sharedAppDelegate.spinner hide:YES];
-
+    [Constant hideNetworkIndicator];
     [tbleVwComment reloadData];
-
-    UIApplication* app = [UIApplication sharedApplication];
-    app.networkActivityIndicatorVisible = NO;
 }
 
 - (void)setCommentOfUser:(UserInfo *)objUserInfo {
@@ -433,32 +430,44 @@
     asyVwOfPost.hidden = YES;
     btnShowImageOrVideo.hidden = YES;
 
+    int heightPostImg;
+    if (rect.size.height < 30){
+       heightPostImg = 30;
+    } else {
+        heightPostImg = rect.size.height+10;
+    }
+        //imgVwBackground.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     if (objUserInfo.strPostImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
-        asyVwOfPost.frame = CGRectMake(70, lblComment.frame.size.height + lblComment.frame.origin.y + 3, 245, 100);
+        asyVwOfPost.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
+        imgVwPostImage.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
         asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
+
         asyVwOfPost.backgroundColor = [UIColor clearColor];
 
         btnShowImageOrVideo.frame = asyVwOfPost.frame;
         [self setFrameOfActivityView:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 10];
-        int taggedUser =  [self setFramesOfTaggedUsers:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 95];
-        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + lblComment.frame.origin.y + 140 + taggedUser);
+        int taggedUser =  [self setFramesOfTaggedUsers:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 35];
+        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, heightPostImg + lblComment.frame.origin.y + 365 + taggedUser);
+            //imgVwBackground.backgroundColor = [UIColor redColor];
     } else {
 
         [self setFrameOfActivityView:lblComment.frame.size.height + lblComment.frame.origin.y + 10];
         int taggedUser =  [self setFramesOfTaggedUsers:lblComment.frame.size.height + lblComment.frame.origin.y + 40];
-        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 40) + taggedUser);
+        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 45) + taggedUser);
     }
 
-    tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, (self.view.frame.size.height - (imgVwBackground.frame.size.height+ 115)));
+    scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + 235));
+
+    tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, 250);
 
     imgVwUser.frame = CGRectMake(10, imgVwBackground.frame.size.height+5 , 45, 45);
 
     if ([objUserInfo.type isEqualToString:@"video"]) {
 
         btnShowImageOrVideo.hidden = NO;
-        [btnShowImageOrVideo setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+        [btnShowImageOrVideo setImage:[UIImage imageNamed:@"play-btn.png"] forState:UIControlStateNormal];
         [self.view bringSubviewToFront:btnShowImageOrVideo];
     }
 }
@@ -473,20 +482,18 @@
     lblWith = [[UILabel alloc]initWithFrame:CGRectMake(2, yAxis+5, 40, 21)];
     lblWith.text = @"with";
     lblWith.textColor = [UIColor lightGrayColor];
-    [self.view addSubview:lblWith];
+    [imgVwBackground addSubview:lblWith];
 
     lblTaggesName = [[UILabel alloc]initWithFrame:CGRectMake(40, yAxis+5, 280, 21)];
     lblTaggesName.textColor = [UIColor lightGrayColor];
     lblTaggesName.font = [UIFont fontWithName:@"Helvetica-Neue" size:13.0];
     lblTaggesName.textColor = [UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0];
-    [self.view addSubview:lblTaggesName];
+    [imgVwBackground addSubview:lblTaggesName];
 
     UIButton *btnTaggedUser = [UIButton buttonWithType:UIButtonTypeCustom];
     btnTaggedUser.frame = CGRectMake(40, yAxis+5, 280, 30);
     [btnTaggedUser addTarget:self action:@selector(taggedUserBtnTapped) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btnTaggedUser];
-
-    [self.view bringSubviewToFront:imgVwPostImage];
+    [imgVwBackground addSubview:btnTaggedUser];
 
     for (UserInfo *userInfo  in self.arryTaggedUser) {
         NSString *strName = userInfo.strUserName;
@@ -731,7 +738,7 @@
     [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x, yAxis,  btnRetweet.frame.size.width,  btnRetweet.frame.size.height)];
     [btnMoreTweet setFrame:CGRectMake(btnMoreTweet.frame.origin.x, yAxis,  btnMoreTweet.frame.size.width,  btnMoreTweet.frame.size.height)];
 
-    [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 21)];
+    [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 20)];
 }
 
 
@@ -744,11 +751,16 @@
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{
-        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userInfo.strPostImg]];
+        NSData *imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userInfo.strPostImg]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
 
-           imgVwPostImage.image = [UIImage imageWithData:image];
+            if (imageData != nil) {
+                    //asyVwOfPost.hidden = YES;
+                    //imgVwPostImage.hidden = NO;
+
+                    //imgVwPostImage.image = [UIImage imageWithData:imageData];
+            }
         });
     });
 }
@@ -996,16 +1008,14 @@
 
     if (connection == connFBLagreImage) {
 
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
         UIImage *image = [UIImage imageWithData:_responseData];
         imgVwPostImage.image = image;
-
     } else {
         id result = [NSJSONSerialization JSONObjectWithData:fbData options:kNilOptions error:nil];
         NSLog(@"%@", result);
         nextTagedUrl = [[result objectForKey:@"paging"]valueForKey:@"next"];
         [self getTaggedUser:[result objectForKey:@"data"]];
-
     }
 }
 
@@ -1063,6 +1073,7 @@
     }];
 }
 
+/*
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 
     [vwTaggedUser setHidden:YES]; //hide on tapped any where
@@ -1107,7 +1118,7 @@
         [UIView animateWithDuration:0.5 animations:^{
 
             [imgVwPostImage setHidden:NO];
-            [imgVwPostImage setFrame:CGRectMake(imgVwBackground.frame.origin.x, imgVwBackground.frame.origin.y, imgVwBackground.frame.size.width, imgVwBackground.frame.size.height)];
+            [imgVwPostImage setFrame:CGRectMake(imgVwBackground.frame.origin.x, imgVwBackground.frame.origin.y, imgVwBackground.frame.size.width, imgVwBackground.frame.size.height-20)];
 
         }];
 
@@ -1116,14 +1127,14 @@
         [UIView animateWithDuration:0.5 animations:^{
 
             [imgVwPostImage setHidden:YES];
-            [imgVwPostImage setFrame:CGRectMake(50, 0, 226,128)];
+            [imgVwPostImage setFrame:CGRectMake(50, 0, 320 ,320)];
         }];
 
     }
 }
 
 
-- (void)touchesEnded: (NSSet *)touches withEvent: (UIEvent *) event {
+- (void)touchesEnded:(NSSet *)touches withEvent: (UIEvent *) event {
 
     [UIView animateWithDuration:0.4 animations:^{
 
@@ -1133,7 +1144,7 @@
     [lblTaggesName setHidden:NO];
     [lblWith setHidden:NO];
 }
-
+*/
 - (void)likeUserList:(NSString*)strCount {
 
     lblLikeCount.text = [NSString stringWithFormat:@"%lld", strCount.longLongValue];
@@ -1222,15 +1233,14 @@
                    } completion:^(BOOL finished){
                        [btnRetweet setImage:[UIImage imageNamed:@"Retweet_active.png"]forState:UIControlStateNormal];//selected
                        [Constant showAlert:@"Success" forMessage:@"Retweet has post successfully."];
-                       [sharedAppDelegate.spinner hide:YES];
+                       [Constant hideNetworkIndicator];
                    }];
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
 
-                   [Constant showAlert:@"Message" forMessage:@"Error to retweet"];
-                   [sharedAppDelegate.spinner hide:YES];
-
+                       //[Constant showAlert:@"Message" forMessage:@"Error to retweet"];
+                   [Constant hideNetworkIndicator];
                });
            }
        }
@@ -1263,12 +1273,12 @@
        if (!error) {
            if (arryTwitte.count != 0) {
                dispatch_async(dispatch_get_main_queue(), ^{
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                    [btnRetweet setImage:[UIImage imageNamed:@"Retweet1.png"] forState:UIControlStateNormal];//deselected
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                });
            }
        }
@@ -1307,7 +1317,7 @@
            if (arryTwitte.count != 0) {
 
                dispatch_async(dispatch_get_main_queue(), ^{
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                    btnFavourite.transform = CGAffineTransformMakeScale(0.01, 0.01);
                    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
                            // animate it to the identity transform (100% scale)
@@ -1319,7 +1329,7 @@
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                });
            }
        }
@@ -1353,12 +1363,12 @@
        if (!error) {
            if (arryTwitte.count != 0) {
                dispatch_async(dispatch_get_main_queue(), ^{
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                    [btnFavourite setImage:[UIImage imageNamed:@"Favourite1.png"] forState:UIControlStateNormal];//deselected
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                });
            }
        }
@@ -1390,7 +1400,7 @@
                                           // animate it to the identity transform (100% scale)
                                       imgVwOfLikeFb.transform = CGAffineTransformIdentity;
                                   } completion:^(BOOL finished){
-                                      imgVwOfLikeFb.image = [UIImage imageNamed:@"Likedd.png"];
+                                      imgVwOfLikeFb.image = [UIImage imageNamed:@"Liked.png"];
                                   }];
 
                                   [btnLike setTitle:@"Like" forState:UIControlStateNormal];

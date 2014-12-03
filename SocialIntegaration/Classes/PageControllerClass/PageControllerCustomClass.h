@@ -18,6 +18,6 @@
 - (void)updateNavigationPageControl;
 - (void)setupNavigationPageControl;
 - (void)setupNavigationPageControlFrame:(UIView *)vwPageController;
-
+- (void)setPageNumber:(int)pageNumber;
 
 @end

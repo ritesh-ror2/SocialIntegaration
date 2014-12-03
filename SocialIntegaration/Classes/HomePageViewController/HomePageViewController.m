@@ -9,7 +9,10 @@
 #import "HomePageViewController.h"
 #import "ViewController.h"
 
-@interface HomePageViewController ()
+@interface HomePageViewController () {
+
+    ViewController* vc;
+}
 
 @end
 
@@ -48,8 +51,7 @@
     NSString * segueIdentifier = [segue identifier];
     if([segueIdentifier isEqualToString:@"Tabbar"]){
 
-        ViewController* vc = [[ViewController alloc] init];
-        vc = [segue destinationViewController];
+         vc = [segue destinationViewController];
     }
 }
 

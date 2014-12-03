@@ -9,7 +9,6 @@
 
 #import "ViewController.h"
 #import "UserInfo.h"
-#import "Constant.h"
 #import "FeedPagesViewController.h"
 #import "AppDelegate.h"
 #import "UserProfile.h"
@@ -18,7 +17,6 @@
 #import "ShowOtherUserProfileViewController.h"
 #import "Reachability.h"
 #import "ShareCommentAndMessageViewController.h"
-#import <Social/Social.h>
 
 NSString *const kSocialServices = @"SocialServices";
 NSString *const kFBSetup = @"FBSetup";
@@ -56,10 +54,6 @@ BOOL hasTwitter = NO;
 
     [super viewDidLoad];
 
-    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
-        self.navController.navigationBarHidden = YES;
-    }
-
     //right button
     UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(composeMessage:)];
     self.navItem.rightBarButtonItem = barBtnEdit;
@@ -71,15 +65,11 @@ BOOL hasTwitter = NO;
     self.navController.navigationBar.translucent = NO;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInBg:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    // [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInBackground:) name:UIApplicationWillResignActiveNotification object:nil];
 
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arryCellTappedTwices = [[NSMutableArray alloc]init];
-
-    if (IS_IOS7) {
-        [self.tbleVwPostList setSeparatorInset:UIEdgeInsetsZero];
-    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -94,18 +84,36 @@ BOOL hasTwitter = NO;
     self.navigationController.navigationBar.translucent = NO;
 
     [self.arrySelectedIndex removeAllObjects];
-    [self.tbleVwPostList reloadData];
+        // [self.tbleVwPostList reloadData];
 
     isFirstTimeUpload = YES;
     isFirstTimeDownloadTwitter = YES;
 
+    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
+        [self hideNavBar:YES];
+         self.imgVwBackground.hidden = NO;
+    } else {
+        [self hideNavBar:NO];
+    }
+
     [self appIsInForeground:nil];
-        // self.navController.navigationBarHidden = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
+
+    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
+
+            // [self hideNavBar:YES];
+        self.navController.navigationBar.translucent = YES;
+        navBar.frame = CGRectMake(0,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
+
+        self.tbleVwPostList.alpha = 0.0;
+        sharedAppDelegate.isFirstTimeLaunch = NO;
+        [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0];
+    }
+    
     self.navItem.title = @"Timeline";
 }
 
@@ -113,6 +121,11 @@ BOOL hasTwitter = NO;
 
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
+- (void)hideNavBar:(BOOL)isHidden {
+
+    self.navController.navigationBarHidden = isHidden;
 }
 
 - (IBAction)composeMessage:(id)sender {
@@ -142,46 +155,27 @@ BOOL hasTwitter = NO;
     return imgVwProile;
 }
 
-- (void)appIsInBg:(id)sender {
+/*- (void)appIsInBackground:(NSNotification *)notification {
 
-    self.navController.navigationBarHidden = YES;
-    navBar.frame = CGRectMake(navBar.frame.origin.x,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
+    [self hideNavBar:YES];
+    navBar.frame = CGRectMake(0,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
     tabbar.hidden = YES;
     tabbar.frame = CGRectMake(tabbar.frame.origin.x, 568, tabbar.frame.size.width,  tabbar.frame.size.height);
 
+    self.imgVwBackground.hidden = NO;
+    [self.view bringSubviewToFront:self.imgVwBackground];
     self.tbleVwPostList.hidden = YES;
-}
+}*/
 
 - (void)appIsInForeground:(id)sender {
 
-    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
-
-        self.navController.navigationBarHidden = YES;
-        self.navController.navigationBar.translucent = YES;
-        navBar.frame = CGRectMake(navBar.frame.origin.x,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
-
-        self.tbleVwPostList.alpha = 0.0;
-        sharedAppDelegate.isFirstTimeLaunch = NO;
-        [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0];
-    }
-
-    return;
-    NSLog(@"%i %i, %i ", sharedAppDelegate.arryOfAllFeeds.count , sharedAppDelegate.arryOfInstagrame.count, sharedAppDelegate.arryOfFBNewsFeed.count);
-    if (sharedAppDelegate.arryOfAllFeeds.count == 0) {
-
-        [self.view addSubview:sharedAppDelegate.spinner];
-        [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-        [sharedAppDelegate.spinner show:YES];
-    }
-
-    UIApplication* app = [UIApplication sharedApplication];
-    app.networkActivityIndicatorVisible = YES;
+    [Constant showNetworkIndicator];
 
     if (isInstagramOpen == YES) { //if it only get data from instagram
         isInstagramOpen = NO;
     }
 
-        // [self getInstagrameIntegration];
+    // [self getInstagrameIntegration];
     [self showFacebookPost];
 }
 
@@ -190,12 +184,16 @@ BOOL hasTwitter = NO;
     [self toggleFullscreen];
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:3.0];
+
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [self.tbleVwPostList setHidden:NO];
     [self.tbleVwPostList setAlpha:1];
-
+    [self.imgVwBackground setAlpha:0];
     [UIView commitAnimations];
-    
+
+//    [UIView setAnimationDuration:2.0];
+//    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+//    [self.imgVwBackground setHidden:YES];
 }
 
 - (void)toggleFullscreen {
@@ -209,9 +207,9 @@ BOOL hasTwitter = NO;
     }
 
     navBar = self.navController.navigationBar;
-    self.navController.navigationBarHidden = NO;
+    [self hideNavBar:NO];
 
-    navBar.frame = CGRectMake(navBar.frame.origin.x,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
+    navBar.frame = CGRectMake(0,-navBar.frame.size.height, navBar.frame.size.width,  navBar.frame.size.height);
     tabbar.hidden = NO;
 
     tabbar = self.tabBarController.tabBar;
@@ -228,6 +226,14 @@ BOOL hasTwitter = NO;
 
         } completion:^(BOOL finished) {
             self.navController.navigationBar.translucent = NO;
+
+            if (sharedAppDelegate.arryOfAllFeeds.count == 0) {
+
+               /* [self.view addSubview:sharedAppDelegate.spinner];
+                [self.view bringSubviewToFront:sharedAppDelegate.spinner];
+                sharedAppDelegate.spinner.center = self.view.center;
+                [sharedAppDelegate.spinner show:YES]; */
+            }
         }];
     }
 }
@@ -392,18 +398,21 @@ BOOL hasTwitter = NO;
 
             userInfo.strUserName = [fromUser valueForKey:@"name"];
             userInfo.fromId = [fromUser valueForKey:@"id"];
-            userInfo.strUserPost = [dictData valueForKey:@"message"];
             userInfo.strUserSocialType = @"Facebook";
             userInfo.fbLike = [[dictData valueForKey:@"user_likes"] boolValue];
             userInfo.type = [dictData objectForKey:@"type"];
+            userInfo.strUserPost = [dictData valueForKey:@"message"];
             userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
             userInfo.strPostImg = [dictData valueForKey:@"picture"];
             userInfo.postId = [dictData valueForKey:@"id"];
             NSLog(@"*** %@", [dictData objectForKey:@"type"]);
             if (![[dictData objectForKey:@"type"] isEqualToString:@"video"] && ![[dictData objectForKey:@"type"] isEqualToString:@"photo"]) {
                 userInfo.objectIdFB = [dictData valueForKey:@"id"];
+             } else if (![[dictData objectForKey:@"type"] isEqualToString:@"link"]) {
+
+                 userInfo.objectIdFB = [dictData valueForKey:@"id"];
              } else {
-                userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
+                 userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
              }
 
             NSLog(@"** %@", userInfo.type);
@@ -649,14 +658,14 @@ BOOL hasTwitter = NO;
     if(indexPath.row < [sharedAppDelegate.arryOfAllFeeds count]){
 
         self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:NO];
     } else {
 
         if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 
-            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
+            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES withOtherTimeline:NO];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
                 [self getMoreDataOfFBFeed];
 
@@ -696,14 +705,13 @@ BOOL hasTwitter = NO;
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + TABLE_HEIGHT+30);
+                return(rect.size.height + TABLE_HEIGHT+35);
             }
         }
-        if ([objUserInfo.strUserSocialType isEqualToString:@"Instagram"]) {
-            return(rect.size.height + TABLE_HEIGHT);
-        } else {
-            return(rect.size.height + TABLE_HEIGHT);
-        }
+            // if ([objUserInfo.strUserSocialType isEqualToString:@"Instagram"]) {
+             return(rect.size.height + TABLE_HEIGHT-3);
+            /// }
+            //return(rect.size.height + TABLE_HEIGHT-4);
     }
 
     for (NSString *index in self.arrySelectedIndex) {
@@ -712,7 +720,7 @@ BOOL hasTwitter = NO;
             return(rect.size.height + 90);
         }
     }
-    return (rect.size.height + 58);//183 is height of other fixed content
+    return (rect.size.height + 65);//183 is height of other fixed content
 }
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
@@ -725,19 +733,19 @@ BOOL hasTwitter = NO;
 }
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
-
-    UIApplication *app = [UIApplication sharedApplication];
-    app.networkActivityIndicatorVisible = NO;
     
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
 
     NSLog(@"****%@***", self.arrySelectedIndex);
         //your code here
 
-    if (isSelected == YES) {
-        [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
-    } else {
-        [self.arryTappedCell insertObject:[NSNumber numberWithBool:NO] atIndex:cellIndex];
+    if (self.arryTappedCell.count != 0) {
+
+        if (isSelected == YES) {
+            [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
+        } else {
+            [self.arryTappedCell insertObject:[NSNumber numberWithBool:NO] atIndex:cellIndex];
+        }
     }
     [self.tbleVwPostList beginUpdates];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];
@@ -932,9 +940,7 @@ BOOL hasTwitter = NO;
 
 - (void)shortArryOfAllFeeds {
 
-    UIApplication *app = [UIApplication sharedApplication];
-    app.networkActivityIndicatorVisible = NO;
-
+    [Constant hideNetworkIndicator];
 
     [sharedAppDelegate.arryOfAllFeeds removeAllObjects]; //first remove all object
     [self.arryTappedCell removeAllObjects];

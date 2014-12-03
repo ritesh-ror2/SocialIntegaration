@@ -35,9 +35,12 @@
 
     UserComment * comment = [self.arryDetailMessage objectAtIndex:0];
     self.navigationItem.title = comment.titleUserName;
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0]};
+
     userProfile = [UserProfile getProfile:@"Facebook"];
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
+    self.navigationController.navigationBar.topItem.title = @"";
 }
 
 - (void)didReceiveMemoryWarning

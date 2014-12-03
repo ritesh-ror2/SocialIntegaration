@@ -33,13 +33,29 @@
 
     array = @[@"User", @"Keyword", @"HashTag"];
     self.navigationController.navigationBar.hidden = NO;
-    self.title = @"User";
+    self.title = @"Search";
+    self.navigationItem.hidesBackButton = YES;
 
-    if (IS_IOS7) {
-        [self.tbleVwSearch setSeparatorInset:UIEdgeInsetsZero];
-    }
+    self.searchBar.hidden = YES;
+    [self removeUISearchBarBackgroundInViewHierarchy:self.searchDisplayController.searchBar];
+    self.searchDisplayController.searchBar.backgroundColor = [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0];
+    UITextField *txfSearchField = [self.searchDisplayController.searchBar valueForKey:@"_searchField"];
+    txfSearchField.backgroundColor = [UIColor colorWithWhite:.9 alpha:1.0];
+
+    self.tbleVwSearch.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
+- (void) removeUISearchBarBackgroundInViewHierarchy:(UIView *)view
+{
+    for (UIView *subview in [view subviews]) {
+        if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
+            [subview removeFromSuperview];
+            break; //To avoid an extra loop as there is only one UISearchBarBackground
+        } else {
+            [self removeUISearchBarBackgroundInViewHierarchy:subview];
+        }
+    }
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -60,6 +76,7 @@
         cell = [[UITableViewCell alloc]initWithStyle: UITableViewCellStyleDefault reuseIdentifier:@"searchCell"];
     }
 
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.textLabel.text = [array objectAtIndex:indexPath.row];
     cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:17.0];
 

@@ -56,8 +56,6 @@
 @property (nonatomic, strong) UserInfo *userInfo;
 @property (nonatomic)NSInteger cellIndex;
 
-- (void)cellTouchCountIncrement;
-- (void)cellTouchCountDecrement;
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell withPagging:(BOOL)isPagging;
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline;
 
 @end

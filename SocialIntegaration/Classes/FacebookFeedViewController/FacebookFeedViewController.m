@@ -12,6 +12,8 @@
 #import "Constant.h"
 #import "ShowOtherUserProfileViewController.h"
 
+#define TABLE_HEIGHT 385
+
 @interface FacebookFeedViewController () <CustomTableCellDelegate, NSURLConnectionDelegate> {
 
     NSMutableData *fbData;
@@ -44,9 +46,7 @@
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
 
-    if (IS_IOS7) {
-        [self.tbleVwFB setSeparatorInset:UIEdgeInsetsZero];
-    }
+
     sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
@@ -72,11 +72,12 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
-
     if (sharedAppDelegate.arryOfFBNewsFeed.count == 0) {
             // [Constant showAlert:@"Message" forMessage:ERROR_FB_SETTING];
     }
     self.navItem.title = @"Facebook";
+    [[NSUserDefaults standardUserDefaults]setInteger:self.index forKey:INDEX_OF_PAGE];
+    [[NSUserDefaults standardUserDefaults]synchronize];
 }
 
 #pragma mark - View to add image at left side
@@ -154,14 +155,14 @@
     if(indexPath.row < [sharedAppDelegate.arryOfFBNewsFeed count]){
 
         self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:YES];
     } else {
 
         if (sharedAppDelegate.arryOfFBNewsFeed.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES];
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES withOtherTimeline:YES];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
                 [self getMoreDataOfFeed];
             } else {
@@ -198,10 +199,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + 197);
+                return(rect.size.height + TABLE_HEIGHT + 35);
             }
         }
-        return(rect.size.height + 165);
+        return(rect.size.height + TABLE_HEIGHT - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {
@@ -210,7 +211,7 @@
             return(rect.size.height + 90);
         }
     }
-    return (rect.size.height + 58);//183 is height of other fixed content
+    return (rect.size.height + 65);//183 is height of other fixed content
 }
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
@@ -227,10 +228,12 @@
     [self.arrySelectedIndex addObject:[NSNumber numberWithInt:cellIndex]];
         //your code here
 
-    if (isSelected == YES) {
-        [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
-    } else {
-        [self.arryTappedCell insertObject:[NSNumber numberWithBool:NO] atIndex:cellIndex];
+    if (self.arryTappedCell.count != 0) {
+        if (isSelected == YES) {
+            [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
+        } else {
+            [self.arryTappedCell insertObject:[NSNumber numberWithBool:NO] atIndex:cellIndex];
+        }
     }
     [self.tbleVwFB beginUpdates];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];

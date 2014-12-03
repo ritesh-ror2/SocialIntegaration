@@ -111,9 +111,12 @@
 
 - (IBAction)postOnFbBtnTapped:(id)sender {
 
-    [sharedAppDelegate.spinner show:YES];
+   /* [sharedAppDelegate.spinner show:YES];
     [self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
+    */
+
+    [Constant showNetworkIndicator];
 
     NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
     NSArray *writePermissions = @[@"publish_stream", @"publish_actions"];
@@ -139,7 +142,7 @@
                                   NSLog(@"ERROR %@" ,[error localizedDescription]);
                               } else {
 
-                                  [sharedAppDelegate.spinner hide:YES];
+                                  [Constant hideNetworkIndicator];
                                   [Constant showAlert:@"Success" forMessage:@"Post comment successfully."];
                                   [self.navigationController popViewControllerAnimated:YES];
                               }
@@ -197,13 +200,13 @@
            if (arryTwitte.count != 0) {
                dispatch_async(dispatch_get_main_queue(), ^{
 
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                    [Constant showAlert:@"Success" forMessage:@"Reply sent successfully."];
                    [self.navigationController popViewControllerAnimated:YES];
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                });
            }
        }
@@ -229,7 +232,7 @@
                                               cancelButtonTitle:@"Ok"
                                               otherButtonTitles:nil];
     [alertView show];
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
 }
 
 - (void)request:(IGRequest *)request didLoad:(id)result {

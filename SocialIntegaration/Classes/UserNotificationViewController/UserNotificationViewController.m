@@ -45,13 +45,11 @@
     self.arryNotifi = [[NSMutableArray alloc]init];
     self.arryNotifiFB = [[NSMutableArray alloc]init];
     self.arryNotifiTwitter = [[NSMutableArray alloc]init];
+    self.navigationItem.hidesBackButton = YES;
+
+    [Constant showNetworkIndicator];
 
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
-
-    [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
-
     if (isFbUserLogin == NO) {
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
@@ -73,7 +71,7 @@
     if (isTwitter == NO) {
 
         [self shortArryOfAllFeeds];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant showNetworkIndicator];
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
         return;
     }
@@ -116,7 +114,7 @@
                [self shortArryOfAllFeeds];
                dispatch_async(dispatch_get_main_queue(), ^{
 
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant showNetworkIndicator];
                    [Constant showAlert:@"Message" forMessage:@"No notification in Twitter account."];
                });
            }
@@ -150,7 +148,7 @@
 
 - (NSString *)dateOfTwitter:(NSString *)createdDate {
 
-    [sharedAppDelegate.spinner hide:YES];
+        //[sharedAppDelegate.spinner hide:YES];
 
     NSString *strDateInDatabaseFormate;
 
@@ -232,6 +230,8 @@
     [self.arryNotifi removeAllObjects];
     self.arryNotifi = [sortedArray mutableCopy];
 
+    [Constant hideNetworkIndicator];
+
     [tbleViewNotification reloadData];
 }
 
@@ -260,7 +260,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    return (rect.size.height+30);
+    return (rect.size.height+45);
 }
 
 

@@ -16,4 +16,9 @@
 @interface FeedPagesViewController : PageControllerCustomClass <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, strong) UIPageViewController *pageViewController;
+
+@property (nonatomic) int pageIndex;
+
+- (void)setCurrentPage:(int)pageIndex;
+
 @end

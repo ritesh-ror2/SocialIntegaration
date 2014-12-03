@@ -44,8 +44,25 @@
     UserProfile *userProfiltInst = [UserProfile getProfile:@"Instagram"];
     userNameInstagram = userProfiltInst.userName;
 
-    if (IS_IOS7) {
-        [self.tbleVwSearch setSeparatorInset:UIEdgeInsetsZero];
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationItem.title =  self.searchKeyword;
+    [self removeUISearchBarBackgroundInViewHierarchy:self.searchDisplayController.searchBar];
+    UITextField *txfSearchField = [self.searchDisplayController.searchBar valueForKey:@"_searchField"];
+    txfSearchField.backgroundColor = [UIColor colorWithWhite:.9 alpha:1.0];
+    self.searchDisplayController.searchBar.backgroundColor = [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0];
+
+    self.tbleVwSearch.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+}
+
+- (void) removeUISearchBarBackgroundInViewHierarchy:(UIView *)view
+{
+    for (UIView *subview in [view subviews]) {
+        if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
+            [subview removeFromSuperview];
+            break; //To avoid an extra loop as there is only one UISearchBarBackground
+        } else {
+            [self removeUISearchBarBackgroundInViewHierarchy:subview];
+        }
     }
 }
 

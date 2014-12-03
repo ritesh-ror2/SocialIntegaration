@@ -17,7 +17,10 @@
 #import "CommentViewController.h"
 #import "Constant.h"
 #import "UserProfile+DatabaseHelper.h"
+#import "ShowOtherUserProfileViewController.h"
 #import "ProfileTableViewCustomCell.h"
+
+#define TABLE_HEIGHT 385
 
 @interface TwitterProfileViewController () <CustomTableCellDelegate>
 
@@ -50,9 +53,6 @@
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
 
-    if (IS_IOS7) {
-        [self.tbleVwTweeterFeeds setSeparatorInset:UIEdgeInsetsZero];
-    }
     self.tbleVwTweeterFeeds.hidden = NO;
 }
 
@@ -70,10 +70,8 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
-    [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
 
+    [Constant showNetworkIndicator];
     [self getUserInfoFromTwitter];
 }
 
@@ -89,7 +87,7 @@
                                               cancelButtonTitle:NSLocalizedString(@"OK", @"")
                                               otherButtonTitles:nil];
         [alert show];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
 
         return;
     }
@@ -98,7 +96,7 @@
     if (isTwitterUserLogin == NO) {
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
         return;
     } else {
 
@@ -251,7 +249,7 @@
             [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
         }
     }
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
     [self.tbleVwTweeterFeeds reloadData];
 }
 
@@ -265,15 +263,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-  /*  [self.tbleVwTweeterFeeds setHidden:NO];
-    
-    NSString *cellIdentifier = @"cellFeeds";
-    ProfileTableViewCustomCell *cell;
-
-    cell = (ProfileTableViewCustomCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    [cell setValueInSocialTableViewCustomCell: [self.arryTweeterProfileInfo objectAtIndex:indexPath.row]];
-
-    return cell;*/
     [self.tbleVwTweeterFeeds setHidden:NO];
     NSString *cellIdentifier = @"cellIdentifier";
     CustomTableCell *cell;
@@ -285,20 +274,17 @@
         arryObjects = [[NSBundle mainBundle]loadNibNamed:@"CustomTableCell" owner:nil options:nil];
         cell = [arryObjects objectAtIndex:0];
         cell.customCellDelegate = self;
-
     }
 
     if(indexPath.row < [self.arrySelfTweets count]){
 
-            //  self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell:[self.arrySelfTweets objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+        [cell setValueInSocialTableViewCustomCell:[self.arrySelfTweets objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:YES];
     }
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
 
-#pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -315,10 +301,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + 197);
+                return(rect.size.height + TABLE_HEIGHT + 35);
             }
         }
-        return(rect.size.height + 165);
+        return(rect.size.height + TABLE_HEIGHT - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {
@@ -327,7 +313,15 @@
             return(rect.size.height + 90);
         }
     }
-    return (rect.size.height + 58);//183 is height of other fixed content
+    return (rect.size.height + 65);//183 is height of other fixed content
+}
+
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+    vwController.userInfo = userInfo;
+    [self.navigationController pushViewController:vwController animated:YES];
 }
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {

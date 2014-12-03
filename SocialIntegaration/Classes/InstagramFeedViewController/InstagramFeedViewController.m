@@ -11,7 +11,9 @@
 #import "Constant.h"
 #import "CommentViewController.h"
 
-@interface InstagramFeedViewController ()
+#define TABLE_HEIGHT 385
+
+@interface InstagramFeedViewController () <CustomTableCellDelegate>
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwInstagram;
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
@@ -38,9 +40,7 @@
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
 
-    if (IS_IOS7) {
-        [self.tbleVwInstagram setSeparatorInset:UIEdgeInsetsZero];
-    }
+
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
 }
@@ -79,6 +79,8 @@
             // [Constant showAlert:@"Message" forMessage:ERROR_INSTAGRAM];
     }
     self.navItem.title = @"Instagram";
+    [[NSUserDefaults standardUserDefaults]setInteger:self.index forKey:INDEX_OF_PAGE];
+    [[NSUserDefaults standardUserDefaults]synchronize];
 }
 
 #pragma mark - UITableViewDatasource
@@ -102,9 +104,10 @@
 
         arryObjects = [[NSBundle mainBundle]loadNibNamed:@"CustomTableCell" owner:nil options:nil];
         cell = [arryObjects objectAtIndex:0];
+        cell.customCellDelegate = self;
     }
 
-    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO];
+    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:YES];
 
     return cell;
 }
@@ -131,10 +134,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + 197);
+                return(rect.size.height + TABLE_HEIGHT + 33);
             }
         }
-        return(rect.size.height + 165);
+        return(rect.size.height + TABLE_HEIGHT - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {
@@ -143,7 +146,7 @@
             return(rect.size.height + 90);
         }
     }
-    return (rect.size.height + 58);//183 is height of other fixed content
+    return (rect.size.height + 65);//183 is height of other fixed content
 }
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
@@ -159,17 +162,26 @@
 
     [self.arrySelectedIndex addObject:[NSNumber numberWithInt:cellIndex]];
         //your code here
-
-    if (isSelected == YES) {
-        [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
-    } else {
-        [self.arryTappedCell insertObject:[NSNumber numberWithBool:NO] atIndex:cellIndex];
+    if (self.arryTappedCell.count != 0) {
+        if (isSelected == YES) {
+            [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
+        } else {
+            [self.arryTappedCell insertObject:[NSNumber numberWithBool:NO] atIndex:cellIndex];
+        }
     }
     [self.tbleVwInstagram beginUpdates];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];
     [self.tbleVwInstagram reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         //your code here
     [self.tbleVwInstagram endUpdates];
+}
+
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+//    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//    ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+//    vwController.userInfo = userInfo;
+//    [self.navigationController pushViewController:vwController animated:YES];
 }
 
 @end

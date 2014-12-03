@@ -26,7 +26,7 @@
     IBOutlet UIPageControl *pageControl;
 }
 
-@property (nonatomic, strong) IBOutlet UINavigationBar *navBar;
+@property (nonatomic, strong) IBOutlet UIToolbar *toolBar;
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollVwComposre;
 @property (nonatomic, strong) IBOutlet UIView *vwFB;
 @property (nonatomic, strong) IBOutlet UIView *vwTwitter;

@@ -40,13 +40,13 @@
 {
     [super viewDidLoad];
 
-    [self.view addSubview:sharedAppDelegate.spinner];
+    /*[self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
+    [sharedAppDelegate.spinner show:YES]; */
+
+    [Constant showNetworkIndicator];
 
     userProfile = [UserProfile getProfile:@"Facebook"];
-
-    self.navigationItem.title = @"Message";
 
     UIBarButtonItem *barBtnProfile = [[UIBarButtonItem alloc]initWithCustomView:[self addUserImgAtRight]];
     self.navigationItem.leftBarButtonItem = barBtnProfile;
@@ -59,9 +59,9 @@
 
     [self showInboxMessage];
 
-    if (IS_IOS7) {
-        [self.tbleVwFbMessage setSeparatorInset:UIEdgeInsetsZero];
-    }
+//    if (IS_IOS7) {
+//        [self.tbleVwFbMessage setSeparatorInset:UIEdgeInsetsZero];
+//    }
     sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
@@ -71,6 +71,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+
+    [super viewDidAppear:animated];
+    self.navigationItem.title = @"Messages";
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+
+}
 - (IBAction)composeMessage:(id)sender {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -102,7 +109,7 @@
     if (isFbUserLogin == NO) {
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
         return;
     }
 
@@ -171,7 +178,7 @@
             [self.arryOfFbMessage addObject:arryMessages];
         }
     }
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
     [self.tbleVwFbMessage reloadData];
 }
 
@@ -206,7 +213,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    return (rect.size.height + 50);//183 is height of other fixed content
+    return (rect.size.height + 65);//183 is height of other fixed content
 }
 
 - (void)showAllMessage:(NSInteger)cellIndex {

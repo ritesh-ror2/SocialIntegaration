@@ -27,8 +27,7 @@
 
     [super viewDidLoad];
 
-    [self setupNavigationPageControl];
-        // Create page view controller
+    // Create page view controller
     self.pageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FeedPageView"];
     self.pageViewController.dataSource = self;
     self.pageViewController.delegate = self;
@@ -41,13 +40,14 @@
     // Change the size of page view controller
     self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
+    [self setupNavigationPageControl];
+
     [self addChildViewController:_pageViewController];
     [self.view addSubview:_pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
-
     [self.pageViewController becomeFirstResponder];
 
-    NSArray *subviews = self.pageViewController.view.subviews;
+    /*NSArray *subviews = self.pageViewController.view.subviews;
     UIPageControl *thisControl = nil;
 
     for (int i=0; i<[subviews count]; i++) {
@@ -55,36 +55,47 @@
             thisControl = (UIPageControl *)[subviews objectAtIndex:i];
             thisControl.hidden = true;
         }
-    }
-        // self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height+40);
+    } */
 }
 
-- (void)appIsInBg:(id)sender {
+- (void)didReceiveMemoryWarning {
 
-    self.navigationController.navigationBarHidden = YES;
-    self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x,-self.navigationController.navigationBar.frame.size.height, self.navigationController.navigationBar.frame.size.width,  self.navigationController.navigationBar.frame.size.height);
-        // self.tabBarController.tabBar.hidden = YES;
-        // self.tabBarController.tabBar.frame = CGRectMake(tabbar.frame.origin.x, 568, tabbar.frame.size.width,  tabbar.frame.size.height);
-
-        // self.tbleVwPostList.hidden = YES;
-}
-
--(void)viewDidAppear:(BOOL)animated{
-
-    [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
-}
-
-- (void)didReceiveMemoryWarning
-{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+
+    [super viewDidAppear:animated];
+
+    [self performSelector:@selector(showPageControlOfTimeline) withObject:nil afterDelay:0.1];
+}
+
+- (void)showPageControlOfTimeline {
+
+    UIPageControl *pageControl = [UIPageControl appearance];
+    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+    pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
+
+    [self setupNavigationPageControl];
+
+    [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
+
+    [self setPageNumber:self.pageIndex];
 }
 
 #pragma mark - View controller array
 
 - (id)viewControllerAtIndex:(NSUInteger)index {
 
-    if (index == 0) { //Fb Profile
+    self.pageIndex = index;
+
+    if (index == 0) {
 
         ViewController *timelineViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"TimelineFeeds"];
         timelineViewController.index = index;
@@ -93,7 +104,7 @@
         return timelineViewController;
     }
 
-    if (index == 1) { //Twitter Profile
+    if (index == 1) { //Fb Profile
 
         FacebookFeedViewController *fbFeedViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FBFeeds"];
         fbFeedViewController.index = index;
@@ -102,7 +113,7 @@
         return fbFeedViewController;
     }
 
-    if (index == 2) { // Instagrame Profile
+    if (index == 2) { // Twitter Profile
 
         TwitterFeedViewController *twitterFeedViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"TwitterFeeds"];
         twitterFeedViewController.index = index;

@@ -48,14 +48,14 @@
     [self setProfileImageOfFB:self.profileFB.userImg];
 
     self.scrollVwComposre.pagingEnabled = YES;
-    self.scrollVwComposre.contentSize = CGSizeMake(self.view.frame.size.width*2,self.vwFB.frame.size.height);
+    self.scrollVwComposre.contentSize = CGSizeMake(self.view.frame.size.width*2,120);
 
     self.txtVwFB.layer.borderWidth = 1.0;
     self.txtVwTwitter.layer.borderWidth = 1.0;
 
     pageControl.currentPage = 0;
     pageControl.numberOfPages = 2;
-    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+    pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:0.8 alpha:1.0];
     pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
 
     self.arryUsers = [[NSMutableArray alloc]init];
@@ -123,78 +123,81 @@
 
 - (IBAction)shareOnFacebook:(id)sender {
 
-    [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
+    [Constant showNetworkIndicator];
+
     [self.view endEditing:YES];
 
     if (self.txtVwFB.text.length == 0) {
-        [Constant showAlert:@"Message" forMessage:@"Please enter message"];
-        [sharedAppDelegate.spinner hide:YES];
+
+        [Constant showAlert:@"Message" forMessage:@"Please enter message."];
+        [Constant hideNetworkIndicator];
         return;
     }
 
-    NSData *imgData = UIImageJPEGRepresentation(imgSelected, 1.0);
+    BOOL isFBUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    if (isFBUserLogin == YES) {
 
-    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
-    NSArray *writePermissions = @[@"publish_actions"];
-    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
-        sharedAppDelegate.fbSession = session;
+        NSData *imgData = UIImageJPEGRepresentation(imgSelected, 1.0);
 
-        NSDictionary *params;
+        NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
+        NSArray *writePermissions = @[@"publish_actions"];
+        [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
+            sharedAppDelegate.fbSession = session;
 
-            if (imgData != nil) {
+            NSDictionary *params;
 
-                if (self.txtVwFB.text.length != 0) {
-                   params = @{@"source":imgData,
-                            @"message":self.txtVwFB.text};
-                } else {
-                    params = @{@"source":imgData};
-                }
-            /* make the API call */
-            [FBRequestConnection startWithGraphPath:@"/me/photos"
-                                         parameters:params
-                                         HTTPMethod:@"POST"
-                                  completionHandler:^(
-                                                      FBRequestConnection *connection,
-                                                      id result,
-                                                      NSError *error
-                                                      ) {
+                if (imgData != nil) {
 
-                                      if (!error) {
-                                          [Constant showAlert:@"Success" forMessage:@"Post your status successfully."];
-                                          [sharedAppDelegate.spinner hide:YES];
-                                      } else {
-                                          NSLog(@"%@",error.description);
-                                          [sharedAppDelegate.spinner hide:YES];
-                                      }
-                                  }];
-            } else {
-
-                // Make the request
-                params = @{@"message":self.txtVwFB.text};
-
-                [FBRequestConnection startWithGraphPath:@"/me/feed"
-                parameters:params
-                HTTPMethod:@"POST"
-                completionHandler:^(
-                FBRequestConnection *connection,
-                id result,
-                NSError *error
-                ) {
-                    if (!error) {
-
-                        [Constant showAlert:@"Success" forMessage:@"Post your status successfully."];
-                        [sharedAppDelegate.spinner hide:YES];
-
+                    if (self.txtVwFB.text.length != 0) {
+                       params = @{@"source":imgData,
+                                @"message":self.txtVwFB.text};
                     } else {
-                            //NSLog(error.description);
-                        [sharedAppDelegate.spinner hide:YES];
-
+                        params = @{@"source":imgData};
                     }
-                }];
-            }
-    }];
+                /* make the API call */
+                [FBRequestConnection startWithGraphPath:@"/me/photos"
+                                             parameters:params
+                                             HTTPMethod:@"POST"
+                                      completionHandler:^(
+                                                          FBRequestConnection *connection,
+                                                          id result,
+                                                          NSError *error
+                                                          ) {
+
+                                          if (!error) {
+                                              [Constant showAlert:@"Success" forMessage:@"Post your status successfully."];
+                                              [Constant hideNetworkIndicator];
+
+                                          } else {
+                                              NSLog(@"%@",error.description);
+                                              [Constant hideNetworkIndicator];
+                                          }
+                                      }];
+                } else {
+
+                    // Make the request
+                    params = @{@"message":self.txtVwFB.text};
+
+                    [FBRequestConnection startWithGraphPath:@"/me/feed"
+                    parameters:params
+                    HTTPMethod:@"POST"
+                    completionHandler:^(
+                    FBRequestConnection *connection,
+                    id result,
+                    NSError *error
+                    ) {
+                        if (!error) {
+
+                            [Constant showAlert:@"Success" forMessage:@"Post your status successfully."];
+                            [Constant hideNetworkIndicator];
+                        } else {
+                                //NSLog(error.description);
+                            [Constant hideNetworkIndicator];
+                        }
+                    }];
+                }
+        }];
+    }
 }
 
 - (IBAction)selectPhotoFromGallary:(id)sender {
@@ -267,92 +270,103 @@
 
     [self.view endEditing:YES];
 
-    [self.view addSubview:sharedAppDelegate.spinner];
+    /*[self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
+    [sharedAppDelegate.spinner show:YES];*/
+
+    [Constant showNetworkIndicator];
     
     if (self.txtVwTwitter.text.length == 0) {
         [Constant showAlert:@"Message" forMessage:@"Please enter message"];
         return;
     }
-    NSDictionary *param = @{@"status": self.txtVwTwitter.text};
 
-    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/update.json"];
-    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
-    SLRequest *timelineRequest = [SLRequest
-                                  requestForServiceType:SLServiceTypeTwitter
-                                  requestMethod:SLRequestMethodPOST
-                                  URL:requestURL parameters:param];
+    BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    if (isTwitterUserLogin == YES) {
 
-    timelineRequest.account = sharedAppDelegate.twitterAccount;
+        NSDictionary *param = @{@"status": self.txtVwTwitter.text};
 
-    [timelineRequest performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error)
-     {
-       NSLog(@"%@ !#" , [error description]);
-       id result = [NSJSONSerialization
-                              JSONObjectWithData:responseData
-                              options:NSJSONReadingMutableLeaves
-                              error:&error];
-       NSLog(@"***%@***", [error localizedDescription]);
+        NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/update.json"];
+        NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
+        SLRequest *timelineRequest = [SLRequest
+                                      requestForServiceType:SLServiceTypeTwitter
+                                      requestMethod:SLRequestMethodPOST
+                                      URL:requestURL parameters:param];
 
-       if (!error) {
-           if ([result isKindOfClass:[NSDictionary class]]) {
-               dispatch_async(dispatch_get_main_queue(), ^{
+        timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-                   [sharedAppDelegate.spinner hide:YES];
-                   [Constant showAlert:@"Success" forMessage:@"Tweet successfully."];
-                   [self.navigationController popViewControllerAnimated:YES];
-               });
-           } else {
-               dispatch_async(dispatch_get_main_queue(), ^{
-                   [sharedAppDelegate.spinner hide:YES];
-               });
+        [timelineRequest performRequestWithHandler:
+         ^(NSData *responseData, NSHTTPURLResponse
+           *urlResponse, NSError *error)
+         {
+           NSLog(@"%@ !#" , [error description]);
+           id result = [NSJSONSerialization
+                                  JSONObjectWithData:responseData
+                                  options:NSJSONReadingMutableLeaves
+                                  error:&error];
+           NSLog(@"***%@***", [error localizedDescription]);
+
+           if (!error) {
+               if ([result isKindOfClass:[NSDictionary class]]) {
+                   dispatch_async(dispatch_get_main_queue(), ^{
+
+                           // [sharedAppDelegate.spinner hide:YES];
+                       [Constant hideNetworkIndicator];
+                       [Constant showAlert:@"Success" forMessage:@"Tweet successfully."];
+                       [self.navigationController popViewControllerAnimated:YES];
+                   });
+               } else {
+                   dispatch_async(dispatch_get_main_queue(), ^{
+                       [Constant hideNetworkIndicator];
+                   });
+               }
            }
-       }
-     }];
+         }];
+    }
 }
 
 - (void)getListOfFollowers {
 
-    NSDictionary *param = @{@"user_id":self.profileTwitter.userId};
+    BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    if (isTwitterUserLogin == YES) {
+        NSDictionary *param = @{@"user_id":self.profileTwitter.userId};
 
-    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/followers/list.json"];
-    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
-    SLRequest *timelineRequest = [SLRequest
-                                  requestForServiceType:SLServiceTypeTwitter
-                                  requestMethod:SLRequestMethodGET
-                                  URL:requestURL parameters:param];
+        NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/followers/list.json"];
+        NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
+        SLRequest *timelineRequest = [SLRequest
+                                      requestForServiceType:SLServiceTypeTwitter
+                                      requestMethod:SLRequestMethodGET
+                                      URL:requestURL parameters:param];
 
-    timelineRequest.account = sharedAppDelegate.twitterAccount;
+        timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-    [timelineRequest performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error)
-     {
-       NSLog(@"%@ !#" , [error description]);
-       id result = [NSJSONSerialization
-                    JSONObjectWithData:responseData
-                    options:NSJSONReadingMutableLeaves
-                    error:&error];
-       NSLog(@"***%@***", [error localizedDescription]);
-           if (![result isKindOfClass:[NSDictionary class]]) {
-               dispatch_async(dispatch_get_main_queue(), ^{
+        [timelineRequest performRequestWithHandler:
+         ^(NSData *responseData, NSHTTPURLResponse
+           *urlResponse, NSError *error)
+         {
+           NSLog(@"%@ !#" , [error description]);
+           id result = [NSJSONSerialization
+                        JSONObjectWithData:responseData
+                        options:NSJSONReadingMutableLeaves
+                        error:&error];
+           NSLog(@"***%@***", [error localizedDescription]);
+               if (![result isKindOfClass:[NSDictionary class]]) {
+                   dispatch_async(dispatch_get_main_queue(), ^{
 
-                   NSArray *arryUser = [result valueForKey:@"users"];
-                   [self convertDataOfFriend:arryUser];
-                   [self getListOfFriend];
-               });
-           } else {
-               dispatch_async(dispatch_get_main_queue(), ^{
+                       NSArray *arryUser = [result valueForKey:@"users"];
+                       [self convertDataOfFriend:arryUser];
+                       [self getListOfFriend];
+                   });
+               } else {
+                   dispatch_async(dispatch_get_main_queue(), ^{
 
-                   NSArray *arryUser = [result valueForKey:@"users"];
-                   [self convertDataOfFriend:arryUser];
-                   [self getListOfFriend];
-               });
-       }
-     }];
+                       NSArray *arryUser = [result valueForKey:@"users"];
+                       [self convertDataOfFriend:arryUser];
+                       [self getListOfFriend];
+                   });
+           }
+         }];
+    }
 }
 
 - (void)convertDataOfFriend:(NSArray*)arryResult {
@@ -453,7 +467,7 @@
 - (void)openUsersListInTwitter {
 
     [self.view endEditing:YES];
-    [self.navBar setHidden:YES];
+    [self.toolBar setHidden:YES];
 
     [UIView animateWithDuration:0.5 animations:^{
 
@@ -539,13 +553,13 @@
            if ([result isKindOfClass:[NSDictionary class]]) {
                dispatch_async(dispatch_get_main_queue(), ^{
 
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                    [Constant showAlert:@"Success" forMessage:@"Tweet successfully."];
                    [self.navigationController popViewControllerAnimated:YES];
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
-                   [sharedAppDelegate.spinner hide:YES];
+                   [Constant hideNetworkIndicator];
                });
            }
        }
@@ -558,13 +572,13 @@
     self.tbleVwUser.frame = CGRectMake(0, self.view.frame.size.height, 320, 210);
     lblComment.hidden = YES;
     lblCommentTwitter.hidden = YES;
-    self.navBar.hidden = NO;
+    self.toolBar.hidden = NO;
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
 
     [self.view endEditing:YES];
-    self.navBar.hidden = YES;
+    self.toolBar.hidden = YES;
 
     if (self.txtVwTwitter.text.length == 0) {
         lblCommentTwitter.hidden = NO;
@@ -583,7 +597,7 @@
         if ([strLastText isEqualToString:@"@"]) {
             [self openUsersListInTwitter];
         } else {
-                self.navBar.hidden = NO;
+                self.toolBar.hidden = NO;
         }
     }
 }
@@ -606,7 +620,7 @@
 - (IBAction)doneBtnTapped:(id)sender {
 
     [self.view endEditing:YES];
-    self.navBar.hidden = YES;
+    self.toolBar.hidden = YES;
 }
 /*
 #pragma mark - Navigation

@@ -11,9 +11,13 @@
 #import "UserProfile.h"
 #import "UserProfile+DatabaseHelper.h"
 #import "Reachability.h"
+#import "CustomTableCell.h"
 #import "Constant.h"
 
-@interface InstagramProfileViewController ()
+#define TABLE_HEIGHT 385
+
+
+@interface InstagramProfileViewController () <CustomTableCellDelegate>
 
 @property (nonatomic, strong) NSMutableArray *arryOfInstagrame;
 @end
@@ -34,10 +38,6 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-
-    if (IS_IOS7) {
-        [self.tbleVwInstagramPost setSeparatorInset:UIEdgeInsetsZero];
-    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -74,9 +74,9 @@
         return;
     }
 
-    [self.view addSubview:sharedAppDelegate.spinner];
+   /* [self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
+    [sharedAppDelegate.spinner show:YES]; */
 
     // here i can set accessToken received on previous login
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
@@ -259,13 +259,17 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     [self.tbleVwInstagramPost setHidden:NO];
-    NSString *cellIdentifier = @"cellFeeds";
-    ProfileTableViewCustomCell *cell;
+    NSString *cellIdentifier = @"cellIdentifier";
+    CustomTableCell *cell;
 
-    cell = (ProfileTableViewCustomCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    cell = (CustomTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    NSArray *arryObjects;
+    if (cell == nil) {
 
-    [cell setValueInSocialTableViewCustomCell: [self.arryOfInstagrame objectAtIndex:indexPath.row]];
-
+        arryObjects = [[NSBundle mainBundle]loadNibNamed:@"CustomTableCell" owner:nil options:nil];
+        cell = [arryObjects objectAtIndex:0];
+        cell.customCellDelegate = self;
+    }
     return cell;
 }
 
@@ -282,9 +286,9 @@
                                        context:nil];
 
     if (objUserInfo.strPostImg.length != 0) {
-        return(rect.size.height + 160);
+        return(rect.size.height + TABLE_HEIGHT);
     }
-    return (rect.size.height + 60);//183 is height of other fixed content
+    return (rect.size.height + 65);//183 is height of other fixed content
 }
 
 @end

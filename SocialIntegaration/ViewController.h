@@ -17,5 +17,6 @@
 @property (strong, nonatomic) UINavigationItem *navItem;
 @property (strong, nonatomic) UINavigationController *navController;
 @property (nonatomic)BOOL isAlreadyTapped;
+@property (nonatomic, strong) IBOutlet UIImageView *imgVwBackground;
 
 @end

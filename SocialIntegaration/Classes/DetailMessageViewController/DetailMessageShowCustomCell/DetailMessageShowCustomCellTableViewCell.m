@@ -36,6 +36,7 @@
     lblMessage = [[UILabel alloc]init];
     lblMessage.textColor = [UIColor whiteColor];
     lblMessage.numberOfLines = 0;
+    lblMessage.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0];
     [self.contentView addSubview:lblMessage];
 
     imgVwUser = [[UIImageView alloc]init];
@@ -61,9 +62,9 @@
         return;
     }
     NSString *string = objComment.userComment;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(230, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(245, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]}
                                        context:nil];
 
     long isToday = [self calculateTimesBetweenTwoDates:objComment.time];
@@ -81,32 +82,47 @@
 
         lblMessage.text = objComment.userComment;
         lblMessage.backgroundColor = [UIColor clearColor];
+        lblMessage.textColor = [UIColor whiteColor];
         lblMessage.frame = CGRectMake(60, 5, rect.size.width, rect.size.height);
 
-        lblTime.textAlignment = NSTextAlignmentLeft;
-        lblTime.frame = CGRectMake(61, rect.size.height + 7,130 , 21);
+        int width;
+        if (rect.size.width < 90) {
+            width = 90;
+        } else {
+            width = rect.size.width+5;
+        }
+
+        lblTime.textAlignment = NSTextAlignmentRight;
+        lblTime.frame = CGRectMake(61, rect.size.height + 7, width , 21);
 
         imgVwBackground.frame = CGRectMake(55, 3, rect.size.width+10, rect.size.height+6);
         imgVwBackground.backgroundColor = [UIColor colorWithRed:107/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
 
         imgVwUser.frame = CGRectMake(5, 0, 40, 40);
         imgVwArrow.image = [UIImage imageNamed:@"arrow-blue.png"];
-        imgVwArrow.frame = CGRectMake(50, 5, 7, 14);
+        imgVwArrow.frame = CGRectMake(50, 8, 7, 14);
     } else {
 
         lblMessage.text = objComment.userComment;
         lblMessage.frame = CGRectMake((263 - rect.size.width), 5, rect.size.width, rect.size.height+2);
         lblMessage.backgroundColor = [UIColor clearColor];
+        lblMessage.textColor = [UIColor lightGrayColor];// [UIColor colorWithRed:170/255.0f green:170/255.0f blue:170/255.0f alpha:1.0];
 
-        lblTime.frame = CGRectMake((264 -130), rect.size.height + 7, 130 , 21);
-        lblTime.textAlignment = NSTextAlignmentRight;
+        int width;
+        if (rect.size.width < 90) {
+            width = 90;
+        } else {
+            width = rect.size.width+5;
+        }
+        lblTime.frame = CGRectMake((264 - width), rect.size.height + 7, width , 21);
+        lblTime.textAlignment = NSTextAlignmentLeft;
 
         imgVwBackground.frame = CGRectMake((258 - rect.size.width), 3, rect.size.width+10, rect.size.height+6);
-        imgVwBackground.backgroundColor = [UIColor lightGrayColor];
+        imgVwBackground.backgroundColor = [UIColor colorWithRed:238/255.0f green:238/255.0f blue:238/255.0f alpha:1.0];
 
         imgVwUser.frame = CGRectMake(275, 0, 40, 40);
         imgVwArrow.image = [UIImage imageNamed:@"arrow-gray.png"];
-        imgVwArrow.frame = CGRectMake(265, 5, 7, 14);
+        imgVwArrow.frame = CGRectMake(265, 8, 7, 14);
     }
     [self uploadProfileImage:objComment];
     NSLog(@"%@", objComment.userComment);

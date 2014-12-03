@@ -159,14 +159,6 @@
     }
 }
 
-- (void)cellTouchCountIncrement {
-    self.touchCount = @2;
-}
-
-- (void)cellTouchCountDecrement {
-    self.touchCount = @1;
-}
-
 - (void)setGradientColorOfTwitter {
 
     CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -223,7 +215,7 @@
 
 #pragma mark - Set value in table view
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell withPagging:(BOOL)isPagging {
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline {
 
     if (isPagging == YES) {
 
@@ -274,15 +266,28 @@
 
     if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
 
-        lblSocialType.textColor = [UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0];
+        if (isOtherTimeline == NO) {
+            lblSocialType.textColor = [UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0];
+        } else {
+            lblSocialType.textColor = [UIColor lightGrayColor];
+        }
         [self uploadProfileImage:objUserInfo]; //upload profile image
 
     } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
 
-        lblSocialType.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
+        if (isOtherTimeline == NO) {
+            lblSocialType.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
+        } else {
+            lblSocialType.textColor = [UIColor lightGrayColor];
+        }
         [self setProfileImageOfTwitterAndInstagram:objUserInfo];
     } else {
-        lblSocialType.textColor = [UIColor colorWithRed:93/256.0f green:122/256.0f blue:154/256.0f alpha:1.0];
+
+        if (isOtherTimeline == NO) {
+            lblSocialType.textColor = [UIColor colorWithRed:93/256.0f green:122/256.0f blue:154/256.0f alpha:1.0];
+        } else {
+            lblSocialType.textColor = [UIColor lightGrayColor];
+        }
         [self setProfileImageOfTwitterAndInstagram:objUserInfo];
     }
 
@@ -290,15 +295,14 @@
 
     if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
 
-        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 7, 320, 320);
+        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, 320, 320);
     } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
-         imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 7, 320, 320);
+         imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, 320, 320);
     } else {
-        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 7, 320, 320);
+        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, 320, 320);
     }
         imgVwPostImg.hidden = NO;
-
-
+        imgVwPostImg.backgroundColor = [UIColor clearColor];
         btnPlay.frame = imgVwPostImg.frame;
         
         [self setPostImage:objUserInfo];
@@ -310,7 +314,6 @@
     } else {
         [self setFrameOfActivityView:lblText.frame.size.height + lblText.frame.origin.y+7];
         imgVwBgColor.frame = CGRectMake(0, 0, self.frame.size.width, lblText.frame.size.height + lblText.frame.origin.y + 38);
-
     }
 
     if (objUserInfo.fbLike == 1) {
@@ -357,7 +360,7 @@
     }
 
     if ([objUserInfo.type isEqualToString:@"video"]) {
-        [btnPlay setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+        [btnPlay setImage:[UIImage imageNamed:@"play-btn.png"] forState:UIControlStateNormal];
     }
     [self.contentView bringSubviewToFront:btnPlay];
     lblTweet.text = objUserInfo.retweetCount;

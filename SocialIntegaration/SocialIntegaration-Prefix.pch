@@ -37,6 +37,7 @@
 #define ISFBLOGIN       @"FacebookLogin"
 #define ISTWITTERLOGIN  @"TwitterLogin"
 #define ISINSTAGRAMLOGIN  @"InstagramLogin"
+#define INDEX_OF_PAGE   @"IndexOfPage"
 
 #define DatabaseDateFormate @"YYYY-MM-dd HH:mm:ss"
 #define TWEETERDATEFORMATE  @"dd MMM yyyy HH:mm:ss"
