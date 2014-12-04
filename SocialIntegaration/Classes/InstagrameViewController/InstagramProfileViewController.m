@@ -77,6 +77,7 @@
    /* [self.view addSubview:sharedAppDelegate.spinner];
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
     [sharedAppDelegate.spinner show:YES]; */
+    [Constant showNetworkIndicator];
 
     // here i can set accessToken received on previous login
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
@@ -86,9 +87,10 @@
 
     if (isInstagramUserLogin == NO) {
 
-        [sharedAppDelegate.spinner hide:YES];
-        UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
-        [alertVw show];
+        [Constant hideNetworkIndicator];
+
+        // UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
+        //[alertVw show];
     } else {
 
         UserProfile *userProfile = [UserProfile getProfile:@"Instagram"];
@@ -219,8 +221,7 @@
             NSLog(@"%@", self.arryOfInstagrame);
         }
     }
-    [sharedAppDelegate.spinner hide:YES];
-
+    [Constant hideNetworkIndicator];
     [self.tbleVwInstagramPost reloadData];
 }
 

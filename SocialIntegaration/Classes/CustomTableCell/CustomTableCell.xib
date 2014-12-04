@@ -85,6 +85,13 @@
                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IgI-cN-0r2">
+                        <rect key="frame" x="81" y="196" width="57" height="21"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                     <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Comment.png" id="Hav-N4-dF6">
                         <rect key="frame" x="146" y="196" width="20" height="21"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -93,6 +100,13 @@
                         <rect key="frame" x="174" y="196" width="83" height="21"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JYq-yH-eg6">
+                        <rect key="frame" x="260" y="196" width="57" height="21"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -169,6 +183,8 @@
                 <outlet property="lblCommentFb" destination="DTA-JA-iAK" id="XFL-Ee-O2o"/>
                 <outlet property="lblFavourate" destination="hCS-d6-mBc" id="zFA-0Q-zFs"/>
                 <outlet property="lblFbLikeCount" destination="AAk-CU-kgQ" id="VII-5l-ZHl"/>
+                <outlet property="lblInstCommentCount" destination="JYq-yH-eg6" id="ISe-8J-llb"/>
+                <outlet property="lblInstLikeCount" destination="IgI-cN-0r2" id="eKw-Xy-b4f"/>
                 <outlet property="lblLike" destination="pyV-68-KRT" id="Ae8-Ug-n1P"/>
                 <outlet property="lblName" destination="ddq-29-JV9" id="MH1-iD-4S4"/>
                 <outlet property="lblSocialType" destination="Qdf-q8-iLg" id="NjW-mv-rqf"/>

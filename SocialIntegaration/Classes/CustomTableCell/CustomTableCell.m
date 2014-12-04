@@ -159,6 +159,40 @@
     }
 }
 
+- (void)instagramCellConfiguration:(BOOL)isDisplay  {
+
+    if (isDisplay == YES) {
+
+        [imgVwOfComentFb setHidden:NO];
+        [imgVwOfLikeInstagram setHidden:NO];
+        [lblCommentFb setHidden:NO];
+        [lblLike setHidden:NO];
+        [lblInstCommentCount setHidden:NO];
+        [lblInstLikeCount setHidden:NO];
+
+        lblText.textColor = [UIColor whiteColor];
+        lblName.textColor = [UIColor whiteColor];
+        lblTime.textColor = [UIColor whiteColor];
+        lblSocialType.textColor = [UIColor whiteColor];
+
+        [self setGradientColorOfInstagram];
+    } else {
+
+        [imgVwOfComentFb setHidden:YES];
+        [imgVwOfLikeInstagram setHidden:YES];
+        [lblCommentFb setHidden:YES];
+        [lblLike setHidden:YES];
+        [lblInstCommentCount setHidden:YES];
+        [lblInstLikeCount setHidden:YES];
+
+        self.contentView.backgroundColor =  [UIColor whiteColor];
+        lblText.textColor = [UIColor darkGrayColor];
+        lblName.textColor = [UIColor blackColor];
+        lblTime.textColor = [UIColor darkGrayColor];
+        lblSocialType.textColor = [UIColor blackColor];
+    }
+}
+
 - (void)setGradientColorOfTwitter {
 
     CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -181,36 +215,6 @@
     gradient.frame = imgVwBgColor.frame;
     gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:56/255.0f green:94/256.0f blue:135/256.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:61/255.0f green:124/255.0f blue:177/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:61/255.0f green:125/255.0f blue:178/255.0f alpha:1.0]CGColor], nil];
     [imgVwBgColor.layer insertSublayer:gradient atIndex:0];
-}
-
-- (void)instagramCellConfiguration:(BOOL)isDisplay  {
-
-    if (isDisplay == YES) {
-
-        [imgVwOfComentFb setHidden:NO];
-        [imgVwOfLikeInstagram setHidden:NO];
-        [lblCommentFb setHidden:NO];
-        [lblLike setHidden:NO];
-
-        lblText.textColor = [UIColor whiteColor];
-        lblName.textColor = [UIColor whiteColor];
-        lblTime.textColor = [UIColor whiteColor];
-        lblSocialType.textColor = [UIColor whiteColor];
-
-        [self setGradientColorOfInstagram];
-    } else {
-
-        [imgVwOfComentFb setHidden:YES];
-        [imgVwOfLikeInstagram setHidden:YES];
-        [lblCommentFb setHidden:YES];
-        [lblLike setHidden:YES];
-
-        self.contentView.backgroundColor =  [UIColor whiteColor];
-        lblText.textColor = [UIColor darkGrayColor];
-        lblName.textColor = [UIColor blackColor];
-        lblTime.textColor = [UIColor darkGrayColor];
-        lblSocialType.textColor = [UIColor blackColor];
-    }
 }
 
 #pragma mark - Set value in table view
@@ -263,6 +267,8 @@
     lblText.text = string;
 
     lblSocialType.text = objUserInfo.strUserSocialType;
+    lblInstLikeCount.text = [NSString stringWithFormat:@"%@", objUserInfo.instagramLikeCount];
+    lblInstCommentCount.text = [NSString stringWithFormat:@"%@", objUserInfo.instagramCommentCount];
 
     if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
 
@@ -386,6 +392,8 @@
     [lblTweet setFrame:CGRectMake(lblTweet.frame.origin.x, yAxis, 70, lblTweet.frame.size.height)];
 
     [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 20)];
+    [lblInstCommentCount setFrame:CGRectMake(lblInstCommentCount.frame.origin.x, yAxis, lblInstCommentCount.frame.size.width, 20)];
+    [lblInstLikeCount setFrame:CGRectMake(lblInstLikeCount.frame.origin.x, yAxis, lblInstLikeCount.frame.size.width, 20)];
 }
 
 - (IBAction)profileBtnTapped:(id)sender {
@@ -485,4 +493,5 @@
                               }
                           }];
 }
+
 @end

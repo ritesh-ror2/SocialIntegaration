@@ -28,15 +28,19 @@
     IBOutlet UILabel *lblHeading;
 
     IBOutlet UITableView *tbleVwTagList;
+    IBOutlet UIImageView *imgVwOfLikeInstagram;
 
+    //FB
     IBOutlet UIImageView *imgVwOfLikeFb;
     IBOutlet UIImageView *imgVwOfComentFb;
     IBOutlet UIButton *btnCommentFb;
+    IBOutlet UILabel *lblFBOrInstLikeCount;
     IBOutlet UIButton *btnLike;
+    IBOutlet UILabel *lblFBOrInstCommentCount;
     IBOutlet UIButton *btnShare;
     IBOutlet UIButton *btnDelete;
 
-        //twitter
+    //twitter
     IBOutlet UIButton *btnRetweet;
     IBOutlet UIButton *btnReply;
     IBOutlet UIButton *btnFavourite;
@@ -50,10 +54,6 @@
     IBOutlet ScrollVwOfComment *scrollVwShowComment;
 
     IBOutlet UIButton *btnShowImageOrVideo;
-        //IBOutlet UILabel *lblReply;
-    IBOutlet UILabel *lblLikeCount;
-
-    IBOutlet UIImageView *imgVwOfLikeInstagram;
 
     IBOutlet UITableView *tbleVwComment;
 }

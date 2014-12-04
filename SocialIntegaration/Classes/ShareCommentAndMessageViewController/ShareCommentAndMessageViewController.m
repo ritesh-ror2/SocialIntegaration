@@ -277,21 +277,25 @@
     [Constant showNetworkIndicator];
     
     if (self.txtVwTwitter.text.length == 0) {
-        [Constant showAlert:@"Message" forMessage:@"Please enter message"];
+        [Constant showAlert:@"Message" forMessage:@"Please enter message."];
         return;
     }
 
     BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
     if (isTwitterUserLogin == YES) {
 
-        NSDictionary *param = @{@"status": self.txtVwTwitter.text};
+        NSData *imgData = UIImageJPEGRepresentation(imgSelected, 1.0f);
 
-        NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/update.json"];
-        NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
-        SLRequest *timelineRequest = [SLRequest
-                                      requestForServiceType:SLServiceTypeTwitter
-                                      requestMethod:SLRequestMethodPOST
-                                      URL:requestURL parameters:param];
+        if (imgData != nil) {
+
+            [self postImageOnTwitter:imgData];
+        } else {
+
+            NSDictionary *param = @{@"status": self.txtVwTwitter.text};
+
+            NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/update.json"];
+            NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
+            SLRequest  *timelineRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:requestURL parameters:param];
 
         timelineRequest.account = sharedAppDelegate.twitterAccount;
 
@@ -310,9 +314,11 @@
                if ([result isKindOfClass:[NSDictionary class]]) {
                    dispatch_async(dispatch_get_main_queue(), ^{
 
+                       if ([[result valueForKey:@"errors"] count] == 0) {
                            // [sharedAppDelegate.spinner hide:YES];
-                       [Constant hideNetworkIndicator];
-                       [Constant showAlert:@"Success" forMessage:@"Tweet successfully."];
+                           [Constant hideNetworkIndicator];
+                           [Constant showAlert:@"Success" forMessage:@"Tweet successfully."];
+                       }
                        [self.navigationController popViewControllerAnimated:YES];
                    });
                } else {
@@ -322,7 +328,33 @@
                }
            }
          }];
+        }
     }
+}
+
+- (void)postImageOnTwitter:(NSData *)imgData {
+
+    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/update_with_media.json"];
+
+    NSDictionary *paramater = @{@"status": self.txtVwTwitter.text};
+
+    SLRequest *postRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:url parameters:paramater];
+    [postRequest addMultipartData:imgData withName:@"media[]" type:@"image/jpeg" filename:@"image.jpg"];
+    [postRequest setAccount:sharedAppDelegate.twitterAccount]; // or  postRequest.account = twitterAccount;
+
+    [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                    
+    NSString *output = [NSString stringWithFormat:@"HTTP response status: %i", [urlResponse statusCode]];
+                    
+    NSLog(@"output = %@",output);
+
+    [Constant showAlert:@"Message" forMessage:@"Tweet Successfully"];
+                    
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        });
+
+    }];
 }
 
 - (void)getListOfFollowers {
@@ -590,6 +622,7 @@
 
 - (void)textViewDidChange:(UITextView *)textView {
 
+    if (![textView.text isEqualToString:@""]) {
     NSString *strLastText = [textView.text substringFromIndex: textView.text.length - 1];
 
     if (textView == self.txtVwTwitter) {
@@ -599,6 +632,7 @@
         } else {
                 self.toolBar.hidden = NO;
         }
+    }
     }
 }
 

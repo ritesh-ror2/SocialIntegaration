@@ -32,4 +32,8 @@
 @property (nonatomic, strong) NSString *screenName;
 @property (nonatomic, strong) NSString *postId;
 
+@property (nonatomic, strong) NSString *mediaIdOfInstagram;
+@property (nonatomic, strong) NSString *instagramLikeCount;
+@property (nonatomic, strong) NSString *instagramCommentCount;
+
 @end

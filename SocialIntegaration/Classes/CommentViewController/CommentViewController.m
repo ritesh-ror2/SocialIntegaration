@@ -41,6 +41,7 @@
 
     UIActivityIndicatorView *activityIndicator;
     UIView *vwTaggedUser;
+    int commentCount;
 }
 
 @property (nonatomic, strong) NSMutableArray *arryComment;
@@ -65,8 +66,6 @@
     [super viewDidLoad];
 
     self.navigationController.navigationBarHidden = YES;
-
-    scrollVwShowComment.parentVw = self;
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
 
@@ -122,7 +121,6 @@
 
     self.arryTaggedUser = [[NSMutableArray alloc]init];
 
-    [self getLargeImageOfFacebook];
     [self getLikeCountOfFb];
     [self setLargeImageOfTwitter:self.userInfo];
 
@@ -141,7 +139,9 @@
     self.navigationController.navigationBarHidden = YES;
     [self setHeadingAndRightBtn];
         //[self giveCommentToInstagram];
-    [self showUserTagged:nil];
+    if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+        [self showUserTagged:nil];
+    }
     [self setProfilePic:self.userInfo];
     [self setProfilePicOfPostUser:self.userInfo];
 
@@ -152,17 +152,20 @@
 
     if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
 
+        [self getLargeImageOfFacebook];
+
         [btnRight setTitle:@"Post" forState:UIControlStateNormal];
         lblHeading.text = @"Facebook";
         strBtnTitle = @"Post";
         [self facebookConfiguration];
-        [self fectchAllComment];
+        [self fectchFBComment];
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
 
     } else if ([self.userInfo.strUserSocialType isEqualToString:@"Instagram"]) {
         [btnRight setTitle:@"Post" forState:UIControlStateNormal];
         lblHeading.text = @"Instagram";
         strBtnTitle = @"Post";
+        [self setCommentOfUser:self.userInfo];
         [self fetchInstagrameComment];
         [self instagramConfiguration];
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
@@ -219,7 +222,7 @@
              });
              } else {
                   dispatch_async(dispatch_get_main_queue(), ^{
-                      [Constant showNetworkIndicator];
+                      [Constant hideNetworkIndicator];
                           // [Constant showAlert:@"Message" forMessage:@"No Comment is there."];
                   });
              }
@@ -258,7 +261,7 @@
 
     if(self.arryComment.count == 0) {
             // [Constant showAlert:@"Messgae" forMessage:@"No comment found."];
-        [Constant showNetworkIndicator];
+        [Constant hideNetworkIndicator];
         scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
         return;
     }
@@ -363,11 +366,13 @@
     [tbleVwComment reloadData];
 }
 
-- (void)fectchAllComment {
+- (void)fectchFBComment {
+
+    NSDictionary *param = @{@"summary":@"true"};
     
     NSString *strComment = [NSString stringWithFormat:@"/%@/comments", self.userInfo.objectIdFB];
     [FBRequestConnection startWithGraphPath:strComment
-                                 parameters:nil
+                                 parameters:param
                                  HTTPMethod:@"GET"
                           completionHandler:^(
                                               FBRequestConnection *connection,
@@ -378,13 +383,16 @@
 
                                   NSLog(@"%@", [error localizedDescription]);
                               } else {
+
                                   NSArray *arryComment = [result objectForKey:@"data"];
-                                  [self convertDataOfComment: arryComment];
+                                  commentCount = [[[result objectForKey:@"summary"]valueForKey:@"total_count"]intValue];
+                                  lblFBOrInstCommentCount.text = [NSString stringWithFormat:@"%i", commentCount];
+                                  [self convertDataOfFBComment: arryComment];
                               }
                           }];
 }
 
-- (void)convertDataOfComment:(NSArray *)arryPost {
+- (void)convertDataOfFBComment:(NSArray *)arryPost {
 
     [self.arryComment removeAllObjects];
     @autoreleasepool {
@@ -423,7 +431,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    lblComment.frame = CGRectMake(70, 21, 245, rect.size.height+10);
+    lblComment.frame = CGRectMake(70, 25, 245, rect.size.height+10);
     lblComment.text = objUserInfo.strUserPost;
     lblName.text = objUserInfo.strUserName;
     
@@ -726,9 +734,12 @@
     [imgVwOfLikeFb setFrame:CGRectMake(imgVwOfLikeFb.frame.origin.x, yAxis, 20, 21)];
     [btnCommentFb setFrame:CGRectMake(btnCommentFb.frame.origin.x, yAxis+2,  btnCommentFb.frame.size.width,  btnCommentFb.frame.size.height)];
     [btnLike setFrame:CGRectMake(btnLike.frame.origin.x, yAxis+2, btnLike.frame.size.width, btnLike.frame.size.height)];
-    [lblLikeCount setFrame:CGRectMake(lblLikeCount.frame.origin.x, yAxis+2, lblLikeCount.frame.size.width, lblLikeCount.frame.size.height)];
+        // [lblLikeCount setFrame:CGRectMake(lblLikeCount.frame.origin.x, yAxis+2, lblLikeCount.frame.size.width, lblLikeCount.frame.size.height)];
+    [lblFBOrInstCommentCount setFrame:CGRectMake(lblFBOrInstCommentCount.frame.origin.x, yAxis+2, lblFBOrInstCommentCount.frame.size.width, lblFBOrInstCommentCount.frame.size.height)];
+    [lblFBOrInstLikeCount setFrame:CGRectMake(lblFBOrInstLikeCount.frame.origin.x, yAxis+2, lblFBOrInstLikeCount.frame.size.width, lblFBOrInstLikeCount.frame.size.height)];
     [btnShare setFrame:CGRectMake(btnShare.frame.origin.x, yAxis, btnShare.frame.size.width, btnShare.frame.size.height)];
 
+    [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 20)];
 
     [lblRetweet setFrame:CGRectMake(lblRetweet.frame.origin.x, yAxis, lblRetweet.frame.size.width, lblRetweet.frame.size.height)];
     [lblFavourite setFrame:CGRectMake(lblFavourite.frame.origin.x, yAxis, lblFavourite.frame.size.width, lblFavourite.frame.size.height)];
@@ -738,7 +749,6 @@
     [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x, yAxis,  btnRetweet.frame.size.width,  btnRetweet.frame.size.height)];
     [btnMoreTweet setFrame:CGRectMake(btnMoreTweet.frame.origin.x, yAxis,  btnMoreTweet.frame.size.width,  btnMoreTweet.frame.size.height)];
 
-    [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 20)];
 }
 
 
@@ -900,7 +910,8 @@
     [imgVwOfLikeFb setHidden:NO];
     [btnCommentFb setHidden:NO];
     [btnLike setHidden:NO];
-    [lblLikeCount setHidden:NO];
+    [lblFBOrInstLikeCount setHidden:NO];
+    [lblFBOrInstCommentCount setHidden:NO];
     [btnShare setHidden:NO];
     [btnMoreTweet setHidden:NO];
 }
@@ -921,7 +932,11 @@
     [imgVwOfLikeInstagram setHidden:NO];
     [btnCommentFb setHidden:NO];
     [btnLike setHidden:NO];
-    [lblLikeCount setHidden:NO];
+    [lblFBOrInstLikeCount setHidden:NO];
+    [lblFBOrInstCommentCount setHidden:NO];
+
+    lblFBOrInstCommentCount.text = [NSString stringWithFormat:@"%@", self.userInfo.instagramCommentCount];
+    lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%@",self.userInfo.instagramLikeCount];
 }
 
 - (void)showUserTagged:(id)sender {
@@ -1010,7 +1025,15 @@
 
         [Constant hideNetworkIndicator];
         UIImage *image = [UIImage imageWithData:_responseData];
-        imgVwPostImage.image = image;
+
+        if ([self.userInfo.type isEqualToString:@"video"]) {
+
+        } else {
+            asyVwOfPost.hidden = YES;
+            imgVwPostImage.hidden = NO;
+            imgVwPostImage.image = image;
+        }
+
     } else {
         id result = [NSJSONSerialization JSONObjectWithData:fbData options:kNilOptions error:nil];
         NSLog(@"%@", result);
@@ -1046,7 +1069,7 @@
                                     [btnLike setTitleColor:[UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0] forState:UIControlStateNormal];
                                     [btnLike removeTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
                                     [btnLike addTarget:self action:@selector(unlikedPost) forControlEvents:UIControlEventTouchUpInside];
-                                    lblLikeCount.text = [NSString stringWithFormat:@"%i",lblLikeCount.text.integerValue +1];
+                                    lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%i",lblFBOrInstLikeCount.text.integerValue +1];
                                   }
                               }];
     }];
@@ -1147,7 +1170,7 @@
 */
 - (void)likeUserList:(NSString*)strCount {
 
-    lblLikeCount.text = [NSString stringWithFormat:@"%lld", strCount.longLongValue];
+    lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%lld", strCount.longLongValue];
 
 //    for (NSDictionary *dictResult in arryLikeUserList) {
 //
@@ -1432,7 +1455,7 @@
 
 - (void)getLargeImageOfFacebook {
 
-    NSString *strUrl =  [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=normal", self.userInfo.objectIdFB];
+    NSString *strUrl =  [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=normal",self.userInfo.objectIdFB];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:strUrl]];
     connFBLagreImage = [[NSURLConnection alloc] initWithRequest:request delegate:self];

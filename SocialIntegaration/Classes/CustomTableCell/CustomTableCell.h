@@ -45,6 +45,9 @@
     IBOutlet UIButton *btnProfile;
     IBOutlet UIButton *btnMoreFb;
 
+    IBOutlet UILabel *lblInstLikeCount;
+    IBOutlet UILabel *lblInstCommentCount;
+
     IBOutlet UIImageView *imgVwOfLikeInstagram;
     UIActivityIndicatorView *spinner;
         //IBOutlet UITextView *txtVwMessage;

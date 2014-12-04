@@ -40,10 +40,6 @@
 {
     [super viewDidLoad];
 
-    /*[self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES]; */
-
     [Constant showNetworkIndicator];
 
     userProfile = [UserProfile getProfile:@"Facebook"];
@@ -58,17 +54,18 @@
     self.arryOfFbMessage = [[NSMutableArray alloc]init];
 
     [self showInboxMessage];
-
-//    if (IS_IOS7) {
-//        [self.tbleVwFbMessage setSeparatorInset:UIEdgeInsetsZero];
-//    }
     sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    self.navigationController.navigationBarHidden = NO;
 }
 
 - (void) viewDidAppear:(BOOL)animated {

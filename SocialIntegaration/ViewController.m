@@ -40,8 +40,8 @@ NSString *const kFBSetup = @"FBSetup";
 
 @property (nonatomic)BOOL noMoreResultsAvail;
 @property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
-@property (nonatomic, strong) NSMutableArray *arryCellTappedTwices;
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
+
 @end
 
 @implementation ViewController
@@ -69,7 +69,6 @@ BOOL hasTwitter = NO;
 
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
-    self.arryCellTappedTwices = [[NSMutableArray alloc]init];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -97,6 +96,16 @@ BOOL hasTwitter = NO;
     }
 
     [self appIsInForeground:nil];
+
+    if(self.arryTappedCell.count == 0) {
+
+        for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {
+            NSLog(@"%@", cellSelected);
+            [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
+        }
+    }
+
+    NSLog(@"%@", self.arryTappedCell);
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -113,6 +122,9 @@ BOOL hasTwitter = NO;
         sharedAppDelegate.isFirstTimeLaunch = NO;
         [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0];
     }
+
+    [[NSUserDefaults standardUserDefaults]setInteger:self.index forKey:INDEX_OF_PAGE];
+    [[NSUserDefaults standardUserDefaults]synchronize];
     
     self.navItem.title = @"Timeline";
 }
@@ -408,9 +420,6 @@ BOOL hasTwitter = NO;
             NSLog(@"*** %@", [dictData objectForKey:@"type"]);
             if (![[dictData objectForKey:@"type"] isEqualToString:@"video"] && ![[dictData objectForKey:@"type"] isEqualToString:@"photo"]) {
                 userInfo.objectIdFB = [dictData valueForKey:@"id"];
-             } else if (![[dictData objectForKey:@"type"] isEqualToString:@"link"]) {
-
-                 userInfo.objectIdFB = [dictData valueForKey:@"id"];
              } else {
                  userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
              }
@@ -805,10 +814,8 @@ BOOL hasTwitter = NO;
         }
             [sharedAppDelegate.arryOfInstagrame removeAllObjects];
             [self shortArryOfAllFeeds];
-
     } else {
 
-            ///v1/users/3/media/recent/?access_token=ACCESS-TOKEN
         if ([sharedAppDelegate.instagram isSessionValid]) {
 
             isInstagramOpen = YES;
@@ -886,7 +893,7 @@ BOOL hasTwitter = NO;
 
 - (void)request:(IGRequest *)request didLoad:(id)result {
 
-         NSLog(@"Instagram did load: %@", result);
+    // NSLog(@"Instagram did load: %@", result);
     NSArray *arry = [result objectForKey:@"data"];
     [self convertDataOfInstagramIntoModelClass:arry];
 }
@@ -908,14 +915,20 @@ BOOL hasTwitter = NO;
 
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"caption"];
 
+            userInfo.strUserPost = [postUserDetailDict valueForKey:@"text"];
+            NSString *strDate = [postUserDetailDict objectForKey:@"created_time"];
+
             NSDictionary *dictUserInfo = [postUserDetailDict objectForKey:@"from"];
+
             userInfo.strUserName = [dictUserInfo valueForKey:@"username"];
             userInfo.fromId = [dictUserInfo valueForKey:@"id"];
             sharedAppDelegate.InstagramId = userInfo.fromId;
             userInfo.strUserImg = [dictUserInfo valueForKey:@"profile_picture"];
 
-            userInfo.strUserPost = [postUserDetailDict valueForKey:@"text"];
-            NSString *strDate = [postUserDetailDict objectForKey:@"created_time"];
+
+            userInfo.mediaIdOfInstagram = [dictData valueForKey:@"id"];
+            userInfo.instagramLikeCount = [[dictData objectForKey:@"likes"]valueForKey:@"count"];
+            userInfo.instagramCommentCount = [[dictData objectForKey:@"comments"]valueForKey:@"count"];
 
             NSTimeInterval interval = strDate.doubleValue;
             NSDate *convertedDate = [NSDate dateWithTimeIntervalSince1970: interval];
@@ -943,8 +956,7 @@ BOOL hasTwitter = NO;
     [Constant hideNetworkIndicator];
 
     [sharedAppDelegate.arryOfAllFeeds removeAllObjects]; //first remove all object
-    [self.arryTappedCell removeAllObjects];
-    
+
     [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfFBNewsFeed];
     [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfTwittes];
     [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfInstagrame];
@@ -955,11 +967,11 @@ BOOL hasTwitter = NO;
     NSArray *sortedArray = [sharedAppDelegate.arryOfAllFeeds sortedArrayUsingDescriptors:sortDescriptors];
     [sharedAppDelegate.arryOfAllFeeds removeAllObjects];
     sharedAppDelegate.arryOfAllFeeds = [sortedArray mutableCopy];
+    [self.arryTappedCell removeAllObjects];
 
     for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {
         NSLog(@"%@", cellSelected);
         [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
-        [self.arryCellTappedTwices addObject:@"1"];
     }
 
     [sharedAppDelegate.spinner hide:YES];

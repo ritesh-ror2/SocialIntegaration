@@ -9,7 +9,7 @@
 #import "Constant.h"
 #import "NSDate+Helper.h"
 
-#define DATE_COMPONENTS (NSMinuteCalendarUnit| NSHourCalendarUnit | NSDayCalendarUnit| NSWeekOfMonthCalendarUnit|NSWeekOfYearCalendarUnit)
+#define DATE_COMPONENTS (NSMinuteCalendarUnit| NSHourCalendarUnit | NSDayCalendarUnit| NSMonthCalendarUnit|NSYearCalendarUnit)
 
 @implementation Constant
 
@@ -66,7 +66,7 @@
     long diffInDate = components.minute;
 
     NSString *strDiff;
-    NSLog(@"%i", components.hour);
+    NSLog(@"%i", components.month);
     if (components.hour == 0 && components.day == 0) {
 
         strDiff = [NSString stringWithFormat:@"%ldm", diffInDate];
@@ -74,11 +74,11 @@
 
         diffInDate = components.hour;
         strDiff = [NSString stringWithFormat:@"%ldh", diffInDate];
-    } else if (components.day != 0) {
+    } else if (components.day != 0 && components.month == 0) {
 
         diffInDate = components.day;
         strDiff = [NSString stringWithFormat:@"%ldd", diffInDate];
-    } else if (components.month != 0) {
+    } else if (components.month != 0 && components.year != 0) {
 
         diffInDate = components.month;
         strDiff = [NSString stringWithFormat:@"%ldm", diffInDate];

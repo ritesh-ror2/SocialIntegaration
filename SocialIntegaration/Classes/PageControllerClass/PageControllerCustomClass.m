@@ -39,14 +39,14 @@
 
     UINavigationController *navController = self.navigationController;
 
-    navController.navigationBar.barTintColor = [UIColor redColor];
+    navController.navigationBar.barTintColor = [UIColor whiteColor];
 
     CGSize navBarSize = navController.navigationBar.bounds.size;
     CGPoint origin = CGPointMake(navBarSize.width/2, (navBarSize.height/3)*2.5 );
 
     self.navigationPageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(origin.x, origin.y,0, 0)];
     self.navigationPageControl.hidden = NO;
-    self.navigationPageControl.backgroundColor = [UIColor redColor];
+    self.navigationPageControl.backgroundColor = [UIColor whiteColor];
     [navController.navigationBar addSubview:self.navigationPageControl];
 }
 
