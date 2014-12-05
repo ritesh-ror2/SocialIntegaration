@@ -12,19 +12,20 @@
 @interface ShowOtherUserProfileViewController : UIViewController {
 
     IBOutlet UIImageView *imgVwBgImg;
-    IBOutlet UILabel *lblName;
     IBOutlet UIImageView *ImgVwProfile;
     IBOutlet UIImageView *ImgVwCircle;
+    IBOutlet UIImageView *imgVwLine1;
+    IBOutlet UIImageView *imgVwLine2;
+
     IBOutlet UILabel *lblFollower;
     IBOutlet UILabel *lblFollowing;
     IBOutlet UILabel *lblTweet;
     IBOutlet UILabel *lblFolloweCount;
     IBOutlet UILabel *lblFolloeingCount;
     IBOutlet UILabel *lblTweetCount;
-    IBOutlet UIButton *btnRequestOrFollow;
+    IBOutlet UILabel *lblName;
 
-    IBOutlet UIImageView *imgVwLine1;
-    IBOutlet UIImageView *imgVwLine2;
+    IBOutlet UIButton *btnRequestOrFollow;
 }
 
 @property (nonatomic, strong) UserInfo *userInfo;

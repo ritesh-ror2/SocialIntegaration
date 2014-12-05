@@ -19,8 +19,10 @@
 
 @implementation ShowOtherUserProfileViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -28,13 +30,14 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+
     [super viewDidLoad];
 
     if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+
         lblName.text = self.userInfo.strUserName;
-        [self showProfileImage:self.userInfo];
+        [self showProfileImageOfFb:self.userInfo];
         imgVwBgImg.image = [UIImage imageNamed:@"facebook-bg.png"];
     } else  if ([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
 
@@ -48,11 +51,22 @@
     sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
+- (void)didReceiveMemoryWarning {
+
+    [super didReceiveMemoryWarning];
+        // Dispose of any resources that can be recreated.
+}
+
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.translucent = NO;
 }
+
+#pragma mark - Show Twitter user information
+/**************************************************************************************************
+ Function to show twitter user information
+ **************************************************************************************************/
 
 - (void)setTwitterUserInformation {
 
@@ -68,9 +82,9 @@
     NSDictionary *dictOtherUser = self.userInfo.dicOthertUser;
 
     [self setProfileImageOfTwitterAndInstagram:[dictOtherUser objectForKey:@"profile_image_url"]];
-    lblFolloeingCount.text = [NSString stringWithFormat:@"%i",[[dictOtherUser objectForKey:@"friends_count"] integerValue] ];
-    lblFolloweCount.text = [NSString stringWithFormat:@"%i",[[dictOtherUser objectForKey:@"followers_count"]integerValue] ];
-    lblTweetCount.text = [NSString stringWithFormat:@"%i",[[dictOtherUser objectForKey:@"listed_count"]integerValue] ] ;
+    lblFolloeingCount.text = [NSString stringWithFormat:@"%i",[[dictOtherUser objectForKey:@"friends_count"] integerValue]];
+    lblFolloweCount.text = [NSString stringWithFormat:@"%i",[[dictOtherUser objectForKey:@"followers_count"]integerValue]];
+    lblTweetCount.text = [NSString stringWithFormat:@"%i",[[dictOtherUser objectForKey:@"listed_count"]integerValue]] ;
     lblName.text = [dictOtherUser objectForKey:@"name"];
 
     if (self.userInfo.isFollowing == 1){
@@ -80,6 +94,10 @@
     }
 }
 
+#pragma mark - Follow/Unfollow to twitter user
+/**************************************************************************************************
+ Function to follow and unfollow in twitter
+ **************************************************************************************************/
 
 - (IBAction)sendFrienRequest:(id)sender {
 
@@ -89,7 +107,7 @@
 
         NSString *strUserId = [NSString stringWithFormat:@"%i",[[dictOtherUser valueForKey:@"id"]integerValue]];
         NSDictionary *param = @{@"user_id": strUserId};
-        NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/destroy.json"];
+        NSURL *requestURL = [NSURL URLWithString:TWITTER_FRIEND_DESTROY];
         SLRequest *timelineRequest = [SLRequest
                                       requestForServiceType:SLServiceTypeTwitter
                                       requestMethod:SLRequestMethodPOST
@@ -97,10 +115,8 @@
 
         timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-        [timelineRequest performRequestWithHandler:
-         ^(NSData *responseData, NSHTTPURLResponse
-           *urlResponse, NSError *error)
-         {
+        [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+
            NSLog(@"%@ !#" , [error description]);
            NSArray *arryTwitte = [NSJSONSerialization
                                   JSONObjectWithData:responseData
@@ -120,7 +136,7 @@
 
         NSString *strUserId = [NSString stringWithFormat:@"%i",[[dictOtherUser valueForKey:@"id"]integerValue]];
         NSDictionary *param = @{@"user_id": strUserId, @"follow":@"true"};
-        NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"];
+        NSURL *requestURL = [NSURL URLWithString:TWITTER_FRIEND_CREATE];
         SLRequest *timelineRequest = [SLRequest
                                       requestForServiceType:SLServiceTypeTwitter
                                       requestMethod:SLRequestMethodPOST
@@ -128,10 +144,7 @@
 
         timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-        [timelineRequest performRequestWithHandler:
-         ^(NSData *responseData, NSHTTPURLResponse
-           *urlResponse, NSError *error)
-         {
+        [timelineRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
            NSLog(@"%@ !#" , [error description]);
            NSArray *arryTwitte = [NSJSONSerialization
                                   JSONObjectWithData:responseData
@@ -209,6 +222,9 @@
 }
 
 #pragma mark - Set profile image of twitter and Instagram
+/**************************************************************************************************
+ Function to set profile image of twitter and instagram
+ **************************************************************************************************/
 
 - (void)setProfileImageOfTwitterAndInstagram:(NSString *)profileImg {
 
@@ -226,8 +242,11 @@
 }
 
 #pragma mark - Set User profile images
+/**************************************************************************************************
+ Function to show Fb user profile image
+ **************************************************************************************************/
 
-- (void)showProfileImage:(UserInfo *)objUserInfo {
+- (void)showProfileImageOfFb:(UserInfo *)objUserInfo {
 
         // load profile picture
 	NSURL *jsonURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?redirect=false&type=normal&width=110&height=110", objUserInfo.fromId]];
@@ -269,11 +288,10 @@
 	});
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+#pragma mark - Cancel btn tapped
+/**************************************************************************************************
+ Function to cancel btn
+ **************************************************************************************************/
 
 - (IBAction)cancelBtnTapped:(id)sender {
 

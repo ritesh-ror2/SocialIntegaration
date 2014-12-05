@@ -51,8 +51,6 @@
     self.arryOfFBUserFeed = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
-
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -69,12 +67,6 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
-
-   /* [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
-    */
-
     [Constant showNetworkIndicator];
 
     [self.arryTappedCell removeAllObjects];
@@ -115,6 +107,7 @@
                               }
                           }];
 }
+
 #pragma mark - Get FB User Info
 
 - (void)getFBUserInfo {
@@ -314,20 +307,18 @@
 
     }
 
+    BOOL isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
+
     if(indexPath.row < [self.arryOfFBUserFeed count]){
 
             //  self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:YES];
+        [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
     } else {
 
         if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
 
-                //  if (self.noMoreResultsAvail == NO) {
-
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES withOtherTimeline:YES];
-                cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
-                    //  [self getMoreDataOfFBFeed];
-                    // }
+            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:isSelected withPagging:YES withOtherTimeline:YES];
+            cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
         }
     }
     NSLog(@"%@",cell.touchCount);

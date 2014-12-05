@@ -13,6 +13,8 @@
 
 @synthesize customCellDelegate;
 
+#pragma mark - Cell Initialize
+
 - (void)awakeFromNib {
 
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTapGestureOnTableViewCell:)];
@@ -29,63 +31,92 @@
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+
     [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
-- (void)handleSwipeGestureOnTableView: (UILongPressGestureRecognizer *)gesture {
+#pragma mark - Delegates Function
 
-    NSLog(@"%@", self.userInfo);
-    if ([self.customCellDelegate respondsToSelector:@selector(didSelectRowWithObject:withFBProfileImg:)]) {
-        [self.customCellDelegate didSelectRowWithObject:self.userInfo withFBProfileImg:self.strProfileImg];
-    }
-}
+/**************************************************************************************************
+ Delegate to handle tapping of cell at first time
+ **************************************************************************************************/
 
-- (void)handleTapGestureOnTableViewCell: (UITapGestureRecognizer *)gesture {
-
-    BOOL isAlreadyTapped;
-
-    if([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
-        if (lblName.textColor == [UIColor whiteColor]) {
-            isAlreadyTapped = NO;
-            [self handleSwipeGestureOnTableView:nil];
-        } else {
-            isAlreadyTapped = YES;
-            [self didRowTapped:isAlreadyTapped];
-        }
-
-    } else  if([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
-
-        if (lblName.textColor == [UIColor whiteColor]) {
-            isAlreadyTapped = NO;
-            [self handleSwipeGestureOnTableView:nil];
-
-        } else {
-            isAlreadyTapped = YES;
-            [self didRowTapped:isAlreadyTapped];
-        }
-    } else {
-
-        if (lblName.textColor == [UIColor whiteColor]) {
-
-            isAlreadyTapped = NO;
-            [self handleSwipeGestureOnTableView:nil];
-
-        } else {
-            isAlreadyTapped = YES;
-            [self didRowTapped:isAlreadyTapped];
-        }
-    }
-}
-
-- (void)didRowTapped:(BOOL)isSelected {
-    NSLog(@"%i", self.cellIndex);
+- (void)didRowTappedAtFirstTime:(BOOL)isSelected {
 
     if ([self.customCellDelegate respondsToSelector:@selector(tappedOnCellToShowActivity:withCellIndex:withSelectedPrNot:)]) {
         [self.customCellDelegate tappedOnCellToShowActivity:self.userInfo withCellIndex:self.cellIndex withSelectedPrNot:isSelected];
     }
 }
+
+/**************************************************************************************************
+ Delegate to handle tapping of cell at second time
+ **************************************************************************************************/
+
+- (void)cellIsTappedAtSecondTime {
+
+    if ([self.customCellDelegate respondsToSelector:@selector(didSelectRowWithObject:withFBProfileImg:)]) {
+        [self.customCellDelegate didSelectRowWithObject:self.userInfo withFBProfileImg:self.strProfileImg];
+    }
+}
+
+/**************************************************************************************************
+ Delegate to handle when profile image is tapped
+ **************************************************************************************************/
+
+- (IBAction)profileBtnTapped:(id)sender {
+
+    if ([self.customCellDelegate respondsToSelector:@selector(userProfileBtnTapped:)]) {
+        [self.customCellDelegate userProfileBtnTapped:self.userInfo];
+    }
+}
+
+#pragma mark - Handle tap gesture on cell
+/**************************************************************************************************
+ Function to handle tap gesture on cell
+ **************************************************************************************************/
+
+- (void)handleTapGestureOnTableViewCell:(UITapGestureRecognizer *)gesture {
+
+    if([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+
+        if (self.isAlreadyTapped == YES) {
+
+            self.isAlreadyTapped = NO;
+            [self cellIsTappedAtSecondTime];
+        } else {
+
+            self.isAlreadyTapped = YES;
+            [self didRowTappedAtFirstTime:self.isAlreadyTapped];
+        }
+    } else  if([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
+
+        if (self.isAlreadyTapped == YES) {
+
+            self.isAlreadyTapped = NO;
+            [self cellIsTappedAtSecondTime];
+        } else {
+
+            self.isAlreadyTapped = YES;
+            [self didRowTappedAtFirstTime:self.isAlreadyTapped];
+        }
+    } else {
+
+        if (self.isAlreadyTapped == YES) {
+
+            self.isAlreadyTapped = NO;
+            [self cellIsTappedAtSecondTime];
+        } else {
+
+            self.isAlreadyTapped = YES;
+            [self didRowTappedAtFirstTime:self.isAlreadyTapped];
+        }
+    }
+}
+
+#pragma mark - Fb call configuration
+/**************************************************************************************************
+ Function to handle Facebook cell configuration
+ **************************************************************************************************/
 
 - (void)facebookCellConfiguration:(BOOL)isDisplay {
 
@@ -124,6 +155,24 @@
     }
 }
 
+#pragma mark - FB cell gradient
+/**************************************************************************************************
+ Function to set fb cell gradient
+ **************************************************************************************************/
+
+- (void)setGradientColorOfFB {
+
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = imgVwBgColor.frame;
+    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:59/255.0f green:90/256.0f blue:153/256.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:66/255.0f green:99/255.0f blue:159/255.0f alpha:1.0]CGColor] ,(id)[[UIColor colorWithRed:75/255.0f green:114/255.0f blue:195/255.0f alpha:1.0] CGColor], (id)[[UIColor colorWithRed:79/255.0f green:120/255.0f blue:204/255.0f alpha:1.0] CGColor], nil];
+    [imgVwBgColor.layer insertSublayer:gradient atIndex:0];
+}
+
+#pragma mark - Twitter call configuration
+/**************************************************************************************************
+ Function to handle twitter cell configuration
+ **************************************************************************************************/
+
 - (void)twitterCellConfiguration:(BOOL)isDisplay  {
 
     if (isDisplay == YES) {
@@ -159,6 +208,24 @@
     }
 }
 
+#pragma mark - Twitter cell gradient
+/**************************************************************************************************
+ Function to set twitter cell gradient
+ **************************************************************************************************/
+
+- (void)setGradientColorOfTwitter {
+
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = imgVwBgColor.frame;
+    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:70/255.0f green:144/256.0f blue:241/256.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:74/255.0f green:146/255.0f blue:244/255.0f alpha:1.0] CGColor], (id)[[UIColor colorWithRed:75/255.0f green:160/255.0f blue:245/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:80/255.0f green:172/255.0f blue:247/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:87/255.0f green:179/255.0f blue:249/255.0f alpha:1.0] CGColor], nil];
+    [imgVwBgColor.layer insertSublayer:gradient atIndex:0];
+}
+
+#pragma mark - Instagram call configuration
+/**************************************************************************************************
+ Function to handle instagram cell configuration
+ **************************************************************************************************/
+
 - (void)instagramCellConfiguration:(BOOL)isDisplay  {
 
     if (isDisplay == YES) {
@@ -193,21 +260,10 @@
     }
 }
 
-- (void)setGradientColorOfTwitter {
-
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = imgVwBgColor.frame;
-    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:70/255.0f green:144/256.0f blue:241/256.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:74/255.0f green:146/255.0f blue:244/255.0f alpha:1.0] CGColor], (id)[[UIColor colorWithRed:75/255.0f green:160/255.0f blue:245/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:80/255.0f green:172/255.0f blue:247/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:87/255.0f green:179/255.0f blue:249/255.0f alpha:1.0] CGColor], nil];
-    [imgVwBgColor.layer insertSublayer:gradient atIndex:0];
-}
-
-- (void)setGradientColorOfFB {
-
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = imgVwBgColor.frame;
-    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:59/255.0f green:90/256.0f blue:153/256.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:66/255.0f green:99/255.0f blue:159/255.0f alpha:1.0]CGColor] ,(id)[[UIColor colorWithRed:75/255.0f green:114/255.0f blue:195/255.0f alpha:1.0] CGColor], (id)[[UIColor colorWithRed:79/255.0f green:120/255.0f blue:204/255.0f alpha:1.0] CGColor], nil];
-    [imgVwBgColor.layer insertSublayer:gradient atIndex:0];
-}
+#pragma mark - Instagram cell gradient
+/**************************************************************************************************
+ Function to set instagram cell gradient
+ **************************************************************************************************/
 
 - (void)setGradientColorOfInstagram {
 
@@ -217,45 +273,23 @@
     [imgVwBgColor.layer insertSublayer:gradient atIndex:0];
 }
 
-#pragma mark - Set value in table view
+#pragma mark - Hide and show labels (time, name, title)
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline {
+- (void)isPaggingForMoreFeeds:(BOOL)isPagging {
 
-    if (isPagging == YES) {
+    imgVwOfUserProfile.hidden = isPagging;
+    lblSocialType.hidden = isPagging;
+    lblText.hidden = isPagging;
+    lblTime.hidden = isPagging;
+    lblName.hidden = isPagging;
+}
 
-        spinner.hidden = NO;
-        [spinner startAnimating];
+#pragma mark - Set values of feeds
 
-        imgVwOfUserProfile.hidden = YES;
-        lblSocialType.hidden = YES;
-        lblText.hidden = YES;
-        lblTime.hidden = YES;
-        lblName.hidden = YES;
-    } else {
-
-        spinner.hidden = YES;
-        [spinner stopAnimating];
-
-        imgVwOfUserProfile.hidden = NO;
-        lblSocialType.hidden = NO;
-        lblText.hidden = NO;
-        lblTime.hidden = NO;
-        lblName.hidden = NO;
-
-        [spinner stopAnimating];
-        spinner.hidden = YES;
-
-    if (self.userInfo != nil) {
-        self.userInfo = nil;
-    }
-
-    self.userInfo = objUserInfo;
-    self.cellIndex = row;
+- (void)setValueOfFeeds:(UserInfo*)objUserInfo {
 
     lblName.text = objUserInfo.strUserName;
     lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserInfo.struserTime];
-
-    NSLog(@"%@", lblTime.text);
 
     NSString *string = [objUserInfo.strUserPost stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
@@ -267,8 +301,116 @@
     lblText.text = string;
 
     lblSocialType.text = objUserInfo.strUserSocialType;
+
     lblInstLikeCount.text = [NSString stringWithFormat:@"%@", objUserInfo.instagramLikeCount];
     lblInstCommentCount.text = [NSString stringWithFormat:@"%@", objUserInfo.instagramCommentCount];
+
+    lblTweet.text = objUserInfo.retweetCount;
+    lblFavourate.text = objUserInfo.favourateCount;
+
+    if (objUserInfo.strPostImg.length != 0) { //set post image
+
+        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, 320, 320);
+        imgVwPostImg.hidden = NO;
+        imgVwPostImg.backgroundColor = [UIColor clearColor];
+        btnPlay.frame = imgVwPostImg.frame;
+
+        [self setPostImage:objUserInfo];//user profile
+        [self setFrameOfActivityView:imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y+10];//frames of activity
+        imgVwBgColor.frame = CGRectMake(0, 0, self.frame.size.width, imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y + 38);//image view frame that show gradient color
+
+        btnPlay.hidden = NO;
+        [btnPlay setImage:[UIImage imageNamed:@"no.png"] forState:UIControlStateNormal];
+    } else {
+
+        [self setFrameOfActivityView:lblText.frame.size.height + lblText.frame.origin.y+7];
+        imgVwBgColor.frame = CGRectMake(0, 0, self.frame.size.width, lblText.frame.size.height + lblText.frame.origin.y + 38);
+    }
+}
+
+- (void)setIconWhenActivityHasUsedByUser:(UserInfo *)objUserInfo {
+
+    if (objUserInfo.fbLike == 1) {
+
+        [imgVwOfLikeFb setImage:[UIImage imageNamed:@"Liked-active.png"]];
+    } else {
+        [imgVwOfLikeFb setImage:[UIImage imageNamed:@"Like_fb.png"]];
+    }
+    [self getLikeCountOfFb];
+
+    if ([self.userInfo.retweeted isEqualToString:@"1"]) {
+        [btnRetweet setImage:[UIImage imageNamed:@"Retweet_active.png"] forState:UIControlStateNormal];//selected
+    } else {
+        [btnRetweet setImage:[UIImage imageNamed:@"Retweet.png"] forState:UIControlStateNormal];//deselected
+    }
+
+    if ([self.userInfo.favourated isEqualToString:@"1"]) {
+        [btnFavourate setImage:[UIImage imageNamed:@"favourite_active.png"] forState:UIControlStateNormal];//selected
+    } else {
+        [btnFavourate setImage:[UIImage imageNamed:@"favourite.png"] forState:UIControlStateNormal];//deselected
+    }
+}
+
+#pragma mark - Set value in table view
+/**************************************************************************************************
+ Function to set values in feed list
+ **************************************************************************************************/
+
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(BOOL)isSelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline {
+
+    if (isPagging == YES) {
+        spinner.hidden = NO;
+        [spinner startAnimating];
+        [self isPaggingForMoreFeeds:YES];
+    } else {
+
+        spinner.hidden = YES;
+        [spinner stopAnimating];
+        [self isPaggingForMoreFeeds:NO];
+
+        if (self.userInfo != nil) {
+            self.userInfo = nil; //assign value to user info object
+        }
+        self.userInfo = objUserInfo;
+
+        self.isAlreadyTapped = NO;
+        self.cellIndex = row; //set cell index
+
+        [self setValueOfFeeds:objUserInfo]; //set values of feeds
+        [self setColorOfFBTwitterInstHeading:objUserInfo withOtherTimeline:isOtherTimeline]; //set color on FB, Twitter, Inst heading
+
+        [self setIconWhenActivityHasUsedByUser:objUserInfo]; //set activity icon
+
+        if (isSelected == YES) {  //BOOL isSelected = [[arrySelectedCell objectAtIndex:row]boolValue];
+
+            self.isAlreadyTapped = YES;
+            imgVwBgColor.hidden = NO;
+
+            if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
+                [self facebookCellConfiguration:isSelected];
+            } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
+                [self twitterCellConfiguration:isSelected];
+            } else {
+                [self instagramCellConfiguration:YES];
+            }
+        } else {
+            self.isAlreadyTapped = NO;
+            imgVwBgColor.hidden = YES;
+        }
+
+        if ([objUserInfo.type isEqualToString:@"video"]) {
+            [btnPlay setImage:[UIImage imageNamed:@"play-btn.png"] forState:UIControlStateNormal];
+             [self.contentView bringSubviewToFront:btnPlay];
+        }
+    }
+}
+
+#pragma mark - Set color of Social type
+/**************************************************************************************************
+ Function to set color of social timeline
+ **************************************************************************************************/
+
+- (void)setColorOfFBTwitterInstHeading:(UserInfo *)objUserInfo withOtherTimeline:(BOOL)isOtherTimeline {
 
     if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
 
@@ -277,7 +419,7 @@
         } else {
             lblSocialType.textColor = [UIColor lightGrayColor];
         }
-        [self uploadProfileImage:objUserInfo]; //upload profile image
+        [self profileImgOfFbUser:objUserInfo]; //upload profile image
 
     } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
 
@@ -296,83 +438,12 @@
         }
         [self setProfileImageOfTwitterAndInstagram:objUserInfo];
     }
-
-    if (objUserInfo.strPostImg.length != 0) { //set post image
-
-    if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
-
-        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, 320, 320);
-    } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
-         imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, 320, 320);
-    } else {
-        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, 320, 320);
-    }
-        imgVwPostImg.hidden = NO;
-        imgVwPostImg.backgroundColor = [UIColor clearColor];
-        btnPlay.frame = imgVwPostImg.frame;
-        
-        [self setPostImage:objUserInfo];
-        [self setFrameOfActivityView:imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y+10];
-        imgVwBgColor.frame = CGRectMake(0, 0, self.frame.size.width, imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y + 38);
-
-        btnPlay.hidden = NO;
-        [btnPlay setImage:[UIImage imageNamed:@"no.png"] forState:UIControlStateNormal];
-    } else {
-        [self setFrameOfActivityView:lblText.frame.size.height + lblText.frame.origin.y+7];
-        imgVwBgColor.frame = CGRectMake(0, 0, self.frame.size.width, lblText.frame.size.height + lblText.frame.origin.y + 38);
-    }
-
-    if (objUserInfo.fbLike == 1) {
-
-        [imgVwOfLikeFb setImage:[UIImage imageNamed:@"Liked-active.png"]];
-    } else {
-        [imgVwOfLikeFb setImage:[UIImage imageNamed:@"Like_fb.png"]];
-    }
-
-    [self getLikeCountOfFb];
-    if ([self.userInfo.retweeted isEqualToString:@"1"]) {
-        [btnRetweet setImage:[UIImage imageNamed:@"Retweet_active.png"] forState:UIControlStateNormal];//selected
-    } else {
-        [btnRetweet setImage:[UIImage imageNamed:@"Retweet.png"] forState:UIControlStateNormal];//deselected
-    }
-
-    if ([self.userInfo.favourated isEqualToString:@"1"]) {
-        [btnFavourate setImage:[UIImage imageNamed:@"favourite_active.png"] forState:UIControlStateNormal];//selected
-    } else {
-        [btnFavourate setImage:[UIImage imageNamed:@"favourite.png"] forState:UIControlStateNormal];//deselected
-    }
-     
-    if (arrayOfSelectedIndex.count != 0) {
-
-        for (NSString *index in arrayOfSelectedIndex) {
-
-            if (row == index.integerValue) {
-
-                imgVwBgColor.hidden = NO;
-                    //imgVwBgColor.backgroundColor = [UIColor redColor];
-
-                BOOL isSelected = [[arrySelectedCell objectAtIndex:row]boolValue];
-                NSLog(@"%hhd", isSelected);
-                if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
-                    [self facebookCellConfiguration:isSelected];
-
-                } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
-                    [self twitterCellConfiguration:isSelected];
-                } else {
-                    [self instagramCellConfiguration:YES];
-                }
-            }
-        }
-    }
-
-    if ([objUserInfo.type isEqualToString:@"video"]) {
-        [btnPlay setImage:[UIImage imageNamed:@"play-btn.png"] forState:UIControlStateNormal];
-    }
-    [self.contentView bringSubviewToFront:btnPlay];
-    lblTweet.text = objUserInfo.retweetCount;
-    lblFavourate.text = objUserInfo.favourateCount;
-    }
 }
+
+#pragma mark - Set frame of like, favourate, comment, retweet and reply
+/**************************************************************************************************
+ Function to set frame of like, favourate, comment, retweet and reply butotn
+ **************************************************************************************************/
 
 - (void)setFrameOfActivityView:(NSInteger)yAxis {
 
@@ -396,14 +467,11 @@
     [lblInstLikeCount setFrame:CGRectMake(lblInstLikeCount.frame.origin.x, yAxis, lblInstLikeCount.frame.size.width, 20)];
 }
 
-- (IBAction)profileBtnTapped:(id)sender {
-
-    if ([self.customCellDelegate respondsToSelector:@selector(userProfileBtnTapped:)]) {
-        [self.customCellDelegate userProfileBtnTapped:self.userInfo];
-    }
-}
 
 #pragma mark - Set profile image of twitter and Instagram
+/**************************************************************************************************
+ Function to set profile image of twitter and Instagram
+ **************************************************************************************************/
 
 - (void)setProfileImageOfTwitterAndInstagram:(UserInfo *)objUserInfo {
 
@@ -421,6 +489,9 @@
 }
 
 #pragma mark - Set post image
+/**************************************************************************************************
+ Function to set post image
+ **************************************************************************************************/
 
 - (void)setPostImage:(UserInfo *)objUserInfo {
 
@@ -428,8 +499,11 @@
 }
 
 #pragma mark - Set User profile images
+/**************************************************************************************************
+ Function to set profile image of facebook
+ **************************************************************************************************/
 
-- (void)uploadProfileImage:(UserInfo *)objUserInfo {
+- (void)profileImgOfFbUser:(UserInfo *)objUserInfo {
 
         // load profile picture
 	NSURL *jsonURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?redirect=false&type=normal&width=110&height=110", objUserInfo.fromId]];
@@ -448,6 +522,7 @@
             NSString *strProfileImg = [[resultDict valueForKey:@"data"] valueForKey:@"url"];
             self.strProfileImg = strProfileImg;
             if (strProfileImg.length == 0) {
+
                 strProfileImg = @"user-selected.png";
                 UIImage *imgProfile = [Constant maskImage:[UIImage imageNamed:strProfileImg] withMask:[UIImage imageNamed:@"list-mask.png"]];
                 imgVwOfUserProfile.image = imgProfile;
@@ -471,6 +546,10 @@
 	});
 }
 
+#pragma mark - Like of Fb POst
+/**************************************************************************************************
+ Function to get like of fb post
+ **************************************************************************************************/
 
 - (void)getLikeCountOfFb {
 

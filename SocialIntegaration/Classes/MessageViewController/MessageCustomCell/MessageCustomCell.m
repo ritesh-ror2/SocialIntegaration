@@ -41,7 +41,7 @@
     }
 }
 
-#pragma mark - set value in table view
+#pragma mark - Show messages in table view
 
 - (void)setMessageInTableViewCustomCell:(UserComment*)objUserComment withRowIndex:(NSInteger)rowIndex {
 
@@ -64,7 +64,7 @@
     if ([objUserComment.socialType isEqualToString: @"Facebook"]) {
 
         lblSocialType.textColor = [UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0];
-        [self uploadProfileImage:objUserComment]; //upload profile image
+        [self profileImageOfFb:objUserComment]; //upload profile image
     } else if ([objUserComment.socialType isEqualToString: @"Twitter"]) {
 
         lblSocialType.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
@@ -74,6 +74,11 @@
         [self setProfileImageOfTwitter:objUserComment];
     }
 }
+
+#pragma mark - Set profile image of twitter and Instagram
+/**************************************************************************************************
+ Function to set profile image of twitter and Instagram
+ **************************************************************************************************/
 
 - (void)setProfileImageOfTwitter:(UserComment *)objUserComment {
 
@@ -90,12 +95,22 @@
     });
 }
 
+#pragma mark - Set post image
+/**************************************************************************************************
+ Function to set post image
+ **************************************************************************************************/
+
 - (void)setPostImageAndOfFB:(UserComment *)objUserComment {
 
-     imgVwPostImg.imageURL = [NSURL URLWithString:objUserComment.postImg];
+    imgVwPostImg.imageURL = [NSURL URLWithString:objUserComment.postImg];
 }
 
-- (void)uploadProfileImage:(UserComment *)objUserComment {
+#pragma mark - Set User profile images
+/**************************************************************************************************
+ Function to set profile image of facebook
+ **************************************************************************************************/
+
+- (void)profileImageOfFb:(UserComment *)objUserComment {
 
         // load profile picture
 	NSURL *jsonURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?redirect=false&type=normal&width=110&height=110", objUserComment.titleUserId]];

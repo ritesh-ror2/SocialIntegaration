@@ -244,7 +244,7 @@
             userInfo.favourateCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorite_count"] integerValue]];
 
             NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
-            userInfo.struserTime = [Constant convertDateOFTweeter:strDate];
+            userInfo.struserTime = [Constant convertDateOFTwitter:strDate];
             [self.arrySelfTweets addObject:userInfo];
             [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
         }
@@ -276,9 +276,11 @@
         cell.customCellDelegate = self;
     }
 
+    BOOL isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
+
     if(indexPath.row < [self.arrySelfTweets count]){
 
-        [cell setValueInSocialTableViewCustomCell:[self.arrySelfTweets objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:YES];
+        [cell setValueInSocialTableViewCustomCell:[self.arrySelfTweets objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
     }
     return cell;
 }

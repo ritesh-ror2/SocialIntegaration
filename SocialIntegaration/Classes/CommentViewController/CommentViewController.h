@@ -17,7 +17,7 @@
     IBOutlet UIImageView *imgVwPostUser;
     IBOutlet UILabel *lblComment;
     IBOutlet UIImageView *imgVwUser;
-    IBOutlet UIImageView *imgVwPostImage;
+    IBOutlet UIImageView *imgVwLagrePostImage;
     IBOutlet AsyncImageView *asyVwOfPost;
     IBOutlet UIImageView *imgVwNavigation;
     IBOutlet UIImageView * imgVwBackground;

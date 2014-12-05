@@ -52,8 +52,10 @@
 
 @implementation CommentViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -71,9 +73,8 @@
 
     vwOfComment.backgroundColor = [UIColor colorWithRed:240/256.0f green:240/256.0f blue:240/256.0f alpha:1.0];
     tbleVwComment.backgroundColor = [UIColor clearColor];
-        //  [self.view sendSubviewToBack:tbleVwComment];
-
-        //[btnMoreTweet setBackgroundColor:[UIColor redColor]];
+    //  [self.view sendSubviewToBack:tbleVwComment];
+    //[btnMoreTweet setBackgroundColor:[UIColor redColor]];
     [self.view bringSubviewToFront:imgVwNavigation];
     [self.view bringSubviewToFront:lblHeading];
     [self.view bringSubviewToFront:btnRight];
@@ -81,15 +82,10 @@
 
     self.arryComment = [[NSMutableArray alloc]init];
     [tbleVwComment setBackgroundColor: [UIColor clearColor]];
-    
-    /*[self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];*/
 
     [Constant showNetworkIndicator];
 
     [btnLike addTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
-
     lblFavourite.text = self.userInfo.favourateCount;
     lblRetweet.text = self.userInfo.retweetCount;
 
@@ -122,7 +118,6 @@
     self.arryTaggedUser = [[NSMutableArray alloc]init];
 
     [self getLikeCountOfFb];
-    [self setLargeImageOfTwitter:self.userInfo];
 
 }
 
@@ -138,7 +133,6 @@
 
     self.navigationController.navigationBarHidden = YES;
     [self setHeadingAndRightBtn];
-        //[self giveCommentToInstagram];
     if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
         [self showUserTagged:nil];
     }
@@ -147,6 +141,11 @@
 
     [Constant showNetworkIndicator];
 }
+
+#pragma mark - Set heading anr right button title
+/**************************************************************************************************
+ Function to set heading anr right button title
+ **************************************************************************************************/
 
 - (void)setHeadingAndRightBtn {
 
@@ -157,24 +156,27 @@
         [btnRight setTitle:@"Post" forState:UIControlStateNormal];
         lblHeading.text = @"Facebook";
         strBtnTitle = @"Post";
+
         [self facebookConfiguration];
         [self fectchFBComment];
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
-
     } else if ([self.userInfo.strUserSocialType isEqualToString:@"Instagram"]) {
+
         [btnRight setTitle:@"Post" forState:UIControlStateNormal];
         lblHeading.text = @"Instagram";
         strBtnTitle = @"Post";
-        [self setCommentOfUser:self.userInfo];
+
+        [self setCommentOfpostDetail:self.userInfo];
         [self fetchInstagrameComment];
         [self instagramConfiguration];
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
-
     } else {
+
         [btnRight setTitle:@"Tweet" forState:UIControlStateNormal];
         lblHeading.text = @"Twitter";
         strBtnTitle = @"Tweet";
-        [self setCommentOfUser:self.userInfo];
+
+        [self setCommentOfpostDetail:self.userInfo];
         [self fetchRetewwtOfTwitter];
         [self twitterConfiguration];
 
@@ -182,10 +184,15 @@
     }
 }
 
+#pragma mark - Set tweets of post
+/**************************************************************************************************
+ Function tweets of post
+ **************************************************************************************************/
+
 - (void)fetchRetewwtOfTwitter {
 
-    NSString *strUrl1 = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/retweets/%@.json",self.userInfo.statusId];
-    NSURL *requestURL = [NSURL URLWithString:strUrl1];
+    NSString *strUrl = [NSString stringWithFormat:TWITTER_RETWEET,self.userInfo.statusId];
+    NSURL *requestURL = [NSURL URLWithString:strUrl];
     NSLog(@"%@", requestURL);
     SLRequest *timelineRequest = [SLRequest
                                   requestForServiceType:SLServiceTypeTwitter
@@ -194,16 +201,12 @@
 
     timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-    [timelineRequest performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error) {
+    [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse*urlResponse, NSError *error) {
 
          if (error) {
-
-                 //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
+            //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
              [Constant hideNetworkIndicator];
-
-             return ;
+             return;
          } else {
 
              NSArray *arryTwitte = [NSJSONSerialization
@@ -211,19 +214,18 @@
                                     options:NSJSONReadingMutableLeaves
                                     error:&error];
 
-             NSLog(@"%@", [error debugDescription]);
              if (arryTwitte.count != 0) {
                  dispatch_async(dispatch_get_main_queue(), ^{
 
-                 [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISTWITTERLOGIN];
-                 [[NSUserDefaults standardUserDefaults]synchronize];
-
+                //[[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISTWITTERLOGIN];
+                //[[NSUserDefaults standardUserDefaults]synchronize];
                 [self convertDataOfTwitterIntoModel:arryTwitte];
              });
              } else {
                   dispatch_async(dispatch_get_main_queue(), ^{
                       [Constant hideNetworkIndicator];
                           // [Constant showAlert:@"Message" forMessage:@"No Comment is there."];
+                       scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
                   });
              }
      }
@@ -231,6 +233,9 @@
 }
 
 #pragma mark - Convert data of twitter in to model class
+/**************************************************************************************************
+ Function to convert data of twitter in to model class
+ **************************************************************************************************/
 
 - (void)convertDataOfTwitterIntoModel:(NSArray *)arryPost {
 
@@ -245,16 +250,10 @@
             UserComment *usercomment =[[UserComment alloc]init];
             usercomment.userName = [postUserDetailDict valueForKey:@"name"];
             usercomment.userImg = [postUserDetailDict valueForKey:@"profile_image_url"];
-
-//            NSArray *arryMedia = [[dictData objectForKey:@"extended_entities"] objectForKey:@"media"];
-//
-//            if (arryMedia.count>0) {
-//                userInfo.strPostImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
-//            }
             usercomment.userComment = [dictData valueForKey:@"text"];
             usercomment.socialType = @"Twitter";
-            NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
-            usercomment.time = [Constant convertDateOFTweeter:strDate];
+            NSString *strDate = [Constant convertDateOfTwitterInDatabaseFormate:[dictData objectForKey:@"created_at"]];
+            usercomment.time = [Constant convertDateOFTwitter:strDate];
             [self.arryComment addObject:usercomment];
         }
     }
@@ -269,25 +268,10 @@
     [tbleVwComment reloadData];
 }
 
-#pragma mark - Convert date into "YYYY-dd-mm" formate
-
-- (NSString *)dateOfTwitter:(NSString *)createdDate {
-
-    NSString *strDateInDatabaseFormate;
-
-    NSString *strYear = [createdDate substringWithRange:NSMakeRange(createdDate.length-4, 4)];
-    NSString *strMonth = [createdDate substringWithRange:NSMakeRange(4, 3)];
-    NSString *strDate = [createdDate substringWithRange:NSMakeRange(8, 2)];
-
-    NSString *strTime = [createdDate substringWithRange:NSMakeRange(11, 8)];//14
-
-    NSString *finalDate = [NSString stringWithFormat:@"%@ %@ %@", strDate, strMonth, strYear];
-
-    strDateInDatabaseFormate = [NSString stringWithFormat:@"%@ %@", finalDate, strTime];
-
-    return strDateInDatabaseFormate;
-}
-
+#pragma mark - Fetch comment of instagram post
+/**************************************************************************************************
+ Function to fetch comment of instagram post
+ **************************************************************************************************/
 
 - (void)fetchInstagrameComment {
 
@@ -320,6 +304,11 @@
     [self convertDataOfInstagramIntoModelClass:arry];
 }
 
+#pragma mark - Convert data of instagram in to model class
+/**************************************************************************************************
+ Function to convert data of instagram in to model class
+ **************************************************************************************************/
+
 - (void)convertDataOfInstagramIntoModelClass:(NSArray *)arryOfInstagrame {
 
     if (arryOfInstagrame.count != 0) {
@@ -344,15 +333,11 @@
             NSDate *convertedDate = [NSDate dateWithTimeIntervalSince1970: interval];
             NSLog(@"Date = %@", convertedDate);
             userComment.time = [Constant convertDateOFInstagram:convertedDate];
-
-//            NSDictionary *dictImage = [dictData objectForKey:@"images"];
-//            userInfo.strPostImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
-//
-//            userInfo.type = [dictData objectForKey:@"type"];
-//            userInfo.strUserSocialType = @"Instagram";
-//            userInfo.statusId = [dictData objectForKey:@"id"];
-
             [self.arryComment addObject:userComment];
+
+//           NSDictionary *dictImage = [dictData objectForKey:@"images"];
+//           userInfo.strPostImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
+//           userInfo.type = [dictData objectForKey:@"type"];
         }
     }
 
@@ -365,6 +350,11 @@
     [Constant hideNetworkIndicator];
     [tbleVwComment reloadData];
 }
+
+#pragma mark - Fetch comment of fb post
+/**************************************************************************************************
+ Function to fetch comment of fb post
+ **************************************************************************************************/
 
 - (void)fectchFBComment {
 
@@ -391,6 +381,11 @@
                               }
                           }];
 }
+
+#pragma mark - Convert data of fb in to model class
+/**************************************************************************************************
+ Function to convert data of fb in to model class
+ **************************************************************************************************/
 
 - (void)convertDataOfFBComment:(NSArray *)arryPost {
 
@@ -423,7 +418,12 @@
     [tbleVwComment reloadData];
 }
 
-- (void)setCommentOfUser:(UserInfo *)objUserInfo {
+#pragma mark - set comment of post detail
+/**************************************************************************************************
+ Function to set comment of post detail
+ **************************************************************************************************/
+
+- (void)setCommentOfpostDetail:(UserInfo *)objUserInfo {
 
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
@@ -444,14 +444,13 @@
     } else {
         heightPostImg = rect.size.height+10;
     }
-        //imgVwBackground.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+
     if (objUserInfo.strPostImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
         asyVwOfPost.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
-        imgVwPostImage.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
+        imgVwLagrePostImage.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
         asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
-
         asyVwOfPost.backgroundColor = [UIColor clearColor];
 
         btnShowImageOrVideo.frame = asyVwOfPost.frame;
@@ -467,9 +466,7 @@
     }
 
     scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + 235));
-
     tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, 250);
-
     imgVwUser.frame = CGRectMake(10, imgVwBackground.frame.size.height+5 , 45, 45);
 
     if ([objUserInfo.type isEqualToString:@"video"]) {
@@ -479,6 +476,11 @@
         [self.view bringSubviewToFront:btnShowImageOrVideo];
     }
 }
+
+#pragma mark - Set frame of tageed user button with tagged user list
+/**************************************************************************************************
+ Function to set frame of tageed user button with tagged user list
+ **************************************************************************************************/
 
 - (int)setFramesOfTaggedUsers:(int)yAxis {
 
@@ -514,11 +516,21 @@
     return 30;
 }
 
+#pragma mark - Tagged user btn tapped
+/**************************************************************************************************
+ Function to show tagged user list
+ **************************************************************************************************/
+
 - (void)taggedUserBtnTapped {
 
     [vwTaggedUser setHidden:NO];
     [self.view bringSubviewToFront:vwTaggedUser];
 }
+
+#pragma mark - More btn tapped
+/**************************************************************************************************
+ Function to show option on more btn
+ **************************************************************************************************/
 
 - (IBAction)moreBtnTapped:(id)sender {
 
@@ -538,12 +550,19 @@
     }
 }
 
+#pragma mark - Block btn tapped
+/**************************************************************************************************
+ Function to block user with all post
+ **************************************************************************************************/
+
 - (IBAction)blockTweetPost:(id)sender {
 
     NSString *strUser = [NSString stringWithFormat:@"Are you sure to block @%@ ?", self.userInfo.strUserName];
     UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Block" message:strUser delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Block", nil];
     [alertVw show];
 }
+
+#pragma mark - UIAlert view Delegates
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
 
@@ -556,7 +575,7 @@
     NSDictionary *param = @{@"screen_name":self.userInfo.screenName,
                             @"skip_status":@"1"};
 
-    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/blocks/create.json"];
+    NSString *strFavourateUrl = [NSString stringWithFormat:TWITTER_BLOCK_USER];
     NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
     SLRequest *timelineRequest = [SLRequest
                                   requestForServiceType:SLServiceTypeTwitter
@@ -565,9 +584,7 @@
 
     timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-    [timelineRequest performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error)
+    [timelineRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse*urlResponse, NSError *error)
      {
        NSLog(@"%@ !#" , [error description]);
        id result = [NSJSONSerialization
@@ -586,6 +603,11 @@
      }];
 }
 
+#pragma mark - Mute btn tapped
+/**************************************************************************************************
+ Function to mute twitter user
+ **************************************************************************************************/
+
 - (IBAction)muteTwitterUser:(id)sender {
 
     NSNumber * myNumber =[NSNumber numberWithLongLong:[self.userInfo.fromId longLongValue]];
@@ -601,11 +623,8 @@
 
     timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-    [timelineRequest performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error)
-     {
-       NSLog(@"%@ !#" , [error description]);
+    [timelineRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse*urlResponse, NSError *error) {
+
       id result = [NSJSONSerialization
                               JSONObjectWithData:responseData
                               options:NSJSONReadingMutableLeaves
@@ -614,7 +633,6 @@
 
        if (![result isKindOfClass:[NSDictionary class]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-
                        //https://api.twitter.com/1.1/mutes/users/destroy.json
                });
            } else {
@@ -622,6 +640,11 @@
            }
      }];
 }
+
+#pragma mark - Dlete post of fb
+/**************************************************************************************************
+ Function to delete post of fb
+ **************************************************************************************************/
 
 - (IBAction)deleteFBComment:(id)sender {
     
@@ -650,6 +673,7 @@
                                       NSLog(@"%@", result);
                                       [self.navigationController popViewControllerAnimated:YES];
                                   } else {
+
                                        [Constant showAlert:@"Message" forMessage:@"You can only delete those post, which are post by app."];
                                   }
                               }];
@@ -657,8 +681,7 @@
     }];
 }
 
-
-
+/*
 - (IBAction)sharePost:(id)sender {
 
     NSMutableDictionary *params;
@@ -701,29 +724,25 @@
          }
      }];
 }
+ */
+
+#pragma mark - User profile btn tapped
+/**************************************************************************************************
+ Function to show user profile
+ **************************************************************************************************/
 
 - (IBAction)userProfileBtnTapped:(id)sender{
 
-    if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"])  {
-
-//        UIButton *btn = (UIButton *)sender;
-//        UserInfo *otherUserInfo = [[UserInfo alloc]init];
-//        otherUserInfo.strUserName = btn.titleLabel.text;
-//        otherUserInfo.fromId  = [NSString stringWithFormat:@"%i", btn.tag];
-//        otherUserInfo.strUserSocialType = @"Facebook";
-        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
-        vwController.userInfo = self.userInfo;
-        [self.navigationController pushViewController:vwController animated:YES];
-    } else if ([self.userInfo.strUserSocialType isEqualToString:@"Twitter"])  {
-
-        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
-        vwController.userInfo = self.userInfo;
-        [self.navigationController pushViewController:vwController animated:YES];
-    }
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+    vwController.userInfo = self.userInfo;
+    [self.navigationController pushViewController:vwController animated:YES];
 }
 
+#pragma mark - Set frames of activity
+/**************************************************************************************************
+ Function to frame of activities
+ **************************************************************************************************/
 
 - (void)setFrameOfActivityView:(NSInteger)yAxis {
 
@@ -734,7 +753,6 @@
     [imgVwOfLikeFb setFrame:CGRectMake(imgVwOfLikeFb.frame.origin.x, yAxis, 20, 21)];
     [btnCommentFb setFrame:CGRectMake(btnCommentFb.frame.origin.x, yAxis+2,  btnCommentFb.frame.size.width,  btnCommentFb.frame.size.height)];
     [btnLike setFrame:CGRectMake(btnLike.frame.origin.x, yAxis+2, btnLike.frame.size.width, btnLike.frame.size.height)];
-        // [lblLikeCount setFrame:CGRectMake(lblLikeCount.frame.origin.x, yAxis+2, lblLikeCount.frame.size.width, lblLikeCount.frame.size.height)];
     [lblFBOrInstCommentCount setFrame:CGRectMake(lblFBOrInstCommentCount.frame.origin.x, yAxis+2, lblFBOrInstCommentCount.frame.size.width, lblFBOrInstCommentCount.frame.size.height)];
     [lblFBOrInstLikeCount setFrame:CGRectMake(lblFBOrInstLikeCount.frame.origin.x, yAxis+2, lblFBOrInstLikeCount.frame.size.width, lblFBOrInstLikeCount.frame.size.height)];
     [btnShare setFrame:CGRectMake(btnShare.frame.origin.x, yAxis, btnShare.frame.size.width, btnShare.frame.size.height)];
@@ -748,32 +766,22 @@
     [btnReply setFrame:CGRectMake(btnReply.frame.origin.x, yAxis, btnReply.frame.size.width, btnReply.frame.size.height)];
     [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x, yAxis,  btnRetweet.frame.size.width,  btnRetweet.frame.size.height)];
     [btnMoreTweet setFrame:CGRectMake(btnMoreTweet.frame.origin.x, yAxis,  btnMoreTweet.frame.size.width,  btnMoreTweet.frame.size.height)];
-
 }
 
+#pragma mark - Cancel btn tapped
+/**************************************************************************************************
+ Function to cancel view
+ **************************************************************************************************/
 
 - (IBAction)cancelBtnTapped:(id)sender {
 
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)setLargeImageOfTwitter:(UserInfo *)userInfo {
-
-    dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(postImageQueue, ^{
-        NSData *imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userInfo.strPostImg]];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-
-            if (imageData != nil) {
-                    //asyVwOfPost.hidden = YES;
-                    //imgVwPostImage.hidden = NO;
-
-                    //imgVwPostImage.image = [UIImage imageWithData:imageData];
-            }
-        });
-    });
-}
+#pragma mark - Profile pic of post user
+/**************************************************************************************************
+ Function to set profile pic of post user
+ **************************************************************************************************/
 
 - (void)setProfilePicOfPostUser:(UserInfo *)userInfo  {
 
@@ -790,20 +798,26 @@
                 imgVwPostUser.image = imgProfile;
             });
         });
-    }
+    } else {
 
-    dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(postImageQueue, ^{
-        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userInfo.strUserImg]];
+        dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(postImageQueue, ^{
+            NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userInfo.strUserImg]];
 
-        dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
 
-            UIImage *img = [UIImage imageWithData:image];
-            UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"list-mask.png"]];
-            imgVwPostUser.image = imgProfile;
+                UIImage *img = [UIImage imageWithData:image];
+                UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"list-mask.png"]];
+                imgVwPostUser.image = imgProfile;
+            });
         });
-    });
+    }
 }
+
+#pragma mark - Profile pic of login user
+/**************************************************************************************************
+ Function to set profile pic of login user
+ **************************************************************************************************/
 
 - (void)setProfilePic:(UserInfo *)userInfo  {
 
@@ -875,6 +889,8 @@
     return cell;
 }
 
+#pragma mark - UITable view Delegates
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if (tableView == tbleVwComment) {
@@ -904,6 +920,11 @@
     }
 }
 
+#pragma mark - Set facebook configuration
+/**************************************************************************************************
+ Function to set facebook configuration
+ **************************************************************************************************/
+
 - (void)facebookConfiguration {
 
     [imgVwOfComentFb setHidden:NO];
@@ -916,6 +937,11 @@
     [btnMoreTweet setHidden:NO];
 }
 
+#pragma mark - Set twitter configuration
+/**************************************************************************************************
+ Function to set twitter configuration
+ **************************************************************************************************/
+
 - (void)twitterConfiguration  {
 
     [lblFavourite setHidden:NO];
@@ -925,6 +951,11 @@
     [btnReply setHidden:NO];
     [btnMoreTweet setHidden:NO];
 }
+
+#pragma mark - Set instagram configuration
+/**************************************************************************************************
+ Function to set instagram configuration
+ **************************************************************************************************/
 
 - (void)instagramConfiguration  {
 
@@ -939,6 +970,11 @@
     lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%@",self.userInfo.instagramLikeCount];
 }
 
+#pragma mark - Show more tagged user
+/**************************************************************************************************
+ Function to show more tagged user
+ **************************************************************************************************/
+
 - (void)showUserTagged:(id)sender {
 
     NSString *strUrl = [NSString stringWithFormat:@"/%@/tags",self.userInfo.objectIdFB];
@@ -952,19 +988,24 @@
                                               NSError *error
                                               ) {
                               if (error) {
-                                  NSLog(@"%2@", [error debugDescription]);
-                                  [self setCommentOfUser:self.userInfo];
+                                  NSLog(@"%@", [error debugDescription]);
+                                  [self setCommentOfpostDetail:self.userInfo];
                               } else  {
                                   NSLog(@"%@", result);
                                   nextTagedUrl = [[result objectForKey:@"paging"]valueForKey:@"next"];
                                   NSArray *arry = [result objectForKey:@"data"];
                                   [self.arryTaggedUser removeAllObjects];
                                   [self getTaggedUser:arry];
-                                  [self setCommentOfUser:self.userInfo];
+                                  [self setCommentOfpostDetail:self.userInfo];
 
                               }
                           }];
 }
+
+#pragma mark - Convert tagged user data in to model class
+/**************************************************************************************************
+ Function to convert tagged user data in to model class
+ **************************************************************************************************/
 
 - (void)getTaggedUser:(NSArray *)arryUser {
 
@@ -983,6 +1024,11 @@
 
     [tbleVwTaggedUser reloadData];
 }
+
+#pragma mark - More tagged user
+/**************************************************************************************************
+ Function to get more user
+ **************************************************************************************************/
 
 - (void)getMoreTaggedUser {
 
@@ -1030,8 +1076,8 @@
 
         } else {
             asyVwOfPost.hidden = YES;
-            imgVwPostImage.hidden = NO;
-            imgVwPostImage.image = image;
+            imgVwLagrePostImage.hidden = NO;
+            imgVwLagrePostImage.image = image;
         }
 
     } else {
@@ -1041,6 +1087,11 @@
         [self getTaggedUser:[result objectForKey:@"data"]];
     }
 }
+
+#pragma mark - Like fb post
+/**************************************************************************************************
+ Function to like fb post
+ **************************************************************************************************/
 
 - (IBAction)likePost:(id)sender {
 
@@ -1075,6 +1126,54 @@
     }];
 }
 
+
+#pragma mark - Unlike fb
+/**************************************************************************************************
+ Function to  unlike fb
+ **************************************************************************************************/
+
+- (void)unlikedPost {
+
+    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
+    NSArray *writePermissions = @[@"publish_stream", @"publish_actions"];
+    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
+        sharedAppDelegate.fbSession = session;
+
+        NSString *strUrl = [NSString stringWithFormat:@"/%@/likes",self.userInfo.objectIdFB];
+
+        [FBRequestConnection startWithGraphPath:strUrl
+                                     parameters:nil
+                                     HTTPMethod:@"DELETE"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+                                  if (error){
+
+                                  } else {
+                                      NSLog(@"**unliked**");
+                                      [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+                                              // animate it to the identity transform (100% scale)
+                                          imgVwOfLikeFb.transform = CGAffineTransformIdentity;
+                                      } completion:^(BOOL finished){
+                                          imgVwOfLikeFb.image = [UIImage imageNamed:@"Liked.png"];
+                                      }];
+
+                                      [btnLike setTitle:@"Like" forState:UIControlStateNormal];
+                                      btnLike.titleLabel.textColor = [UIColor lightGrayColor];
+                                      [btnLike removeTarget:self action:@selector(unlikedPost) forControlEvents:UIControlEventTouchUpInside];
+                                      [btnLike addTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
+                                  }
+                              }];
+    }];
+}
+
+#pragma mark - Get fb post like count
+/**************************************************************************************************
+ Function to get fb post like count
+ **************************************************************************************************/
+
 - (void)getLikeCountOfFb {
 
     NSDictionary *dictMessage = @{@"summary": @"true"};
@@ -1096,12 +1195,12 @@
     }];
 }
 
-/*
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 
-    [vwTaggedUser setHidden:YES]; //hide on tapped any where
+    [btnDelete setHidden:YES]; //hide on tapped any where
 
-    if ([self.userInfo.type isEqualToString:@"video"]) {
+ /*   if ([self.userInfo.type isEqualToString:@"video"]) {
 
         [self playBtnTapped:nil];
         return;
@@ -1123,11 +1222,11 @@
         } else {
             [btnBlock setHidden:YES];
         }
-    }
+    }*/
 }
 
 
-- (void)touchesMoved: (NSSet *)touches withEvent: (UIEvent *) event {
+/*- (void)touchesMoved: (NSSet *)touches withEvent: (UIEvent *) event {
 
     NSLog(@"touch move ** ");
 
@@ -1168,6 +1267,9 @@
     [lblWith setHidden:NO];
 }
 */
+
+#pragma mark - show Like count
+
 - (void)likeUserList:(NSString*)strCount {
 
     lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%lld", strCount.longLongValue];
@@ -1188,6 +1290,11 @@
 
 }
 
+#pragma mark - Play btn tapped
+/**************************************************************************************************
+ Function to play video
+ **************************************************************************************************/
+
 - (IBAction)playBtnTapped:(id)sender {
 
     UIStoryboard *storyBoard = [UIStoryboard  storyboardWithName:@"Main" bundle:nil];
@@ -1196,6 +1303,10 @@
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
+#pragma mark - Retweet btn tapped or not
+/**************************************************************************************************
+ Function to check retweet btn tapped or not
+ **************************************************************************************************/
 
 - (IBAction)retweetBtnPressOrNot:(id)sender {
 
@@ -1209,6 +1320,11 @@
     }
 }
 
+#pragma mark - Favourite btn tapped or not
+/**************************************************************************************************
+ Function to check favourite btn tapped or not
+ **************************************************************************************************/
+
 - (IBAction)favouriteBtnPressOrNot:(id)sender {
 
     NSData *data1 = UIImagePNGRepresentation(btnFavourite.imageView.image);
@@ -1221,9 +1337,14 @@
     }
 }
 
+#pragma mark - Retweet on twitter
+/**************************************************************************************************
+ Function to retweet on twitter
+ **************************************************************************************************/
+
 - (void)retweetOnTwitter:(id)sender {
 
-    NSString *strRetweet = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/retweet/%@.json", self.userInfo.statusId];
+    NSString *strRetweet = [NSString stringWithFormat:TWITTER_CREATE_RETWEERT, self.userInfo.statusId];
         //api.twitter.com/1.1/statuses/update.json"];
 
     NSURL *requestURL = [NSURL URLWithString:strRetweet];
@@ -1234,10 +1355,8 @@
 
     timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-    [timelineRequest performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error)
-     {
+    [timelineRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse*urlResponse, NSError *error) {
+
        NSLog(@"%@ !#" , [error description]);
        NSArray *arryTwitte = [NSJSONSerialization
                               JSONObjectWithData:responseData
@@ -1261,8 +1380,7 @@
                });
            } else {
                dispatch_async(dispatch_get_main_queue(), ^{
-
-                       //[Constant showAlert:@"Message" forMessage:@"Error to retweet"];
+                    //[Constant showAlert:@"Message" forMessage:@"Error to retweet"];
                    [Constant hideNetworkIndicator];
                });
            }
@@ -1270,9 +1388,14 @@
      }];
 }
 
+#pragma mark - Remove retweet on twitter
+/**************************************************************************************************
+ Function to remove retweet on twitter
+ **************************************************************************************************/
+
 - (void)deleteRetweet:(id)sende {
 
-    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/destroy/%@.json",self.userInfo.statusId];
+    NSString *strFavourateUrl = [NSString stringWithFormat:TWITTER_DELETE_RETWEET ,self.userInfo.statusId];
 
     NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
     SLRequest *timelineRequest = [SLRequest
@@ -1307,6 +1430,11 @@
        }
      }];
 }
+
+#pragma mark - Favourite on twitter
+/**************************************************************************************************
+ Function to favourite on twitter
+ **************************************************************************************************/
 
 - (void)favouriteOnTwitterPost:(id)sender {
 
@@ -1359,6 +1487,11 @@
      }];
 }
 
+#pragma mark - Delete favourite on twitter
+/**************************************************************************************************
+ Function to delete favourite on twitter
+ **************************************************************************************************/
+
 - (void)deleteFavouriteOnTwitterPost:(id)sender {
 
     NSDictionary *param = @{@"id": self.userInfo.statusId};
@@ -1398,42 +1531,7 @@
      }];
 }
 
-- (void)unlikedPost {
 
-    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
-    NSArray *writePermissions = @[@"publish_stream", @"publish_actions"];
-    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
-        sharedAppDelegate.fbSession = session;
-
-        NSString *strUrl = [NSString stringWithFormat:@"/%@/likes",self.userInfo.objectIdFB];
-
-    [FBRequestConnection startWithGraphPath:strUrl
-                                 parameters:nil
-                                 HTTPMethod:@"DELETE"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              if (error){
-
-                              } else {
-                                  NSLog(@"**unliked**");
-                                  [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-                                          // animate it to the identity transform (100% scale)
-                                      imgVwOfLikeFb.transform = CGAffineTransformIdentity;
-                                  } completion:^(BOOL finished){
-                                      imgVwOfLikeFb.image = [UIImage imageNamed:@"Liked.png"];
-                                  }];
-
-                                  [btnLike setTitle:@"Like" forState:UIControlStateNormal];
-                                  btnLike.titleLabel.textColor = [UIColor lightGrayColor];
-                                  [btnLike removeTarget:self action:@selector(unlikedPost) forControlEvents:UIControlEventTouchUpInside];
-                                  [btnLike addTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
-                              }
-                          }];
-    }];
-}
 /*
 #pragma mark - Navigation
 
@@ -1445,6 +1543,11 @@
 }
 */
 
+#pragma mark - Post comment on post in fb and twitter
+/**************************************************************************************************
+ Function to post comment on post in fb and twitter
+ **************************************************************************************************/
+
 - (IBAction)giveCommentByUser:(id)sender {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -1452,6 +1555,11 @@
     viewController.userInfo = self.userInfo;
     [[self navigationController] pushViewController:viewController animated:YES];
 }
+
+#pragma mark - Get large image of facebook
+/**************************************************************************************************
+ Function to get large image of facebook
+ **************************************************************************************************/
 
 - (void)getLargeImageOfFacebook {
 

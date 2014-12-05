@@ -33,6 +33,17 @@
 #define TWITTER_MENTION_URL     @"https://api.twitter.com/1.1/statuses/mentions_timeline.json"
 #define TWITTER_USER_PROFILE    @"https://api.twitter.com/1.1/account/verify_credentials.json"
 #define TWITTER_USER_OWN_STATUS @"https://api.twitter.com/1.1/statuses/user_timeline.json"
+#define TWITTER_FRIEND_DESTROY  @"https://api.twitter.com/1.1/friendships/destroy.json"
+#define TWITTER_FRIEND_CREATE   @"https://api.twitter.com/1.1/friendships/create.json"
+#define TWITTER_POST_URL        @"https://api.twitter.com/1.1/statuses/update.json"
+#define TWITTER_POST_IMAGE      @"https://api.twitter.com/1.1/statuses/update_with_media.json"
+#define TWITTER_FOLLOWERS       @"https://api.twitter.com/1.1/followers/list.json"
+#define TWITTER_FRIEND          @"https://api.twitter.com/1.1/friends/list.json"
+#define TWITTER_RETWEET         @"https://api.twitter.com/1.1/statuses/retweets/%@.json"
+#define TWITTER_BLOCK_USER      @"https://api.twitter.com/1.1/blocks/create.json"   
+#define TWITTER_CREATE_RETWEERT @"https://api.twitter.com/1.1/statuses/retweet/%@.json"
+#define TWITTER_DELETE_RETWEET  @"https://api.twitter.com/1.1/statuses/destroy/%@.json"
+#define TWITTER_SEACH           @"https://api.twitter.com/1.1/users/search.json"
 
 #define ISFBLOGIN       @"FacebookLogin"
 #define ISTWITTERLOGIN  @"TwitterLogin"
@@ -44,7 +55,7 @@
     //
 #define APP_ID @"08b82c71973148ffbc52cb6e75102721"//b8d2f232eddb4593b9f333ddfe8bb876"//08b82c71973148ffbc52cb6e75102721
 #define IS_IOS7	(([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) ? YES : NO)
-
+#define FB_APP_ID @"1544707672409931"
 #define sharedAppDelegate ((AppDelegate*)[[UIApplication sharedApplication] delegate])
 
 #endif

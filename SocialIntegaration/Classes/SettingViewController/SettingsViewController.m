@@ -19,6 +19,8 @@
 
 @implementation SettingsViewController
 
+#pragma mark - View life cycle
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -44,8 +46,8 @@
     [self userLoginOrNot];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -76,6 +78,8 @@
     self.navigationController.navigationBarHidden = NO;
 }
 
+#pragma mark - User Login or not
+
 - (void)userLoginOrNot {
 
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
@@ -89,7 +93,7 @@
             [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISFBLOGIN];
             [[NSUserDefaults standardUserDefaults]synchronize];
             [UserProfile deleteProfile:@"Facebook"];
-            [sharedAppDelegate.spinner hide:YES];
+            [Constant hideNetworkIndicator];
             return;
         }
         UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
@@ -114,7 +118,8 @@
             [[NSUserDefaults standardUserDefaults]synchronize];
             [UserProfile deleteProfile:@"Twitter"];
 
-            [sharedAppDelegate.spinner hide:YES];
+            [Constant hideNetworkIndicator];
+
             return;
         }
         [self hideTwitterBtn:YES];
@@ -143,6 +148,10 @@
     }
 }
 
+#pragma mark - Hide Twitter btn
+/**************************************************************************************************
+ Function to hide twitter btn
+ **************************************************************************************************/
 
 - (void)hideTwitterBtn:(BOOL)isLogin {
 
@@ -161,6 +170,11 @@
      }
 }
 
+#pragma mark - Hide facebook btn
+/**************************************************************************************************
+ Function to hide facebook btn
+ **************************************************************************************************/
+
 - (void)hideFBBtn:(BOOL)isLogin {
 
     if (isLogin == YES) {
@@ -177,6 +191,11 @@
         lblFBName.hidden = YES;
     }
 }
+
+#pragma mark - Hide instagram btn
+/**************************************************************************************************
+ Function to hide instagram btn
+ **************************************************************************************************/
 
 - (void)hideInstagramBtn:(BOOL)isLogin {
 
@@ -195,6 +214,11 @@
     }
 }
 
+#pragma mark - Add Gesture on fb view
+/**************************************************************************************************
+ Function to add gesture on fb view
+ **************************************************************************************************/
+
 - (void)addGestureOnFbView {
 
     UISwipeGestureRecognizer * swiperight = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeHandle:)];
@@ -205,6 +229,11 @@
     swipeleft.direction=UISwipeGestureRecognizerDirectionLeft;
     [vwFB addGestureRecognizer:swipeleft];
 }
+
+#pragma mark - Add Gesture on twitter view
+/**************************************************************************************************
+ Function to add gesture on twitter view
+ **************************************************************************************************/
 
 - (void)addGestureOnTwitterView {
 
@@ -217,6 +246,10 @@
     [vwTwitter addGestureRecognizer:swipeleftTweet];
 }
 
+#pragma mark - Facebook btn tapped
+/**************************************************************************************************
+ Function to facebook btn tapped
+ **************************************************************************************************/
 
 - (IBAction)facebookBtnTapped:(id)sender {
 
@@ -224,6 +257,7 @@
     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
     [sharedAppDelegate.spinner show:YES];*/
 
+    [Constant showNetworkIndicator];
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
@@ -232,7 +266,8 @@
                                               cancelButtonTitle:NSLocalizedString(@"OK", @"")
                                               otherButtonTitles:nil];
         [alert show];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
+
         return;
     }
 
@@ -241,7 +276,8 @@
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB_SETTING];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISFBLOGIN];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
+
         return;
     } else {
 
@@ -256,6 +292,9 @@
 }
 
 #pragma mark - Login with facebook
+/**************************************************************************************************
+ Function to login on facebook
+ **************************************************************************************************/
 
 - (void)loginFacebook {
 
@@ -266,7 +305,7 @@
                                       if (error) {
 
                                           sharedAppDelegate.hasFacebook = NO;
-                                          [sharedAppDelegate.spinner hide:YES];
+                                          [Constant hideNetworkIndicator];
                                       } else {
 
                                           sharedAppDelegate.fbSession = session;
@@ -280,7 +319,10 @@
 		                          }];
 }
 
-#pragma mark - Get news feed of facebook
+#pragma mark - Get user facebook profile info
+/**************************************************************************************************
+ Function to get user facebook profile info
+ **************************************************************************************************/
 
 - (void)getProfileOfFB {
 
@@ -297,7 +339,7 @@
 		if (error) {
 
                 //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-            [sharedAppDelegate.spinner hide:YES];
+            [Constant hideNetworkIndicator];
 		} else {
 
             NSDictionary *dictInfo = (NSDictionary *)result;
@@ -306,7 +348,10 @@
 	}];
 }
 
-#pragma mark - Get Profile image
+#pragma mark - Get profile image
+/**************************************************************************************************
+ Function to get  profile image
+ **************************************************************************************************/
 
 - (void)getProfileImg:(NSDictionary *)userInfo {
 
@@ -325,6 +370,9 @@
 }
 
 #pragma mark - Convert profile into model class object
+/**************************************************************************************************
+ Function to convert profile into model class object
+ **************************************************************************************************/
 
 - (void)convertFBUserInfoInModel:(NSDictionary *)dictInfo withProfileImg:(NSString *)strProfileImg {
     
@@ -338,7 +386,10 @@
     [userProfile saveUserProfile];
 }
 
-#pragma mark - Show user profilr info
+#pragma mark - Show user profile info
+/**************************************************************************************************
+ Function to convert profile into model class object
+ **************************************************************************************************/
 
 - (void)setFBUserInfo:(UserProfile*)userProfile {
 
@@ -346,7 +397,7 @@
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
     [self hideFBBtn:isFbUserLogin];
 
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
 
     lblFBName.text = userProfile.userName;
 
@@ -363,6 +414,11 @@
     });
 }
 
+#pragma mark - Swipe on view
+/**************************************************************************************************
+ Function to handle swipe on view
+ **************************************************************************************************/
+
 - (void)swipeHandle:(UISwipeGestureRecognizer *)swipeRecognizer {
 
     if (swipeRecognizer.direction == UISwipeGestureRecognizerDirectionRight) {
@@ -378,12 +434,14 @@
     }
 }
 
+#pragma mark - Twitter btn tapped
+/**************************************************************************************************
+ Function to twitter btn tapped
+ **************************************************************************************************/
+
 - (IBAction)twitterBtnTapped:(id)sender {
 
-    [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
-
+    [Constant showNetworkIndicator];
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
@@ -392,7 +450,7 @@
                                               cancelButtonTitle:NSLocalizedString(@"OK", @"")
                                               otherButtonTitles:nil];
         [alert show];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
         return;
     }
 
@@ -401,7 +459,7 @@
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER_SETTING];
         [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISTWITTERLOGIN];
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
         return;
     } else {
 
@@ -464,6 +522,11 @@
     }
 }
 
+#pragma mark - Twitter btn tapped
+/**************************************************************************************************
+ Function to twitter btn tapped
+ **************************************************************************************************/
+
 - (void)convertTwitterProfileInfo:(NSDictionary *)dictData {
 
     UserProfile *userProfile = [[UserProfile alloc]init];
@@ -479,6 +542,11 @@
     [userProfile saveUserProfile];
 }
 
+#pragma mark - Set twitter user info
+/**************************************************************************************************
+ Function to set twitter user info
+ **************************************************************************************************/
+
 - (void)setTwitterUserInfo:(UserProfile*)userProfile {
 
     [self addGestureOnTwitterView];
@@ -486,7 +554,7 @@
     BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
     [self hideTwitterBtn:isTwitterUserLogin];
 
-    [sharedAppDelegate.spinner hide:YES];
+    [Constant hideNetworkIndicator];
 
     lblTwitterName.text = userProfile.userName;
 
@@ -503,6 +571,11 @@
     });
 }
 
+#pragma mark - Handle swipe on twitter
+/**************************************************************************************************
+ Function to handle swipe on twitter
+ **************************************************************************************************/
+
 - (void)swipeHandleOfTwitter:(UISwipeGestureRecognizer *)swipeRecognizer {
 
     if (swipeRecognizer.direction == UISwipeGestureRecognizerDirectionRight) {
@@ -517,7 +590,11 @@
         btnTwitter.frame =  CGRectMake(-60, btnTwitter.frame.origin.y, 60, 173);
     }
 }
+
 #pragma amrk - Instagram btn tapped
+/**************************************************************************************************
+ Function to instagram btn tapped
+ **************************************************************************************************/
 
 - (IBAction)instagramBtnTapped:(id)sender {
 
@@ -532,11 +609,9 @@
         return;
     }
 
-    [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];
+    [Constant showNetworkIndicator];
 
-        // here i can set accessToken received on previous login
+    // here i can set accessToken received on previous login
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     sharedAppDelegate.instagram.sessionDelegate = self;
     NSLog(@"%@",  sharedAppDelegate.InstagramId);
@@ -558,7 +633,7 @@
 //        return;
     } else {
 
-        [sharedAppDelegate.spinner hide:YES];
+        [Constant hideNetworkIndicator];
         UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
         [alertVw show];
     }
@@ -659,7 +734,10 @@
     [self convertInstagramProfileData:[result objectForKey:@"data"]];
 }
 
-#pragma mark - Convert profile Info
+#pragma mark - Convert profile Info of instagram
+/**************************************************************************************************
+ Function to convert profile Info of instagram
+ **************************************************************************************************/
 
 - (void)convertInstagramProfileData:(NSDictionary *)dictInfo {
 
@@ -684,17 +762,27 @@
     }
 }
 
+#pragma mark - Back btn tapped
+/**************************************************************************************************
+ Function to back btn tapped
+ **************************************************************************************************/
+
 - (IBAction)backBtnTapped:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+#pragma mark - Set instagram user info
+/**************************************************************************************************
+ Function to set instagram user info
+ **************************************************************************************************/
+
 - (void)setInstagramUserInfo:(UserProfile*)userProfile {
 
     [self addGestureOnInstagram];
     BOOL isInstagramUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
     [self hideInstagramBtn:isInstagramUserLogin];
 
-    [sharedAppDelegate.spinner hide:YES];
-
+    [Constant hideNetworkIndicator];
     lblInstagramName.text = userProfile.userName;
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -709,6 +797,8 @@
         });
     });
 }
+
+#pragma mark - Add gesture on instagram
 
 - (void)addGestureOnInstagram {
 
@@ -736,6 +826,11 @@
     }
 }
 
+#pragma mark - Delete fb account from setting
+/**************************************************************************************************
+ Function to delete fb account from setting
+ **************************************************************************************************/
+
 - (IBAction)deleteFBAccout:(id)sender {
 
     [UserProfile deleteProfile:@"Facebook"];
@@ -748,6 +843,11 @@
         btnFb.frame =  CGRectMake(-60, btnFb.frame.origin.y, 60, 173);
     }];
 }
+
+#pragma mark - Delete twitter account from setting
+/**************************************************************************************************
+ Function to delete twitter account from setting
+ **************************************************************************************************/
 
 - (IBAction)deleteTwitterAccout:(id)sender {
 
@@ -762,6 +862,11 @@
         btnTwitter.frame =  CGRectMake(-60, btnTwitter.frame.origin.y, 60, 173);
     }];
 }
+
+#pragma mark - Delete instagram account from setting
+/**************************************************************************************************
+ Function to delete instagram account from setting
+ **************************************************************************************************/
 
 - (IBAction)deleteInstagramAccout:(id)sender {
 

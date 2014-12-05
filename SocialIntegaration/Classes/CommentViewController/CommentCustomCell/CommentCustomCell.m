@@ -56,6 +56,8 @@
     }
 }
 
+#pragma mark - profile image of twitter user
+
 - (void)setProfileImageOfTwitterAndInstagram:(UserComment *)objUserComent {
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -70,6 +72,8 @@
         });
     });
 }
+
+#pragma mark - Get profile image of Fb user
 
 - (void)setProfileImageOfFb:(UserComment *)objUserComent {
 

@@ -14,6 +14,8 @@
 
 @implementation FeedPagesViewController
 
+#pragma mark - View life cycle
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
 
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -75,6 +77,8 @@
 
     [self performSelector:@selector(showPageControlOfTimeline) withObject:nil afterDelay:0.1];
 }
+
+#pragma mark - Show page control on timeline
 
 - (void)showPageControlOfTimeline {
 

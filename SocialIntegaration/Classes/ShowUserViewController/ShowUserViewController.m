@@ -20,8 +20,10 @@
 
 @implementation ShowUserViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -29,8 +31,8 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+
     [super viewDidLoad];
     
     self.navigationController.navigationBar.hidden = NO;
@@ -50,19 +52,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void) removeUISearchBarBackgroundInViewHierarchy:(UIView *)view
-{
-    for (UIView *subview in [view subviews]) {
-        if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
-            [subview removeFromSuperview];
-            break; //To avoid an extra loop as there is only one UISearchBarBackground
-        } else {
-            [self removeUISearchBarBackgroundInViewHierarchy:subview];
-        }
-    }
-}
-
 - (void)viewWillAppear:(BOOL)animated {
+
+    [self viewWillAppear:animated];
 
     if (self.strSearchText.length != 0) {
 
@@ -74,9 +66,29 @@
             [self searchOnInstagram:self.strSearchText];
         }
     }
-
 }
 
+#pragma mark - Remove background of search bar
+/**************************************************************************************************
+ Function to remove search bar background
+ **************************************************************************************************/
+
+- (void) removeUISearchBarBackgroundInViewHierarchy:(UIView *)view {
+    
+    for (UIView *subview in [view subviews]) {
+        if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
+            [subview removeFromSuperview];
+            break; //To avoid an extra loop as there is only one UISearchBarBackground
+        } else {
+            [self removeUISearchBarBackgroundInViewHierarchy:subview];
+        }
+    }
+}
+
+#pragma mark - Search on instagram
+/**************************************************************************************************
+ Function to search on instagram
+ **************************************************************************************************/
 
 - (void)searchOnInstagram:(NSString *)strName {
 
@@ -148,6 +160,7 @@
 
     NSLog(@"Instagram session was invalidated");
 }
+
 #pragma mark - IGRequestDelegate
 
 - (void)request:(IGRequest *)request didFailWithError:(NSError *)error {
@@ -168,6 +181,11 @@
     NSLog(@"Instagram did load: %@", result);
     [Constant hideNetworkIndicator];
 }
+
+#pragma mark - Convert data of instagram
+/**************************************************************************************************
+ Function to convert data of instagram
+ **************************************************************************************************/
 
 - (void)convertInstagramData:(NSArray *)arry {
 
@@ -205,6 +223,11 @@
     [self.tbleVwUser reloadData];
 }
 
+#pragma mark - Search on twitter
+/**************************************************************************************************
+ Function to search on twitter
+ **************************************************************************************************/
+
 - (void)searchFriendOnTwitter:(NSString *)strKeyword {
 
         //  NSString *strKey = [strKeyword strin]
@@ -226,7 +249,7 @@
     }
 
     NSDictionary *param = @{@"q":strKey};
-    NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/users/search.json"];
+    NSURL *requestURL = [NSURL URLWithString:TWITTER_SEACH];
     SLRequest *timelineRequest = [SLRequest
                                   requestForServiceType:SLServiceTypeTwitter
                                   requestMethod:SLRequestMethodGET
@@ -270,6 +293,11 @@
      }];
 }
 
+#pragma mark - Convert data of twitter
+/**************************************************************************************************
+ Function to convert data of twitter
+ **************************************************************************************************/
+
 - (void)convertTwitterUsersListIntoModels:(NSArray *)arryUser {
 
      [self.arrySearchUserList removeAllObjects];
@@ -304,6 +332,11 @@
     [Constant hideNetworkIndicator];
 }
 
+#pragma mark - Search on fb
+/**************************************************************************************************
+ Function to search on fb
+ **************************************************************************************************/
+
 - (void)searchFriendOnFb:(NSString *)strKeyword {
 
     NSDictionary *param = @{@"q": strKeyword,
@@ -327,6 +360,11 @@
     
 }
 
+#pragma mark - Convert data of fb
+/**************************************************************************************************
+ Function to convert data of fb
+ **************************************************************************************************/
+
 - (void)convertFbUsersListIntoModels:(NSArray *)arryUser {
 
     for (NSDictionary *dictUser in arryUser) {
@@ -349,6 +387,7 @@
     [Constant hideNetworkIndicator];
 }
 
+#pragma mark - UITable view Datasource
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
@@ -368,6 +407,8 @@
     return cell;
 }
 
+#pragma mark - UITable view Delegate
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  {
 
     UserInfo *userInfo = [self.arrySearchUserList objectAtIndex:indexPath.row];
@@ -384,9 +425,11 @@
                                        context:nil];
     return (rect.size.height +30);
 }
-- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller  {
 
-}
+#pragma mark - Follow or unfollow friend
+/**************************************************************************************************
+ Function to follow or unfollow friend
+ **************************************************************************************************/
 
 - (void)followOrNotFollow:(UserInfo *)userInfo withTitle:(NSString *)follow {
 
@@ -459,7 +502,9 @@
     [self.tbleVwUser reloadData];
 }
 
-- (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+#pragma mark - UIsearch view controller delegates
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
 
     [self.arrySearchUserList removeAllObjects];
 
@@ -486,6 +531,8 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
 
 }
+
+#pragma mark - User profile btn tapped
 
 - (void)userProfileBtnTapped:(UserInfo *)userInfo {
 

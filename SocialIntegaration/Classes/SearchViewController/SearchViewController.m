@@ -18,8 +18,10 @@
 
 @implementation SearchViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -27,8 +29,8 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+
     [super viewDidLoad];
 
     array = @[@"User", @"Keyword", @"HashTag"];
@@ -45,8 +47,19 @@
     self.tbleVwSearch.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
-- (void) removeUISearchBarBackgroundInViewHierarchy:(UIView *)view
-{
+- (void)didReceiveMemoryWarning {
+
+    [super didReceiveMemoryWarning];
+        // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Remove background of search bar
+/**************************************************************************************************
+ Function to remove search bar background
+ **************************************************************************************************/
+
+- (void)removeUISearchBarBackgroundInViewHierarchy:(UIView *)view {
+
     for (UIView *subview in [view subviews]) {
         if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
             [subview removeFromSuperview];
@@ -57,11 +70,7 @@
     }
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+#pragma mark - UITable view Datasource
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
@@ -82,6 +91,9 @@
 
     return cell;
 }
+
+#pragma mark - UITable view Delegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];

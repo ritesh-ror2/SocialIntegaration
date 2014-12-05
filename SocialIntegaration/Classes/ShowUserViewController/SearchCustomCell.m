@@ -21,20 +21,21 @@
     return self;
 }
 
-- (void)awakeFromNib
-{
+- (void)awakeFromNib {
+
     // Initialization code
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
 }
 
-- (void)setSearchResultIntableView:(UserInfo *)userInfo {
+#pragma mark - Set name in list
 
+- (void)setSearchResultIntableView:(UserInfo *)userInfo {
 
     if (self.userInfo != nil) {
         self.userInfo = nil;
@@ -100,6 +101,9 @@
         });
     });
 }
+
+#pragma mark - Delegates
+
 - (IBAction)followBtnTapped:(id)sender {
 
     if ([btnFollow.titleLabel.text isEqualToString:@"Follow"]) {
@@ -109,6 +113,13 @@
     }
     if ([self.delegate respondsToSelector:@selector(followOrNotFollow:withTitle:)]) {
         [self.delegate followOrNotFollow:self.userInfo withTitle:btnFollow.titleLabel.text];
+    }
+}
+
+- (IBAction)showUserProfile:(id)sender {
+
+    if ([self.delegate respondsToSelector:@selector(userProfileBtnTapped:)]) {
+        [self.delegate userProfileBtnTapped:self.userInfo];
     }
 }
 
@@ -154,13 +165,6 @@
             });
 		}
 	});
-}
-
-- (IBAction)showUserProfile:(id)sender {
-
-    if ([self.delegate respondsToSelector:@selector(userProfileBtnTapped:)]) {
-        [self.delegate userProfileBtnTapped:self.userInfo];
-    }
 }
 
 @end

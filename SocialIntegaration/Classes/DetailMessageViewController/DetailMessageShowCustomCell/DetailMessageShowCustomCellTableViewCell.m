@@ -128,6 +128,11 @@
     NSLog(@"%@", objComment.userComment);
 }
 
+#pragma mark - Convert time from 24 hour to 12 hour
+/**************************************************************************************************
+ Function to convert time from 24 hour to 12 hour
+ **************************************************************************************************/
+
 - (NSString *)convertTime:(NSString*)time {
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -142,6 +147,9 @@
 }
 
 #pragma mark - Calculate time between two dates
+/**************************************************************************************************
+ Function to calculate time between two dates
+ **************************************************************************************************/
 
 - (long)calculateTimesBetweenTwoDates:(NSString *)strGivenDate {
 
@@ -202,6 +210,11 @@
     return strTime;
 }
 */
+
+#pragma mark - Set profile image of user
+/**************************************************************************************************
+ Function to set profile image of user
+ **************************************************************************************************/
 
 - (void)uploadProfileImage:(UserComment *)objUserComment {
 

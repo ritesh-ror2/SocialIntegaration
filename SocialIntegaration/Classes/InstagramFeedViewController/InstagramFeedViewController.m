@@ -16,6 +16,7 @@
 @interface InstagramFeedViewController () <CustomTableCellDelegate>
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwInstagram;
+
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
 @property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
 
@@ -23,8 +24,10 @@
 
 @implementation InstagramFeedViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -35,18 +38,16 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-        // self.navItem.title = @"Instagram";
+
     self.navController.navigationBar.translucent = NO;
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
 
-
-
     sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -55,15 +56,13 @@
 
     [super viewWillAppear:animated];
     if (sharedAppDelegate.arryOfInstagrame.count == 0) {
-
-            //[Constant showAlert:@"Message" forMessage:@"No Feeds."];
+        //[Constant showAlert:@"Message" forMessage:@"No Feeds."];
         return;
     }
     [self.arrySelectedIndex removeAllObjects];
     [self.arryTappedCell removeAllObjects];
     [self.tbleVwInstagram reloadData];
     self.navController.navigationBarHidden = NO;
-    [self.arryTappedCell removeAllObjects];
 
     for (NSString *cellSelected in sharedAppDelegate.arryOfInstagrame) {
         NSLog(@"%@", cellSelected);
@@ -107,7 +106,12 @@
         cell.customCellDelegate = self;
     }
 
-    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:YES];
+    BOOL isSelected = NO;
+    if (self.arryTappedCell.count != 0) {
+        isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
+    }
+
+    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
 
     return cell;
 }
@@ -149,6 +153,12 @@
     return (rect.size.height + 65);//183 is height of other fixed content
 }
 
+#pragma mark - Custom cell Delegates
+
+/**************************************************************************************************
+ Function to go to detail view to check like, comment favourite and etc
+ **************************************************************************************************/
+
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -157,6 +167,10 @@
     commentVw.postUserImg = imgName;
     [[self navigationController] pushViewController:commentVw animated:YES];
 }
+
+/**************************************************************************************************
+ Function to increase cell height
+ **************************************************************************************************/
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
@@ -175,6 +189,10 @@
         //your code here
     [self.tbleVwInstagram endUpdates];
 }
+
+/**************************************************************************************************
+ Function to go to user profile
+ **************************************************************************************************/
 
 - (void)userProfileBtnTapped:(UserInfo*)userInfo {
 

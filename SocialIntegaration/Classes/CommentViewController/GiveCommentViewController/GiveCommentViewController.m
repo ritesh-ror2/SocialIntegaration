@@ -23,8 +23,10 @@
 
 @implementation GiveCommentViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -32,8 +34,8 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+
     [super viewDidLoad];
     [self.view bringSubviewToFront:self.view];
     txtVwCommnet.inputAccessoryView = navBar;
@@ -48,11 +50,16 @@
     [self getFriendList];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - Show navbar color accordinf to facebook and twitter
+/**************************************************************************************************
+ Function to show navbar color accordinf to facebook and twitter
+ **************************************************************************************************/
 
 - (void)showNavigationBarColor {
 
@@ -75,6 +82,11 @@
     [self setProfileImage];
 }
 
+#pragma mark - Set profile image of login user
+/**************************************************************************************************
+ Function to set profile image of login user
+ **************************************************************************************************/
+
 - (void)setProfileImage {
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -90,10 +102,18 @@
     });
 }
 
+#pragma mark - Cancel btn tapped
+/**************************************************************************************************
+ Function to cancel btn tapped
+ **************************************************************************************************/
+
 - (IBAction)cancelBtnTapped:(id)sender {
 
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+#pragma mark - UItext field Delegates
+
 - (void)textViewDidBeginEditing:(UITextView *)textView {
 
     navBar.hidden = NO;
@@ -109,12 +129,12 @@
     }
 }
 
-- (IBAction)postOnFbBtnTapped:(id)sender {
+#pragma mark - Post comment on fb
+/**************************************************************************************************
+ Function to post comment on fb
+ **************************************************************************************************/
 
-   /* [sharedAppDelegate.spinner show:YES];
-    [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    */
+- (IBAction)postOnFbBtnTapped:(id)sender {
 
     [Constant showNetworkIndicator];
 
@@ -170,13 +190,17 @@
                           }];
 }
 
+#pragma mark - Post comment on twitter
+/**************************************************************************************************
+ Function to post comment on twitter
+ **************************************************************************************************/
 
 - (void)postCommentOnTwitter {
 
     NSDictionary *param = @{@"status": txtVwCommnet.text,
                             @"in_reply_to_status_id": self.userInfo.statusId};
 
-    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/update.json"];
+    NSString *strFavourateUrl = [NSString stringWithFormat:TWITTER_POST_URL];
     NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
     SLRequest *timelineRequest = [SLRequest
                                   requestForServiceType:SLServiceTypeTwitter
@@ -213,6 +237,11 @@
      }];
 }
 
+#pragma mark - Post comment on Instagram
+/**************************************************************************************************
+ Function to post comment on instagram
+ **************************************************************************************************/
+
 - (void)postCommentOnInstagram {
 
         //api.instagram.com/v1/media/555/comments?access_token=ACCESS-TOKEN
@@ -238,9 +267,12 @@
 - (void)request:(IGRequest *)request didLoad:(id)result {
 
     NSLog(@"Instagram did load: %@", result);
-        //NSArray *arry = [result objectForKey:@"data"];
 }
 
+#pragma mark - Done btn tapped on nav bar
+/**************************************************************************************************
+ Function to done btn tapped on nav bar
+ **************************************************************************************************/
 
 - (IBAction)doneBtnTapped:(id)sender {
 

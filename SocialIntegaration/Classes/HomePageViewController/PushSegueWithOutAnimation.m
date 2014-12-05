@@ -10,7 +10,10 @@
 
 @implementation PushSegueWithOutAnimation
 
--(void) perform{
+#pragma mark - Push view without animation
+
+-(void) perform {
+
     [[[self sourceViewController] navigationController] pushViewController:[self  destinationViewController] animated:NO];
 }
 

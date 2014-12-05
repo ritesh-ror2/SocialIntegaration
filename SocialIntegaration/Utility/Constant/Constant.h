@@ -14,11 +14,13 @@
 + (void)showAlert:(NSString *)title forMessage:(NSString *)message;
 
 + (NSString *)convertDateOFFB:(NSString*)strdate;
-+ (NSString *)convertDateOFTweeter:(NSString*)strdate;
++ (NSString *)convertDateOFTwitter:(NSString*)strdate;
 + (NSString *)convertDateOFInstagram:(NSDate*)date;
 
 + (NSString *)calculateTimesBetweenTwoDates:(NSString *)strGivenDate;
 
 + (void)showNetworkIndicator;
 + (void)hideNetworkIndicator;
++ (NSString *)convertDateOfTwitterInDatabaseFormate:(NSString *)createdDate;
+
 @end

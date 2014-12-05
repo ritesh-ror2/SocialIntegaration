@@ -25,8 +25,10 @@
 
 @implementation ShareCommentAndMessageViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -34,8 +36,8 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+
     [super viewDidLoad];
 
     self.navigationController.navigationBarHidden = YES;
@@ -64,21 +66,20 @@
 //    self.tbleVwUser.layer.borderWidth = 1.0;
     [self setHeadingAndNavigationColor];
     [self getListOfFollowers];
-    [self addPageControl];
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
-- (void) addPageControl {
+- (void)didReceiveMemoryWarning {
 
-
-}
-
-- (void)didReceiveMemoryWarning
-{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - Set navigation color
+/**************************************************************************************************
+ Function to set navigation color according to twitter and facebook
+ **************************************************************************************************/
 
 - (void)setHeadingAndNavigationColor {
 
@@ -89,7 +90,10 @@
     imgVwTwitter.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
 }
 
-#pragma mark - Set profile image of twitter and Instagram
+#pragma mark - Set profile image of twitter
+/**************************************************************************************************
+ Function to set Profile image of Twitter
+ **************************************************************************************************/
 
 - (void)setProfileImageOfTwitter:(NSString *)profileImg {
 
@@ -106,6 +110,11 @@
     });
 }
 
+#pragma mark - Set profile image of Fb
+/**************************************************************************************************
+ Function to set Profile image of Fb
+ **************************************************************************************************/
+
 - (void)setProfileImageOfFB:(NSString *)profileImg {
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -120,6 +129,11 @@
         });
     });
 }
+
+#pragma mark - Share post on Fb
+/**************************************************************************************************
+ Function to share post on fb
+ **************************************************************************************************/
 
 - (IBAction)shareOnFacebook:(id)sender {
 
@@ -200,11 +214,18 @@
     }
 }
 
+#pragma mark - Select photo from galary or camera
+/**************************************************************************************************
+ Function to select photo from galary and camera
+ **************************************************************************************************/
+
 - (IBAction)selectPhotoFromGallary:(id)sender {
 
     UIAlertView *alertVwPhoto = [[UIAlertView alloc]initWithTitle:@"Select Photo" message:@"" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Library", @"Camera", nil];
     [alertVwPhoto show];
 }
+
+#pragma mark- UIAlert view Delegates
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
 
@@ -261,19 +282,14 @@
     [self dismissViewControllerAnimated:YES completion:Nil];
 }
 
-- (void) openLibraryToSelectPhoto {
-
-
-}
+#pragma mark - Share on twitter
+/**************************************************************************************************
+ Function to share post on  twitter
+ **************************************************************************************************/
 
 - (IBAction)shareOnTwitter:(id)sender {
 
     [self.view endEditing:YES];
-
-    /*[self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];*/
-
     [Constant showNetworkIndicator];
     
     if (self.txtVwTwitter.text.length == 0) {
@@ -288,21 +304,20 @@
 
         if (imgData != nil) {
 
-            [self postImageOnTwitter:imgData];
+            [self postImageOnTwitter:imgData];//post with image
+            return;
         } else {
 
             NSDictionary *param = @{@"status": self.txtVwTwitter.text};
 
-            NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/update.json"];
+            NSString *strFavourateUrl = [NSString stringWithFormat:TWITTER_POST_URL];// @"https://api.twitter.com/1.1/statuses/update.json"];
             NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
             SLRequest  *timelineRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:requestURL parameters:param];
 
         timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-        [timelineRequest performRequestWithHandler:
-         ^(NSData *responseData, NSHTTPURLResponse
-           *urlResponse, NSError *error)
-         {
+        [timelineRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse*urlResponse, NSError *error) {
+
            NSLog(@"%@ !#" , [error description]);
            id result = [NSJSONSerialization
                                   JSONObjectWithData:responseData
@@ -332,9 +347,14 @@
     }
 }
 
+#pragma mark - Share status with image on twitter
+/**************************************************************************************************
+ Function to share status with image on twitter
+ **************************************************************************************************/
+
 - (void)postImageOnTwitter:(NSData *)imgData {
 
-    NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/update_with_media.json"];
+    NSURL *url = [NSURL URLWithString:TWITTER_POST_IMAGE];
 
     NSDictionary *paramater = @{@"status": self.txtVwTwitter.text};
 
@@ -357,13 +377,18 @@
     }];
 }
 
+#pragma mark - Get list of followers in twitter
+/**************************************************************************************************
+ Function to get list of followers in twitter
+ **************************************************************************************************/
+
 - (void)getListOfFollowers {
 
     BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
     if (isTwitterUserLogin == YES) {
         NSDictionary *param = @{@"user_id":self.profileTwitter.userId};
 
-        NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/followers/list.json"];
+        NSString *strFavourateUrl = [NSString stringWithFormat:TWITTER_FOLLOWERS];
         NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
         SLRequest *timelineRequest = [SLRequest
                                       requestForServiceType:SLServiceTypeTwitter
@@ -372,38 +397,39 @@
 
         timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-        [timelineRequest performRequestWithHandler:
-         ^(NSData *responseData, NSHTTPURLResponse
-           *urlResponse, NSError *error)
-         {
+        [timelineRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse*urlResponse, NSError *error) {
+
            NSLog(@"%@ !#" , [error description]);
            id result = [NSJSONSerialization
                         JSONObjectWithData:responseData
                         options:NSJSONReadingMutableLeaves
                         error:&error];
-           NSLog(@"***%@***", [error localizedDescription]);
-               if (![result isKindOfClass:[NSDictionary class]]) {
-                   dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"***%@***", [error localizedDescription]);
+            if (![result isKindOfClass:[NSDictionary class]]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
 
-                       NSArray *arryUser = [result valueForKey:@"users"];
-                       [self convertDataOfFriend:arryUser];
-                       [self getListOfFriend];
-                   });
-               } else {
-                   dispatch_async(dispatch_get_main_queue(), ^{
+                   NSArray *arryUser = [result valueForKey:@"users"];
+                   [self convertDataOfFriend:arryUser];
+                   [self getListOfFriend];
+               });
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
 
-                       NSArray *arryUser = [result valueForKey:@"users"];
-                       [self convertDataOfFriend:arryUser];
-                       [self getListOfFriend];
-                   });
+                   NSArray *arryUser = [result valueForKey:@"users"];
+                   [self convertDataOfFriend:arryUser];
+                   [self getListOfFriend];
+               });
            }
          }];
     }
 }
 
-- (void)convertDataOfFriend:(NSArray*)arryResult {
+#pragma mark - Convert data into model class in twitter
+/**************************************************************************************************
+ Function to convert data into model class in twitter
+ **************************************************************************************************/
 
-    NSLog(@"%@", arryResult);
+- (void)convertDataOfFriend:(NSArray*)arryResult {
 
     for (NSDictionary *dictUser in arryResult) {
 
@@ -414,58 +440,10 @@
     }
 }
 
-- (void)getListOfFriends {
-
-    NSDictionary *param = @{@"user_id":self.profileTwitter.userId};
-
-    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/friends/list.json"];
-    NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
-    SLRequest *timelineRequest = [SLRequest
-                                  requestForServiceType:SLServiceTypeTwitter
-                                  requestMethod:SLRequestMethodGET
-                                  URL:requestURL parameters:param];
-
-    timelineRequest.account = sharedAppDelegate.twitterAccount;
-
-    [timelineRequest performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error)
-     {
-       NSLog(@"%@ !#" , [error description]);
-       id result = [NSJSONSerialization
-                    JSONObjectWithData:responseData
-                    options:NSJSONReadingMutableLeaves
-                    error:&error];
-       NSLog(@"***%@***", [error localizedDescription]);
-
-       if (!error) {
-           if (![result isKindOfClass:[NSDictionary class]]) {
-               dispatch_async(dispatch_get_main_queue(), ^{
-
-                   NSArray *arryUser = [result valueForKey:@"users"];
-                   [self convertDataOfFriend:arryUser];
-                   [self getListOfFriend];
-
-               });
-           } else {
-               dispatch_async(dispatch_get_main_queue(), ^{
-
-                   NSDictionary *dictUser = (NSDictionary *)result;
-
-                   UserInfo *info = [[UserInfo alloc]init];
-                   info.strUserName = [dictUser valueForKey:@"name"];
-                   info.fromId = [dictUser valueForKey:@"id"];
-                   [self.arryUsers addObject:info];
-               });
-           }
-       }
-     }];
-}
-
+#pragma mark - UITableview Datadource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    NSLog(@"%i", self.arryUsers.count);
     return [self.arryUsers count];
 }
 
@@ -483,18 +461,24 @@
     return cell;
 }
 
+#pragma mark - UITable view Delegates
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     UserInfo *userInfo = [self.arryUsers objectAtIndex:indexPath.row];
     NSString *strTaggedName = userInfo.strUserName;
     NSString *strTaggedUser = [self.txtVwTwitter.text stringByAppendingString:strTaggedName];
 
-        //  NSMutableAttributedString *strTwitterTags = [[NSMutableAttributedString alloc]initWithString:strTaggedUser];
-
-        // [strTwitterTags addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0] range:NSMakeRange(strTaggedUser.length - strTaggedName.length, strTaggedName.length)];
+    //  NSMutableAttributedString *strTwitterTags = [[NSMutableAttributedString alloc]initWithString:strTaggedUser];
+    // [strTwitterTags addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0] range:NSMakeRange(strTaggedUser.length - strTaggedName.length, strTaggedName.length)];
     self.txtVwTwitter.text = @"";
     self.txtVwTwitter.text = strTaggedUser;
 }
+
+#pragma mark - Show user list in twitter
+/**************************************************************************************************
+ Function to open user list
+ **************************************************************************************************/
 
 - (void)openUsersListInTwitter {
 
@@ -509,12 +493,16 @@
     }];
 }
 
+#pragma mark - Get list of friend in twitter
+/**************************************************************************************************
+ Function to get list of friend in twitter
+ **************************************************************************************************/
 
 - (void)getListOfFriend {
 
     NSDictionary *param = @{@"user_id":self.profileTwitter.userId};
 
-    NSString *strFavourateUrl = [NSString stringWithFormat:@"https://api.twitter.com/1.1/friends/list.json"];
+    NSString *strFavourateUrl = [NSString stringWithFormat:TWITTER_FRIEND];
     NSURL *requestURL = [NSURL URLWithString:strFavourateUrl];
     SLRequest *timelineRequest = [SLRequest
                                   requestForServiceType:SLServiceTypeTwitter
@@ -551,6 +539,8 @@
        }
      }];
 }
+
+#pragma mark - Send direct message in twitter
 
 - (IBAction)sendDirectMessageOnTwitter:(id)sender {
 
@@ -598,6 +588,8 @@
      }];
 }
 
+#pragma mark - UITextview Delegates
+
 - (void)textViewDidBeginEditing:(UITextView *)textView {
 
     self.tbleVwUser.hidden = YES;
@@ -623,19 +615,20 @@
 - (void)textViewDidChange:(UITextView *)textView {
 
     if (![textView.text isEqualToString:@""]) {
-    NSString *strLastText = [textView.text substringFromIndex: textView.text.length - 1];
 
-    if (textView == self.txtVwTwitter) {
+        NSString *strLastText = [textView.text substringFromIndex: textView.text.length - 1];
+        if (textView == self.txtVwTwitter) {
 
-        if ([strLastText isEqualToString:@"@"]) {
-            [self openUsersListInTwitter];
-        } else {
+            if ([strLastText isEqualToString:@"@"]) {
+                [self openUsersListInTwitter];
+            } else {
                 self.toolBar.hidden = NO;
+            }
         }
-    }
     }
 }
 
+#pragma mark - UIscroll view Delegates
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 
@@ -646,25 +639,19 @@
     pageControl.currentPage = page;
 }
 
+#pragma mark - Cancel btn tapped
+
 - (IBAction)cancelBtnTapped:(id)sender {
 
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+#pragma mark - Done btn tapped
 
 - (IBAction)doneBtnTapped:(id)sender {
 
     [self.view endEditing:YES];
     self.toolBar.hidden = YES;
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

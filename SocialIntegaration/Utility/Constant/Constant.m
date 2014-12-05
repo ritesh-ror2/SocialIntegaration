@@ -109,6 +109,28 @@
     return strConvertedDate;
 }
 
+#pragma mark - Convert date of twitter
+/**************************************************************************************************
+ Function to convert date formate of twitter
+ **************************************************************************************************/
+
++ (NSString *)convertDateOfTwitterInDatabaseFormate:(NSString *)createdDate {
+
+    NSString *strDateInDatabaseFormate;
+
+    NSString *strYear = [createdDate substringWithRange:NSMakeRange(createdDate.length-4, 4)];
+    NSString *strMonth = [createdDate substringWithRange:NSMakeRange(4, 3)];
+    NSString *strDate = [createdDate substringWithRange:NSMakeRange(8, 2)];
+
+    NSString *strTime = [createdDate substringWithRange:NSMakeRange(11, 8)];//14
+
+    NSString *finalDate = [NSString stringWithFormat:@"%@ %@ %@", strDate, strMonth, strYear];
+
+    strDateInDatabaseFormate = [NSString stringWithFormat:@"%@ %@", finalDate, strTime];
+
+    return strDateInDatabaseFormate;
+}
+
 + (NSString *)convertDateOFInstagram:(NSDate*)date {
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -125,7 +147,7 @@
 
 #pragma mark - Convert date of twitter
 
-+ (NSString *)convertDateOFTweeter:(NSString*)strdate {
++ (NSString *)convertDateOFTwitter:(NSString*)strdate {
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:TWEETERDATEFORMATE];

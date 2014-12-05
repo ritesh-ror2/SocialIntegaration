@@ -18,6 +18,8 @@
 
 @implementation HomePageViewController
 
+#pragma mark - View life cycle
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -39,7 +41,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark -Login Btn tapped
+#pragma mark - Login Btn tapped
 
 - (IBAction)loginBtnTapped:(id)sender {
 

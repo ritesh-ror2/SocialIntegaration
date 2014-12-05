@@ -29,8 +29,10 @@
 
 @implementation FacebookFeedViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -46,12 +48,11 @@
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
 
-
     sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -63,12 +64,13 @@
     [self.arryTappedCell removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
 
-    [self.tbleVwFB reloadData];
     for (NSString *cellSelected in sharedAppDelegate.arryOfFBNewsFeed) {
         NSLog(@"%@", cellSelected);
         [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
     }
+    [self.tbleVwFB reloadData];
 }
+
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
@@ -78,54 +80,6 @@
     self.navItem.title = @"Facebook";
     [[NSUserDefaults standardUserDefaults]setInteger:self.index forKey:INDEX_OF_PAGE];
     [[NSUserDefaults standardUserDefaults]synchronize];
-}
-
-#pragma mark - View to add image at left side
-
-- (UIImageView *)addUserImgAtRight {
-
-        //add mask image
-    UIImage *imgProfile = [Constant maskImage:[UIImage imageNamed: @"user-selected.png"] withMask:[UIImage imageNamed:@"list-mask.png"]];
-    UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
-    imgVwProile.frame = CGRectMake(0, 0, 35, 35);
-    return imgVwProile;
-}
-- (void)userProfileBtnTapped:(UserInfo*)userInfo {
-
-    if ([userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
-        NSString *strUserId = [NSString stringWithFormat:@"/%@",userInfo.fromId];
-        /* make the API call */
-        [FBRequestConnection startWithGraphPath:strUserId
-                                     parameters:nil
-                                     HTTPMethod:@"GET"
-                              completionHandler:^(
-                                                  FBRequestConnection *connection,
-                                                  id result,
-                                                  NSError *error
-                                                  ) {
-                                  if (error) {
-
-                                  } else {
-
-                                      NSDictionary *dictProfile = (NSDictionary *)result;
-
-                                      UserInfo *otherUserInfo = [[UserInfo alloc]init];
-                                      otherUserInfo.strUserName = [dictProfile valueForKey:@"name"];
-                                      otherUserInfo.fromId  = [dictProfile valueForKey:@"id"];
-                                      otherUserInfo.strUserSocialType = @"Facebook";
-                                      UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                                      ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
-                                      vwController.userInfo = otherUserInfo;
-                                      [self.navigationController pushViewController:vwController animated:YES];
-                                  }
-                              }];
-    } if ([userInfo.strUserSocialType isEqualToString:@"Twitter"])  {
-
-        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
-        vwController.userInfo = userInfo;
-        [self.navigationController pushViewController:vwController animated:YES];
-    }
 }
 
 #pragma mark - UITableViewDatasource
@@ -152,17 +106,22 @@
         cell.customCellDelegate = self;
     }
 
+    BOOL isSelected = NO;
+    if (self.arryTappedCell.count != 0 && indexPath.row < self.arryTappedCell.count) {
+        isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
+    }
+
     if(indexPath.row < [sharedAppDelegate.arryOfFBNewsFeed count]){
 
         self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:YES];
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
     } else {
 
         if (sharedAppDelegate.arryOfFBNewsFeed.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES withOtherTimeline:YES];
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:isSelected withPagging:YES withOtherTimeline:YES];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
                 [self getMoreDataOfFeed];
             } else {
@@ -214,6 +173,24 @@
     return (rect.size.height + 65);//183 is height of other fixed content
 }
 
+#pragma mark - Delegates of custom cell
+
+/**************************************************************************************************
+ Function to go to user profile
+ **************************************************************************************************/
+
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+    vwController.userInfo = userInfo;
+    [self.navigationController pushViewController:vwController animated:YES];
+}
+
+/**************************************************************************************************
+ Function to go to Detail view of see comment, give comment and like post etc
+ **************************************************************************************************/
+
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -223,10 +200,13 @@
     [[self navigationController] pushViewController:commentVw animated:YES];
 }
 
+/**************************************************************************************************
+ Function to increase height of table view
+ **************************************************************************************************/
+
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
     [self.arrySelectedIndex addObject:[NSNumber numberWithInt:cellIndex]];
-        //your code here
 
     if (self.arryTappedCell.count != 0) {
         if (isSelected == YES) {
@@ -238,13 +218,15 @@
     [self.tbleVwFB beginUpdates];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];
     [self.tbleVwFB reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        //your code here
     [self.tbleVwFB endUpdates];
 }
 
-- (void)getMoreDataOfFeed {
+#pragma mark - Get more feeds of FB
+/**************************************************************************************************
+ Function to get more feeds of FB
+ **************************************************************************************************/
 
-    //Get more data of feed
+- (void)getMoreDataOfFeed {
 
     NSURL *fbUrl = [NSURL URLWithString:sharedAppDelegate.nextFbUrl];
     fbRequest = [[NSMutableURLRequest alloc]initWithURL:fbUrl];
@@ -278,7 +260,15 @@
     [self convertDataOfFBIntoModel:[result objectForKey:@"data"]];
 }
 
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+
+    NSLog(@"%@", error.description);
+}
+
 #pragma mark - Convert array of FB into model class
+/**************************************************************************************************
+ Function to convert data of FB into model class
+ **************************************************************************************************/
 
 - (void)convertDataOfFBIntoModel:(NSArray *)arryPost {
 
@@ -313,11 +303,6 @@
         }
     }
         [self.tbleVwFB reloadData];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-        // The request has failed for some reason!
-    
 }
 
 @end

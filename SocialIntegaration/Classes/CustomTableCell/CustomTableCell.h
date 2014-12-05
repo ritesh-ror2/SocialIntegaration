@@ -55,10 +55,15 @@
 
 @property (nonatomic, strong) NSNumber *touchCount;
 @property (nonatomic, strong) NSString *strProfileImg;
-@property (unsafe_unretained)id <CustomTableCellDelegate> customCellDelegate;
 @property (nonatomic, strong) UserInfo *userInfo;
-@property (nonatomic)NSInteger cellIndex;
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedIndexArray:(NSMutableArray*)arrayOfSelectedIndex withSelectedCell:(NSMutableArray *)arrySelectedCell withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline;
+@property (nonatomic)NSInteger cellIndex;
+@property (nonatomic) BOOL isAlreadyTapped;
+
+@property (unsafe_unretained)id <CustomTableCellDelegate> customCellDelegate;
+
+#pragma mark - Function
+
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(BOOL)isSelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline;
 
 @end

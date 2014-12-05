@@ -12,7 +12,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="foe-Jk-IhR">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="foe-Jk-IhR">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -413,7 +413,7 @@
                                                 </connections>
                                             </tableView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="KkP-Bm-Q6y">
-                                                <rect key="frame" x="8" y="74" width="320" height="320"/>
+                                                <rect key="frame" x="0.0" y="70" width="320" height="320"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
                                         </subviews>
@@ -449,11 +449,11 @@
                         <outlet property="btnShare" destination="YWN-pO-c5S" id="H1E-Wp-UAN"/>
                         <outlet property="btnShowImageOrVideo" destination="t8T-yi-FKE" id="zzY-TJ-NfQ"/>
                         <outlet property="imgVwBackground" destination="vEn-8Q-rZg" id="Eqa-Qr-TaR"/>
+                        <outlet property="imgVwLagrePostImage" destination="KkP-Bm-Q6y" id="3Yp-od-JKJ"/>
                         <outlet property="imgVwNavigation" destination="FkT-1a-gAz" id="BXp-hb-Zj9"/>
                         <outlet property="imgVwOfComentFb" destination="QSA-kf-NaM" id="SCB-Ii-vix"/>
                         <outlet property="imgVwOfLikeFb" destination="JAH-AY-gc2" id="8uR-pK-Q0F"/>
                         <outlet property="imgVwOfLikeInstagram" destination="hhd-td-KkF" id="vqc-N6-ZTk"/>
-                        <outlet property="imgVwPostImage" destination="KkP-Bm-Q6y" id="PI9-iz-rvd"/>
                         <outlet property="imgVwPostUser" destination="84E-Sn-3QT" id="Ymp-ip-kRW"/>
                         <outlet property="lblComment" destination="ij0-LQ-PiE" id="8jj-pl-pDK"/>
                         <outlet property="lblFBOrInstCommentCount" destination="vL6-j1-C1J" id="ImK-G8-rhB"/>
@@ -1281,7 +1281,7 @@
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="FNs-2C-vbF">
                                                             <rect key="frame" x="90" y="5" width="24" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <state key="normal" image="2728F680-001C-45F4-805E-A1629AB5C320">
+                                                            <state key="normal" image="3DEE260B-D49C-47D9-8310-4AFD566FFB10">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                         </button>
@@ -2521,7 +2521,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="2728F680-001C-45F4-805E-A1629AB5C320" width="24" height="24">
+        <image name="3DEE260B-D49C-47D9-8310-4AFD566FFB10" width="24" height="24">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw

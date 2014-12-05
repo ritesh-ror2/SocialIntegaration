@@ -25,8 +25,10 @@
 
 @implementation UserNotificationViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -34,12 +36,11 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+
     [super viewDidLoad];
 
     self.navigationItem.title = @"Notification";
-    self.title = @"Notification";
     self.navigationController.navigationBarHidden = NO;
 
     self.arryNotifi = [[NSMutableArray alloc]init];
@@ -59,11 +60,16 @@
     [self getFBUserNotification];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - Get Twitter Notification
+/**************************************************************************************************
+ Function to get Twitter notification
+ **************************************************************************************************/
 
 - (void)twitterNotification {
 
@@ -76,7 +82,7 @@
         return;
     }
 
-    NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/mentions_timeline.json"];
+    NSURL *requestURL = [NSURL URLWithString:TWITTER_MENTION_URL];
     SLRequest *timelineRequest = [SLRequest
                                   requestForServiceType:SLServiceTypeTwitter
                                   requestMethod:SLRequestMethodGET
@@ -122,6 +128,11 @@
      }];
 }
 
+#pragma mark - Convert data of twitter in to model class
+/**************************************************************************************************
+ Function to convert data of twitter in to model class
+ **************************************************************************************************/
+
 - (void)convertDataOfTwitterNotification:(NSArray*)arryNotification {
 
     for (NSDictionary *dictData in arryNotification) {
@@ -133,8 +144,8 @@
         userNotif.title = strTitle;
         userNotif.notif_id = [dictData objectForKey:@"id"];
         userNotif.name = [dictUser objectForKey:@"name"];
-        NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
-        userNotif.time = [Constant convertDateOFTweeter:strDate];
+        NSString *strDate = [Constant convertDateOfTwitterInDatabaseFormate:[dictData objectForKey:@"created_at"]];
+        userNotif.time = [Constant convertDateOFTwitter:strDate];
         userNotif.notifType = @"Twitter";
         userNotif.userImg = [dictUser objectForKey:@"profile_image_url"];
 
@@ -144,32 +155,11 @@
     [self shortArryOfAllFeeds];
 }
 
-#pragma mark - Convert date of twitter
+#pragma mark - Fb user notification
+/**************************************************************************************************
+ Function to get of Fb notification
+ **************************************************************************************************/
 
-- (NSString *)dateOfTwitter:(NSString *)createdDate {
-
-        //[sharedAppDelegate.spinner hide:YES];
-
-    NSString *strDateInDatabaseFormate;
-
-    NSString *strYear = [createdDate substringWithRange:NSMakeRange(createdDate.length-4, 4)];
-    NSString *strMonth = [createdDate substringWithRange:NSMakeRange(4, 3)];
-    NSString *strDate = [createdDate substringWithRange:NSMakeRange(8, 2)];
-
-    NSString *strTime = [createdDate substringWithRange:NSMakeRange(11, 8)];//14
-
-    NSString *finalDate = [NSString stringWithFormat:@"%@ %@ %@", strDate, strMonth, strYear];
-
-    strDateInDatabaseFormate = [NSString stringWithFormat:@"%@ %@", finalDate, strTime];
-
-    return strDateInDatabaseFormate;
-}
-
-
-- (void)sortArrayOfNotification {
-
-
-}
 - (void)getFBUserNotification {
 
     NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
@@ -196,6 +186,11 @@
     }];
 }
 
+#pragma mark - Convert Fb data
+/**************************************************************************************************
+ Function to convert data of Fb in to model class
+ **************************************************************************************************/
+
 - (void)convertDataOfFbNotification:(NSArray*)arryNotification {
 
    for (NSDictionary *dictData in arryNotification) {
@@ -216,6 +211,11 @@
     [self twitterNotification];
 }
 
+#pragma mark - Short array of notification
+/**************************************************************************************************
+ Function to short array of notification
+ **************************************************************************************************/
+
 - (void)shortArryOfAllFeeds {
 
     [self.arryNotifi removeAllObjects]; //first remove all object
@@ -235,6 +235,8 @@
     [tbleViewNotification reloadData];
 }
 
+#pragma mark - UITable view Datasource
+
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
     return [self.arryNotifi count];
@@ -250,6 +252,8 @@
     return cell;
 }
 
+#pragma mark - UITable view Delegate
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  {
 
     UserNotification *userNotify = [self.arryNotifi objectAtIndex:indexPath.row];
@@ -262,7 +266,5 @@
 
     return (rect.size.height+45);
 }
-
-
 
 @end

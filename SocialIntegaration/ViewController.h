@@ -12,11 +12,13 @@
 @interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, IGSessionDelegate, IGRequestDelegate, CustomTableCellDelegate>
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwPostList;
+@property (nonatomic, strong) IBOutlet UIImageView *imgVwBackground;
 
 @property (nonatomic) NSUInteger index;
 @property (strong, nonatomic) UINavigationItem *navItem;
 @property (strong, nonatomic) UINavigationController *navController;
 @property (nonatomic)BOOL isAlreadyTapped;
-@property (nonatomic, strong) IBOutlet UIImageView *imgVwBackground;
+
+
 
 @end

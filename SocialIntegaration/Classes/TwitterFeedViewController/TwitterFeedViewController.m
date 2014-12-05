@@ -28,8 +28,10 @@
 
 @implementation TwitterFeedViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -41,7 +43,6 @@
 
     [super viewDidLoad];
 
-    [self makeCustomViewForNavigationTitle];
     self.navController.navigationBar.translucent = NO;
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
@@ -87,49 +88,16 @@
     }
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-- (void)userProfileBtnTapped:(UserInfo*)userInfo {
-
-    if ([userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
-        NSString *strUserId = [NSString stringWithFormat:@"/%@",userInfo.fromId];
-        /* make the API call */
-        [FBRequestConnection startWithGraphPath:strUserId
-                                     parameters:nil
-                                     HTTPMethod:@"GET"
-                              completionHandler:^(
-                                                  FBRequestConnection *connection,
-                                                  id result,
-                                                  NSError *error
-                                                  ) {
-                                  if (error) {
-
-                                  } else {
-
-                                      NSDictionary *dictProfile = (NSDictionary *)result;
-
-                                      UserInfo *otherUserInfo = [[UserInfo alloc]init];
-                                      otherUserInfo.strUserName = [dictProfile valueForKey:@"name"];
-                                      otherUserInfo.fromId  = [dictProfile valueForKey:@"id"];
-                                      otherUserInfo.strUserSocialType = @"Facebook";
-                                      UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                                      ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
-                                      vwController.userInfo = otherUserInfo;
-                                      [self.navigationController pushViewController:vwController animated:YES];
-                                  }
-                              }];
-    } if ([userInfo.strUserSocialType isEqualToString:@"Twitter"])  {
-
-        UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
-        vwController.userInfo = userInfo;
-        [self.navigationController pushViewController:vwController animated:YES];
-    }
-}
+#pragma mark - Load more tweets
+/**************************************************************************************************
+ Function to load more tweets
+ **************************************************************************************************/
 
 - (void)paggingInTwitter {
 
@@ -146,41 +114,40 @@
 
     timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-    [timelineRequest performRequestWithHandler:
-    ^(NSData *responseData, NSHTTPURLResponse
-    *urlResponse, NSError *error)
-    {
-    NSLog(@"%@ !#" , [error description]);
-    id result = [NSJSONSerialization
-                         JSONObjectWithData:responseData
-                         options:NSJSONReadingMutableLeaves
-                         error:&error];
+    [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
 
-    if (![result isKindOfClass:[NSDictionary class]]) {
+        NSLog(@"%@ !#" , [error description]);
+        id result = [NSJSONSerialization
+                             JSONObjectWithData:responseData
+                             options:NSJSONReadingMutableLeaves
+                             error:&error];
 
-        NSArray *arryTwitte = (NSArray *)result;
-        [self convertDataOfTwitterIntoModel:arryTwitte];
-    } else {
-        NSLog(@"error %@", result);
-    }
+        if (![result isKindOfClass:[NSDictionary class]]) {
 
+            NSArray *arryTwitte = (NSArray *)result;
+            [self convertDataOfTwitterIntoModel:arryTwitte];
+        } else {
+            NSLog(@"error %@", result);
+        }
     }];
 }
 
 
 #pragma mark - Convert data of twitter in to model class
+/**************************************************************************************************
+ Function to convert data of Twitter into model class
+ **************************************************************************************************/
 
 - (void)convertDataOfTwitterIntoModel:(NSArray *)arryPost {
 
     self.noMoreResultsAvail = YES;
-
     BOOL isFirst = NO;
+
     @autoreleasepool {
 
         for (NSDictionary *dictData in arryPost) {
 
-            NSLog(@"**%@", dictData); //14055301;
-
+            //  NSLog(@"**%@", dictData); //14055301;
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
             UserInfo *userInfo =[[UserInfo alloc]init];
             userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
@@ -195,8 +162,8 @@
             userInfo.strUserPost = [dictData valueForKey:@"text"];
             userInfo.strUserSocialType = @"Twitter";
             userInfo.type = [dictData objectForKey:@"type"];
-            NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
-            userInfo.struserTime = [Constant convertDateOFTweeter:strDate];
+            NSString *strDate = [Constant convertDateOfTwitterInDatabaseFormate:[dictData objectForKey:@"created_at"]];
+            userInfo.struserTime = [Constant convertDateOFTwitter:strDate];
             userInfo.statusId = [dictData valueForKey:@"id"];
             userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
             userInfo.screenName = [postUserDetailDict valueForKey:@"screen_name"];
@@ -209,7 +176,7 @@
 
             if (isFirst == NO) {
 
-                self.since_Id = userInfo.statusId.intValue;
+                self.max_Id = userInfo.statusId.intValue;
                 isFirst = YES;
             }
             [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
@@ -217,40 +184,15 @@
     }
 
     UserInfo *userInfoSince = [sharedAppDelegate.arryOfTwittes objectAtIndex:sharedAppDelegate.arryOfTwittes.count - 1];
-    self.max_Id = userInfoSince.statusId.intValue;
+    self.since_Id = userInfoSince.statusId.intValue;
 
     [self.tbleVwTwitter reloadData];
 }
 
-#pragma mark - Convert date of twitter
-
-- (NSString *)dateOfTwitter:(NSString *)createdDate {
-
-    NSString *strDateInDatabaseFormate;
-
-    NSString *strYear = [createdDate substringWithRange:NSMakeRange(createdDate.length-4, 4)];
-    NSString *strMonth = [createdDate substringWithRange:NSMakeRange(4, 3)];
-    NSString *strDate = [createdDate substringWithRange:NSMakeRange(8, 2)];
-
-    NSString *strTime = [createdDate substringWithRange:NSMakeRange(11, 8)];//14
-
-    NSString *finalDate = [NSString stringWithFormat:@"%@ %@ %@", strDate, strMonth, strYear];
-
-    strDateInDatabaseFormate = [NSString stringWithFormat:@"%@ %@", finalDate, strTime];
-
-    return strDateInDatabaseFormate;
-}
-
-- (void)makeCustomViewForNavigationTitle {
-
-        // self.navItem.title = @"Twitter";
-}
-
 #pragma mark - UITableViewDatasource
 
-- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    [self makeCustomViewForNavigationTitle];
     NSLog(@" ** count count %i ", sharedAppDelegate.arryOfTwittes.count);
     return [sharedAppDelegate.arryOfTwittes count]+1;
 }
@@ -269,17 +211,22 @@
         cell = [arryObjects objectAtIndex:0];
         cell.customCellDelegate = self;
     }
+
+    BOOL isSelected  = NO;
+    if (self.arryTappedCell.count != 0 && indexPath.row < self.arryTappedCell.count) {
+       isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
+    }
+
     if(indexPath.row < [sharedAppDelegate.arryOfTwittes count]){
 
-        // self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:NO withOtherTimeline:YES];
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
     } else {
 
         if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedIndexArray:self.arrySelectedIndex withSelectedCell:self.arryTappedCell withPagging:YES withOtherTimeline:YES];
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:isSelected withPagging:YES withOtherTimeline:YES];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
                 [self paggingInTwitter];
             }
@@ -325,6 +272,24 @@
     return (rect.size.height + 65);//183 is height of other fixed content
 }
 
+#pragma mark - Custom cell Delegates
+
+/**************************************************************************************************
+ Function to go to user detail
+ **************************************************************************************************/
+
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+    vwController.userInfo = userInfo;
+    [self.navigationController pushViewController:vwController animated:YES];
+}
+
+/**************************************************************************************************
+ Function to go to detail ciew to see comment, like , favourite etc
+ **************************************************************************************************/
+
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -334,12 +299,15 @@
     [[self navigationController] pushViewController:commentVw animated:YES];
 }
 
+/**************************************************************************************************
+ Function to increase cell height
+ **************************************************************************************************/
+
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
 
     NSLog(@"****%@***", self.arrySelectedIndex);
-        //your code here
 
     if (self.arryTappedCell.count != 0) {
         if (isSelected == YES) {
@@ -351,7 +319,6 @@
     [self.tbleVwTwitter beginUpdates];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];
     [self.tbleVwTwitter reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        //your code here
     [self.tbleVwTwitter endUpdates];
 }
 

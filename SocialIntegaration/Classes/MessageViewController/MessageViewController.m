@@ -27,6 +27,8 @@
 
 @implementation MessageViewController
 
+#pragma mark - View life cycle
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
 
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -36,15 +38,15 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+
     [super viewDidLoad];
 
     [Constant showNetworkIndicator];
 
     userProfile = [UserProfile getProfile:@"Facebook"];
 
-    UIBarButtonItem *barBtnProfile = [[UIBarButtonItem alloc]initWithCustomView:[self addUserImgAtRight]];
+    UIBarButtonItem *barBtnProfile = [[UIBarButtonItem alloc]initWithCustomView:[self addUserImgAtLeftSide]];
     self.navigationItem.leftBarButtonItem = barBtnProfile;
 
         //right button
@@ -53,7 +55,6 @@
 
     self.arryOfFbMessage = [[NSMutableArray alloc]init];
 
-    [self showInboxMessage];
     sharedAppDelegate.isFirstTimeLaunch = NO;
 }
 
@@ -65,16 +66,24 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 
+    [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = NO;
 }
 
-- (void) viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
+
+    [self showInboxMessage];
     self.navigationItem.title = @"Messages";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
-
 }
+
+#pragma mark - Compose message to post on fb and twitter
+/**************************************************************************************************
+ Function to compose message to post on fb and twitter
+ **************************************************************************************************/
+
 - (IBAction)composeMessage:(id)sender {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -82,7 +91,12 @@
     [[self navigationController] pushViewController:viewController animated:YES];
 }
 
-- (UIImageView *)addUserImgAtRight {
+#pragma mark - Compose message to post on fb and twitter
+/**************************************************************************************************
+ Function to show login user image in left side
+ **************************************************************************************************/
+
+- (UIImageView *)addUserImgAtLeftSide {
 
         //add mask image
     if (userProfile != nil) {
@@ -99,6 +113,11 @@
     imgVwProile.frame = CGRectMake(0, 0, 35, 35);
     return imgVwProile;
 }
+
+#pragma mark - Show messages of inbox of fb
+/**************************************************************************************************
+ Function to show messages of inbox of fb
+ **************************************************************************************************/
 
 - (void)showInboxMessage {
 
@@ -133,8 +152,10 @@
     }];
 }
 
-
 #pragma mark - Convert array of FB into model class
+/**************************************************************************************************
+ Function to convert array of FB into model class
+ **************************************************************************************************/
 
 - (void)convertDataOfFBIntoModel:(NSArray *)arryPost {
 
@@ -212,6 +233,11 @@
 
     return (rect.size.height + 65);//183 is height of other fixed content
 }
+
+#pragma mark - Show all chat in detail
+/**************************************************************************************************
+ Function to show all chat in detail
+ **************************************************************************************************/
 
 - (void)showAllMessage:(NSInteger)cellIndex {
 
