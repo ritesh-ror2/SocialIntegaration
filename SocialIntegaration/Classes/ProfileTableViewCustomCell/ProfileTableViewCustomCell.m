@@ -34,8 +34,8 @@
 
 - (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo  {
 
-    lblName.text = objUserInfo.strUserName;
-    lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserInfo.struserTime];
+    lblName.text = objUserInfo.userName;
+    lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserInfo.time];
 
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
@@ -46,13 +46,13 @@
     lblText.frame = CGRectMake(63, 53, 250, rect.size.height+2);
     lblText.text = objUserInfo.strUserPost;
 
-    lblSocialType.text = objUserInfo.strUserSocialType;
+    lblSocialType.text = objUserInfo.userSocialType;
 
-    if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
+    if ([objUserInfo.userSocialType isEqualToString: @"Facebook"]) {
 
         lblSocialType.textColor = [UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0];
         [self uploadProfileImage:objUserInfo]; //upload profile image
-    } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
+    } else if ([objUserInfo.userSocialType isEqualToString: @"Twitter"]) {
 
         lblSocialType.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
         [self setProfileImageOfTwitter:objUserInfo];
@@ -62,7 +62,7 @@
     }
     btnPlay.hidden = YES;
 
-    if (objUserInfo.strPostImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
 //        if (imgVwPostImg.image != nil) {
 //            imgVwPostImg.image = nil;
@@ -85,7 +85,7 @@
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{
-        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:objUserInfo.strUserImg]];
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:objUserInfo.userProfileImg]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -98,7 +98,7 @@
 
 - (void)setPostImageAndOfFB:(UserInfo *)objUserInfo {
 
-     imgVwPostImg.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
+     imgVwPostImg.imageURL = [NSURL URLWithString:objUserInfo.postImg];
 }
 
 - (void)uploadProfileImage:(UserInfo *)objUserInfo {

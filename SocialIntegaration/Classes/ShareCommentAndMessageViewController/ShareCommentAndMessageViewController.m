@@ -434,7 +434,7 @@
     for (NSDictionary *dictUser in arryResult) {
 
         UserInfo *info = [[UserInfo alloc]init];
-        info.strUserName = [dictUser valueForKey:@"name"];
+        info.userName = [dictUser valueForKey:@"name"];
         info.fromId = [dictUser valueForKey:@"id"];
         [self.arryUsers addObject:info];
     }
@@ -455,7 +455,7 @@
         cell = [[UITableViewCell alloc]initWithStyle: UITableViewCellStyleSubtitle reuseIdentifier:@"userlist"];
     }
 
-    cell.textLabel.text = [[self.arryUsers objectAtIndex:indexPath.row] strUserName];
+    cell.textLabel.text = [[self.arryUsers objectAtIndex:indexPath.row] userName];
     cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:17.0];
     cell.textLabel.textColor = [UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0] ;
     return cell;
@@ -466,7 +466,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     UserInfo *userInfo = [self.arryUsers objectAtIndex:indexPath.row];
-    NSString *strTaggedName = userInfo.strUserName;
+    NSString *strTaggedName = userInfo.userName;
     NSString *strTaggedUser = [self.txtVwTwitter.text stringByAppendingString:strTaggedName];
 
     //  NSMutableAttributedString *strTwitterTags = [[NSMutableAttributedString alloc]initWithString:strTaggedUser];

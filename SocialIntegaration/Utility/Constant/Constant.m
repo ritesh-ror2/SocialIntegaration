@@ -82,6 +82,9 @@
 }
 
 #pragma mark - Calculate time between two dates
+/**************************************************************************************************
+ Function to calculate time between two dates
+ **************************************************************************************************/
 
 + (NSString *)calculateTimesBetweenTwoDates:(NSString *)strGivenDate {
 
@@ -125,6 +128,9 @@
 }
 
 #pragma mark - Convert date of FB
+/**************************************************************************************************
+ Function to convert date formate of fb
+ **************************************************************************************************/
 
 + (NSString *)convertDateOFFB:(NSString*)strdate {
 
@@ -165,6 +171,11 @@
     return strDateInDatabaseFormate;
 }
 
+#pragma mark - Convert date formate from instagram
+/**************************************************************************************************
+ Function to convert date formate of instagram
+ **************************************************************************************************/
+
 + (NSString *)convertDateOFInstagram:(NSDate*)date {
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -180,6 +191,9 @@
 }
 
 #pragma mark - Convert date of twitter
+/**************************************************************************************************
+ Function to convert date formate of twitter
+ **************************************************************************************************/
 
 + (NSString *)convertDateOFTwitter:(NSString*)strdate {
 
@@ -198,6 +212,9 @@
 }
 
 #pragma mark - Hide and show network indicator
+/**************************************************************************************************
+ Function to  hide and show network activity indicator
+ **************************************************************************************************/
 
 + (void)showNetworkIndicator {
 

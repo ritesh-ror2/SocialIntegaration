@@ -42,7 +42,7 @@
     }
     self.userInfo = userInfo;
 
-    lblResult.text = userInfo.strUserName;
+    lblResult.text = userInfo.userName;
 
     NSString *string = userInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 100)
@@ -73,11 +73,11 @@
         [btnFollow setTitle:@"Follow" forState:UIControlStateNormal];
     }
 
-    if ([userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+    if ([userInfo.userSocialType isEqualToString:@"Facebook"]) {
 
         btnFollow.hidden = YES;
         [self uploadProfileImage:userInfo];
-    } else if ([userInfo.strUserSocialType isEqualToString:@"Instagram"]) {
+    } else if ([userInfo.userSocialType isEqualToString:@"Instagram"]) {
         btnFollow.hidden = YES;
         [self setProfileImageOfTwitterAndInstagram:userInfo];
     } else {
@@ -91,7 +91,7 @@
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{
-        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:objUser.strUserImg]];
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:objUser.userProfileImg]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
 

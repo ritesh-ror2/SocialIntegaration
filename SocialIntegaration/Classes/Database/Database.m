@@ -12,6 +12,8 @@
 
 static sqlite3 *database = nil;
 
+#pragma mark - Establish connection with database
+
 + (Database *)connection {
 	
 	static Database *con = nil;

@@ -434,8 +434,8 @@ CGContextRef CKBitmapContextAndDataCreate(CGSize size, void ** data) {
 }
 
 
-- (void)decompressImageInBackground:(UIImage *)image
-{
+- (void)decompressImageInBackground:(UIImage *)image {
+    
 	@synchronized ([self class])
 	{
 		if (!cancelled && decompressImage)

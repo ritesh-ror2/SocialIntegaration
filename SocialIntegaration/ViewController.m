@@ -428,14 +428,14 @@ BOOL hasTwitter = NO;
 
             NSDictionary *fromUser = [dictData objectForKey:@"from"];
 
-            userInfo.strUserName = [fromUser valueForKey:@"name"];
+            userInfo.userName = [fromUser valueForKey:@"name"];
             userInfo.fromId = [fromUser valueForKey:@"id"];
-            userInfo.strUserSocialType = @"Facebook";
+            userInfo.userSocialType = @"Facebook";
             userInfo.fbLike = [[dictData valueForKey:@"user_likes"] boolValue];
             userInfo.type = [dictData objectForKey:@"type"];
             userInfo.strUserPost = [dictData valueForKey:@"message"];
-            userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-            userInfo.strPostImg = [dictData valueForKey:@"picture"];
+            userInfo.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+            userInfo.userProfileImg = [dictData valueForKey:@"picture"];
             userInfo.postId = [dictData valueForKey:@"id"];
             userInfo.videoUrl = [dictData valueForKey:@"source"];
 
@@ -612,20 +612,20 @@ BOOL hasTwitter = NO;
 
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
             UserInfo *userInfo =[[UserInfo alloc]init];
-            userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
+            userInfo.userName = [postUserDetailDict valueForKey:@"name"];
             userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
-            userInfo.strUserImg = [postUserDetailDict valueForKey:@"profile_image_url"];
+            userInfo.userProfileImg = [postUserDetailDict valueForKey:@"profile_image_url"];
 
             NSArray *arryMedia = [[dictData objectForKey:@"extended_entities"] objectForKey:@"media"];
 
             if (arryMedia.count>0) {
-                userInfo.strPostImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
+                userInfo.postImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
             }
             userInfo.strUserPost = [dictData valueForKey:@"text"];
-            userInfo.strUserSocialType = @"Twitter";
+            userInfo.userSocialType = @"Twitter";
             userInfo.type = [dictData objectForKey:@"type"];
             NSString *strDate = [Constant convertDateOfTwitterInDatabaseFormate:[dictData objectForKey:@"created_at"]];
-            userInfo.struserTime = [Constant convertDateOFTwitter:strDate];
+            userInfo.time = [Constant convertDateOFTwitter:strDate];
             userInfo.statusId = [dictData valueForKey:@"id"];
             userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
             userInfo.screenName = [postUserDetailDict valueForKey:@"screen_name"];
@@ -707,7 +707,7 @@ BOOL hasTwitter = NO;
 
     if ( sharedAppDelegate.arryOfAllFeeds.count != 0) {
         if(indexPath.row > [sharedAppDelegate.arryOfAllFeeds count]-1) {
-            return 50;
+            return 60;
         }
     } else {
         return 0;
@@ -721,7 +721,7 @@ BOOL hasTwitter = NO;
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    if (objUserInfo.strPostImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
         for (NSString *index in self.arrySelectedIndex) {
 
@@ -934,10 +934,10 @@ Delegate to increase cell height when cell is tapped
 
             NSDictionary *dictUserInfo = [postUserDetailDict objectForKey:@"from"];
 
-            userInfo.strUserName = [dictUserInfo valueForKey:@"username"];
+            userInfo.userName = [dictUserInfo valueForKey:@"username"];
             userInfo.fromId = [dictUserInfo valueForKey:@"id"];
             sharedAppDelegate.InstagramId = userInfo.fromId;
-            userInfo.strUserImg = [dictUserInfo valueForKey:@"profile_picture"];
+            userInfo.userProfileImg = [dictUserInfo valueForKey:@"profile_picture"];
 
             userInfo.mediaIdOfInstagram = [dictData valueForKey:@"id"];
             userInfo.instagramLikeCount = [[dictData objectForKey:@"likes"]valueForKey:@"count"];
@@ -945,13 +945,13 @@ Delegate to increase cell height when cell is tapped
 
             NSTimeInterval interval = strDate.doubleValue;
             NSDate *convertedDate = [NSDate dateWithTimeIntervalSince1970: interval];
-            userInfo.struserTime = [Constant convertDateOFInstagram:convertedDate];
+            userInfo.time = [Constant convertDateOFInstagram:convertedDate];
 
             NSDictionary *dictImage = [dictData objectForKey:@"images"];
-            userInfo.strPostImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
+            userInfo.postImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
 
             userInfo.type = [dictData objectForKey:@"type"];
-            userInfo.strUserSocialType = @"Instagram";
+            userInfo.userSocialType = @"Instagram";
             userInfo.statusId = [dictData objectForKey:@"id"];
 
             [sharedAppDelegate.arryOfInstagrame addObject:userInfo];
@@ -977,7 +977,7 @@ Delegate to increase cell height when cell is tapped
     [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfTwittes];
     [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfInstagrame];
 
-    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"struserTime" ascending:NO];//give key name
+    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"time" ascending:NO];//give key name
     NSArray *sortDescriptors = [NSArray arrayWithObject:descriptor];
 
     NSArray *sortedArray = [sharedAppDelegate.arryOfAllFeeds sortedArrayUsingDescriptors:sortDescriptors];

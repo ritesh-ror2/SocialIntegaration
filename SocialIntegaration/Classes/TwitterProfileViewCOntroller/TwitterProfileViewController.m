@@ -76,6 +76,9 @@
 }
 
 #pragma mark - Request to get user info
+/**************************************************************************************************
+ Function to request twitter user info
+ **************************************************************************************************/
 
 - (void)getUserInfoFromTwitter {
 
@@ -107,6 +110,9 @@
 }
 
 #pragma mark - Request to get user own tweet
+/**************************************************************************************************
+ Function to request to get user own tweet
+ **************************************************************************************************/
 
 - (void)getUserTweets:(NSString*) userId{
 
@@ -163,7 +169,10 @@
      }];
 }
 
-#pragma mark - Show profile information
+#pragma mark - Show user profile information
+/**************************************************************************************************
+ Function to show user profile information
+ **************************************************************************************************/
 
 - (void)showProfile:(UserProfile *)userProfile {
 
@@ -188,26 +197,10 @@
     });
 }
 
-#pragma mark - Convert date into "YYYY-dd-mm" formate
-
-- (NSString *)dateOfTwitter:(NSString *)createdDate {
-
-    NSString *strDateInDatabaseFormate;
-
-    NSString *strYear = [createdDate substringWithRange:NSMakeRange(createdDate.length-4, 4)];
-    NSString *strMonth = [createdDate substringWithRange:NSMakeRange(4, 3)];
-    NSString *strDate = [createdDate substringWithRange:NSMakeRange(8, 2)];
-
-    NSString *strTime = [createdDate substringWithRange:NSMakeRange(11, 8)];//14
-
-    NSString *finalDate = [NSString stringWithFormat:@"%@ %@ %@", strDate, strMonth, strYear];
-
-    strDateInDatabaseFormate = [NSString stringWithFormat:@"%@ %@", finalDate, strTime];
-
-    return strDateInDatabaseFormate;
-}
-
 #pragma mark - Convert data of twitter in to model class
+/**************************************************************************************************
+ Function to convert data of twitter in to model class
+ **************************************************************************************************/
 
 - (void)convertDataOfTwitterIntoModel:(NSArray *)arryPost {
 
@@ -223,17 +216,17 @@
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
 
             UserInfo *userInfo =[[UserInfo alloc]init];
-            userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
+            userInfo.userName = [postUserDetailDict valueForKey:@"name"];
             userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
-            userInfo.strUserImg = [postUserDetailDict valueForKey:@"profile_image_url"];
+            userInfo.userProfileImg = [postUserDetailDict valueForKey:@"profile_image_url"];
 
             NSArray *arryMedia = [[dictData objectForKey:@"extended_entities"] objectForKey:@"media"];
 
             if (arryMedia.count>0) {
-                userInfo.strPostImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
+                userInfo.postImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
             }
             userInfo.strUserPost = [dictData valueForKey:@"text"];
-            userInfo.strUserSocialType = @"Twitter";
+            userInfo.userSocialType = @"Twitter";
             userInfo.type = [dictData objectForKey:@"type"];
             userInfo.statusId =[dictData valueForKey:@"id"];
             userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
@@ -243,8 +236,8 @@
             userInfo.retweetCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweet_count"] integerValue]];
             userInfo.favourateCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorite_count"] integerValue]];
 
-            NSString *strDate = [self dateOfTwitter:[dictData objectForKey:@"created_at"]];
-            userInfo.struserTime = [Constant convertDateOFTwitter:strDate];
+            NSString *strDate = [Constant convertDateOfTwitterInDatabaseFormate:[dictData objectForKey:@"created_at"]];
+            userInfo.time = [Constant convertDateOFTwitter:strDate];
             [self.arrySelfTweets addObject:userInfo];
             [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
         }
@@ -285,8 +278,7 @@
     return cell;
 }
 
-#pragma mark - UITableViewDelegate
-
+#pragma mark - UITableView Delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -298,7 +290,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    if (objUserInfo.strPostImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
         for (NSString *index in self.arrySelectedIndex) {
 
@@ -318,6 +310,11 @@
     return (rect.size.height + 65);//183 is height of other fixed content
 }
 
+#pragma mark - Custom cell Delegates
+/**************************************************************************************************
+ Function to custom cell Delegates to show user profile
+ **************************************************************************************************/
+
 - (void)userProfileBtnTapped:(UserInfo*)userInfo {
 
     UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -325,6 +322,10 @@
     vwController.userInfo = userInfo;
     [self.navigationController pushViewController:vwController animated:YES];
 }
+
+/**************************************************************************************************
+ Function to go to detail view
+ **************************************************************************************************/
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
 
@@ -335,15 +336,16 @@
     [[self navigationController] pushViewController:commentVw animated:YES];
 }
 
+/**************************************************************************************************
+ Function when first time cell will be tapped
+ **************************************************************************************************/
+
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
     UIApplication *app = [UIApplication sharedApplication];
     app.networkActivityIndicatorVisible = NO;
 
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
-
-    NSLog(@"****%@***", self.arrySelectedIndex);
-        //your code here
 
     if (isSelected == YES) {
         [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
@@ -353,7 +355,6 @@
     [self.tbleVwTweeterFeeds beginUpdates];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];
     [self.tbleVwTweeterFeeds reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        //your code here
     [self.tbleVwTweeterFeeds endUpdates];
 }
 

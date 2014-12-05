@@ -63,12 +63,12 @@
 
 - (void)showNavigationBarColor {
 
-    if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+    if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
 
         imgVwbackg.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
         [btnPost addTarget:self action:@selector(postOnFbBtnTapped:) forControlEvents:UIControlEventTouchUpInside];//
         lblNavHeading.text = @"Facebook";
-    } else if ([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
+    } else if ([self.userInfo.userSocialType isEqualToString:@"Twitter"]) {
 
         lblNavHeading.text = @"Twitter";
         imgVwbackg.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];

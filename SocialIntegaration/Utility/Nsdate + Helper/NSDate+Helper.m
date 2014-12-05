@@ -10,6 +10,7 @@
 
 @implementation NSDate (Helper)
 
+#pragma mark - Date from string
 
 + (NSDate *)dateFromString:(NSString *)strPreviousDate {
     

@@ -56,7 +56,6 @@
 - (void)didReceiveMemoryWarning {
 
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -78,37 +77,10 @@
     [self setFBUserInfo:userProfile];
 }
 
-- (void)userProfileBtnTapped:(UserInfo*)userInfo {
-
-    NSString *strUserId = [NSString stringWithFormat:@"/%@",userInfo.fromId];
-    /* make the API call */
-    [FBRequestConnection startWithGraphPath:strUserId
-                                 parameters:nil
-                                 HTTPMethod:@"GET"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              if (error) {
-
-                              } else {
-
-                                  NSDictionary *dictProfile = (NSDictionary *)result;
-
-                                  UserInfo *otherUserInfo = [[UserInfo alloc]init];
-                                  otherUserInfo.strUserName = [dictProfile valueForKey:@"name"];
-                                  otherUserInfo.fromId  = [dictProfile valueForKey:@"id"];
-                                  otherUserInfo.strUserSocialType = @"Facebook";
-                                  UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                                  ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
-                                  vwController.userInfo = otherUserInfo;
-                                  [self.navigationController pushViewController:vwController animated:YES];
-                              }
-                          }];
-}
-
 #pragma mark - Get FB User Info
+/**************************************************************************************************
+ Function to get FB User Info
+ **************************************************************************************************/
 
 - (void)getFBUserInfo {
 
@@ -123,11 +95,7 @@
         [Constant hideNetworkIndicator];
         return;
     }
-
-   /* [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES];*/
-
+    [Constant showNetworkIndicator];
 
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
     if (isFbUserLogin == NO) {
@@ -165,16 +133,21 @@
 		                          }];
 }
 
-#pragma mark - Get news feed of facebook
+#pragma mark - Get FB User friend list and own feeds
+/**************************************************************************************************
+ Function to get FB User friend list and satus
+ **************************************************************************************************/
 
 - (void)getProfileOfFB {
 
-    [self getUserStatus];
+    [self getFbUserOwnFeeds];
     [self getFriendList];
-
 }
 
 #pragma mark - Get friend list
+/**************************************************************************************************
+ Function to get FB User Info
+ **************************************************************************************************/
 
 - (void)getFriendList {
 
@@ -193,8 +166,11 @@
 }
 
 #pragma mark-  Get user own post
+/**************************************************************************************************
+ Function to get FB User friend list and satus
+ **************************************************************************************************/
 
-- (void)getUserStatus {
+- (void)getFbUserOwnFeeds {
 
     [FBRequestConnection startWithGraphPath:@"/me/feed"
                                  parameters:nil
@@ -212,6 +188,9 @@
 }
 
 #pragma mark - Convert array of FB into model class
+/**************************************************************************************************
+ Function to convert user data into data model
+ **************************************************************************************************/
 
 - (void)convertDataOfFBIntoModel:(NSArray *)arryPost {
 
@@ -225,14 +204,14 @@
                 NSDictionary *fromUser = [dictData objectForKey:@"from"];
 
                 UserInfo *userInfo =[[UserInfo alloc]init];
-                userInfo.strUserName = [fromUser valueForKey:@"name"];
+                userInfo.userName = [fromUser valueForKey:@"name"];
                 userInfo.fromId = [fromUser valueForKey:@"id"];
                 userInfo.strUserPost = [dictData valueForKey:@"message"];
-                userInfo.strUserSocialType = @"Facebook";
+                userInfo.userSocialType = @"Facebook";
                 userInfo.objectIdFB = [dictData objectForKey:@"id"];
                 userInfo.type = [dictData objectForKey:@"type"];
-                userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-                userInfo.strPostImg = [dictData valueForKey:@"picture"];
+                userInfo.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+                userInfo.postImg = [dictData valueForKey:@"picture"];
                 [self.arryOfFBUserFeed addObject:userInfo];
 
                 [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
@@ -256,6 +235,9 @@
 //}
 
 #pragma mark - Show user profilr info
+/**************************************************************************************************
+ Function to show user profile of fb user
+ **************************************************************************************************/
 
 - (void)setFBUserInfo:(UserProfile*)userProfile {
 
@@ -274,7 +256,7 @@
     });
 }
 
-#pragma mark - UITableViewDatasource
+#pragma mark - UITableView Datasource
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
@@ -327,8 +309,6 @@
 
 #pragma mark - UITableViewDelegate
 
-#pragma mark - UITableViewDelegate
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     UserInfo *objUserInfo = [self.arryOfFBUserFeed objectAtIndex:indexPath.row];
@@ -339,7 +319,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    if (objUserInfo.strPostImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
         for (NSString *index in self.arrySelectedIndex) {
 
@@ -359,6 +339,8 @@
     return (rect.size.height + 65);//183 is height of other fixed content
 }
 
+#pragma mark - Custom cell Delegates
+
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -375,9 +357,6 @@
 
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
 
-    NSLog(@"****%@***", self.arrySelectedIndex);
-        //your code here
-
     if (isSelected == YES) {
         [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
     } else {
@@ -386,10 +365,44 @@
     [self.tbleVwFeeds beginUpdates];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];
     [self.tbleVwFeeds reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        //your code here
     [self.tbleVwFeeds endUpdates];
 }
 
+
+#pragma mark - Show user profile
+/**************************************************************************************************
+ Function to show user profile
+ **************************************************************************************************/
+
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+    NSString *strUserId = [NSString stringWithFormat:@"/%@",userInfo.fromId];
+    /* make the API call */
+    [FBRequestConnection startWithGraphPath:strUserId
+                                 parameters:nil
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(
+                                              FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error
+                                              ) {
+                              if (error) {
+
+                              } else {
+
+                                  NSDictionary *dictProfile = (NSDictionary *)result;
+
+                                  UserInfo *otherUserInfo = [[UserInfo alloc]init];
+                                  otherUserInfo.userName = [dictProfile valueForKey:@"name"];
+                                  otherUserInfo.fromId  = [dictProfile valueForKey:@"id"];
+                                  otherUserInfo.userSocialType = @"Facebook";
+                                  UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                                  ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+                                  vwController.userInfo = otherUserInfo;
+                                  [self.navigationController pushViewController:vwController animated:YES];
+                              }
+                          }];
+}
 
 /*- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -407,15 +420,5 @@
     return (rect.size.height + 60);//183 is height of other fixed content
 }*/
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -140,7 +140,7 @@
 
     if ( sharedAppDelegate.arryOfFBNewsFeed.count != 0) {
         if(indexPath.row > [sharedAppDelegate.arryOfFBNewsFeed count]-1) {
-            return 44;
+            return 60;
         }
     } else {
         return 0;
@@ -153,7 +153,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    if (objUserInfo.strPostImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
         for (NSString *index in self.arrySelectedIndex) {
 
@@ -280,14 +280,14 @@
 
             NSDictionary *fromUser = [dictData objectForKey:@"from"];
 
-            userInfo.strUserName = [fromUser valueForKey:@"name"];
+            userInfo.userName = [fromUser valueForKey:@"name"];
             userInfo.fromId = [fromUser valueForKey:@"id"];
             userInfo.strUserPost = [dictData valueForKey:@"message"];
-            userInfo.strUserSocialType = @"Facebook";
+            userInfo.userSocialType = @"Facebook";
             userInfo.fbLike = [[dictData valueForKey:@"user_likes"] boolValue];
             userInfo.type = [dictData objectForKey:@"type"];
-            userInfo.struserTime = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-            userInfo.strPostImg = [dictData valueForKey:@"picture"];
+            userInfo.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+            userInfo.postImg = [dictData valueForKey:@"picture"];
 
             NSLog(@"*** %@", [dictData objectForKey:@"type"]);
             if (![[dictData objectForKey:@"type"] isEqualToString:@"video"] && ![[dictData objectForKey:@"type"] isEqualToString:@"photo"]) {

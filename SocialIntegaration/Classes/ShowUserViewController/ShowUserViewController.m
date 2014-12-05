@@ -195,10 +195,10 @@
 
         if ([self.searchKeywordType isEqualToString:@"User"]) {
 
-            userInfo.strUserName = [dictData valueForKey:@"username"];
-            userInfo.strUserImg = [dictData valueForKey:@"profile_picture"];
+            userInfo.userName = [dictData valueForKey:@"username"];
+            userInfo.userProfileImg= [dictData valueForKey:@"profile_picture"];
             userInfo.fromId = [dictData valueForKey:@"id"];
-            userInfo.strUserSocialType = @"Instagram";
+            userInfo.userSocialType = @"Instagram";
             userInfo.type = self.searchKeywordType;
 
             [self.arrySearchUserList addObject:userInfo];
@@ -208,12 +208,12 @@
             NSDictionary *dictCaption = [dictData objectForKey:@"caption"];
             if ([dictData objectForKey:@"caption"] != [NSNull null]) {
                 NSDictionary *dictUser = [dictCaption objectForKey:@"from"];
-                userInfo.strUserName = [dictUser valueForKey:@"username"];
-                userInfo.strUserImg = [dictUser valueForKey:@"profile_picture"];
+                userInfo.userName = [dictUser valueForKey:@"username"];
+                userInfo.userProfileImg= [dictUser valueForKey:@"profile_picture"];
                 userInfo.fromId = [dictUser valueForKey:@"id"];
                 userInfo.strUserPost = [dictCaption valueForKey:@"text"];
 
-                userInfo.strUserSocialType = @"Instagram";
+                userInfo.userSocialType = @"Instagram";
                 userInfo.type = self.searchKeywordType;
 
                 [self.arrySearchUserList addObject:userInfo];
@@ -307,16 +307,16 @@
         UserInfo *userInfo = [[UserInfo alloc]init];
         userInfo.fromId = [NSString stringWithFormat:@"%lli",[[dictUser valueForKey:@"id"] longLongValue]];
 
-        userInfo.strUserName = [dictUser valueForKey:@"name"];
+        userInfo.userName = [dictUser valueForKey:@"name"];
         userInfo.isFollowing = [[dictUser valueForKey:@"username"] boolValue];
-        userInfo.strUserImg = [dictUser valueForKey:@"profile_image_url"];
+        userInfo.userProfileImg = [dictUser valueForKey:@"profile_image_url"];
         userInfo.isFollowing = [[dictUser valueForKey:@"following"] boolValue];
-        userInfo.strUserSocialType = @"Twitter";
+        userInfo.userSocialType = @"Twitter";
         //set user profile
         NSString *strFollowers = [NSString stringWithFormat:@"%i",[[dictUser valueForKey:@"followers_count"] integerValue]];
          NSString *strTweet = [NSString stringWithFormat:@"%i",[[dictUser valueForKey:@"listed_count"] integerValue]];
         NSString *strFollowing = [NSString stringWithFormat:@"%i",[[dictUser valueForKey:@"friends_count"] integerValue]];
-        NSDictionary *dictUserData = @{@"friends_count": strFollowing, @"followers_count":strFollowers, @"listed_count":strTweet, @"profile_image_url":userInfo.strUserImg, @"id":userInfo.fromId};
+        NSDictionary *dictUserData = @{@"friends_count": strFollowing, @"followers_count":strFollowers, @"listed_count":strTweet, @"profile_image_url":userInfo.userProfileImg, @"id":userInfo.fromId};
         userInfo.dicOthertUser = dictUserData;
 
         if ([self.searchKeywordType isEqualToString:@"Keyword"]) {
@@ -371,8 +371,8 @@
 
         UserInfo *userInfo = [[UserInfo alloc]init];
         userInfo.fromId = [NSString stringWithFormat:@"%lli",[[dictUser valueForKey:@"id"] longLongValue]];
-        userInfo.strUserName = [dictUser valueForKey:@"name"];
-        userInfo.strUserSocialType = @"Facebook";
+        userInfo.userName = [dictUser valueForKey:@"name"];
+        userInfo.userSocialType = @"Facebook";
 
         if ([self.searchKeywordType isEqualToString:@"Keyword"]) {
             userInfo.type = @"Keyword";

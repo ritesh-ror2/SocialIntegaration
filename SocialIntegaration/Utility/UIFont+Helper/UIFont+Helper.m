@@ -10,6 +10,8 @@
 
 @implementation UIFont (Helper)
 
+#pragma mark - Set font name with style
+
 + (UIFont *)fontWithCustomName:(NSString *)fontName size:(CGFloat)fontSize {
 
      return [UIFont fontWithName:@"Helvetica-Neune" size:fontSize];

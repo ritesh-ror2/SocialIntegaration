@@ -120,7 +120,7 @@
 
     if ( sharedAppDelegate.arryOfInstagrame.count != 0) {
         if(indexPath.row > [sharedAppDelegate.arryOfInstagrame count]-1) {
-            return 44;
+            return 60;
         }
     } else {
         return 0;
@@ -133,7 +133,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    if (objUserInfo.strPostImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
         for (NSString *index in self.arrySelectedIndex) {
 

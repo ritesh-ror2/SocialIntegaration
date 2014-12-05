@@ -133,7 +133,7 @@
 
     self.navigationController.navigationBarHidden = YES;
     [self setHeadingAndRightBtn];
-    if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+    if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
         [self showUserTagged:nil];
     }
     [self setProfilePic:self.userInfo];
@@ -149,7 +149,7 @@
 
 - (void)setHeadingAndRightBtn {
 
-    if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+    if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
 
         [self getLargeImageOfFacebook];
 
@@ -160,7 +160,7 @@
         [self facebookConfiguration];
         [self fectchFBComment];
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
-    } else if ([self.userInfo.strUserSocialType isEqualToString:@"Instagram"]) {
+    } else if ([self.userInfo.userSocialType isEqualToString:@"Instagram"]) {
 
         [btnRight setTitle:@"Post" forState:UIControlStateNormal];
         lblHeading.text = @"Instagram";
@@ -433,7 +433,7 @@
 
     lblComment.frame = CGRectMake(70, 25, 245, rect.size.height+10);
     lblComment.text = objUserInfo.strUserPost;
-    lblName.text = objUserInfo.strUserName;
+    lblName.text = objUserInfo.userName;
     
     asyVwOfPost.hidden = YES;
     btnShowImageOrVideo.hidden = YES;
@@ -445,12 +445,12 @@
         heightPostImg = rect.size.height+10;
     }
 
-    if (objUserInfo.strPostImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
         asyVwOfPost.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
         imgVwLagrePostImage.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
-        asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
+        asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
         asyVwOfPost.backgroundColor = [UIColor clearColor];
 
         btnShowImageOrVideo.frame = asyVwOfPost.frame;
@@ -506,7 +506,7 @@
     [imgVwBackground addSubview:btnTaggedUser];
 
     for (UserInfo *userInfo  in self.arryTaggedUser) {
-        NSString *strName = userInfo.strUserName;
+        NSString *strName = userInfo.userName;
         NSString *strAppendName = [NSString stringWithFormat:@"%@,", strName];
         [strUserNameList appendString:strAppendName];
     }
@@ -534,7 +534,7 @@
 
 - (IBAction)moreBtnTapped:(id)sender {
 
-    if([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
+    if([self.userInfo.userSocialType isEqualToString:@"Twitter"]) {
 
         [self.view bringSubviewToFront:btnBlock];
         [btnBlock setHidden:NO];
@@ -557,7 +557,7 @@
 
 - (IBAction)blockTweetPost:(id)sender {
 
-    NSString *strUser = [NSString stringWithFormat:@"Are you sure to block @%@ ?", self.userInfo.strUserName];
+    NSString *strUser = [NSString stringWithFormat:@"Are you sure to block @%@ ?", self.userInfo.userName];
     UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Block" message:strUser delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Block", nil];
     [alertVw show];
 }
@@ -785,7 +785,7 @@
 
 - (void)setProfilePicOfPostUser:(UserInfo *)userInfo  {
 
-    if ([userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+    if ([userInfo.userSocialType isEqualToString:@"Facebook"]) {
 
         dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         dispatch_async(postImageQueue, ^{
@@ -802,7 +802,7 @@
 
         dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         dispatch_async(postImageQueue, ^{
-            NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userInfo.strUserImg]];
+            NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userInfo.userProfileImg]];
 
             dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -821,7 +821,7 @@
 
 - (void)setProfilePic:(UserInfo *)userInfo  {
 
-    userProfile = [UserProfile getProfile:userInfo.strUserSocialType];
+    userProfile = [UserProfile getProfile:userInfo.userSocialType];
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{
@@ -873,7 +873,7 @@
         [activityIndicator setHidden:YES];
 
         UserInfo *userTagged = [self.arryTaggedUser objectAtIndex:indexPath.row];
-        cell.textLabel.text = userTagged.strUserName;
+        cell.textLabel.text = userTagged.userName;
         cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:15.0];
     } else {
 
@@ -1015,8 +1015,8 @@
 
             UserInfo *userInfo = [[UserInfo alloc]init];
             userInfo.fromId = [dictUser valueForKey:@"id"];
-            userInfo.strUserName = [dictUser valueForKey:@"name"];
-            userInfo.strUserSocialType = @"Facebook";
+            userInfo.userName = [dictUser valueForKey:@"name"];
+            userInfo.userSocialType = @"Facebook";
 
             [self.arryTaggedUser addObject:userInfo];
         }

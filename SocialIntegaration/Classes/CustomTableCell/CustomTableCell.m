@@ -77,7 +77,7 @@
 
 - (void)handleTapGestureOnTableViewCell:(UITapGestureRecognizer *)gesture {
 
-    if([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+    if([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
 
         if (self.isAlreadyTapped == YES) {
 
@@ -88,7 +88,7 @@
             self.isAlreadyTapped = YES;
             [self didRowTappedAtFirstTime:self.isAlreadyTapped];
         }
-    } else  if([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
+    } else  if([self.userInfo.userSocialType isEqualToString:@"Twitter"]) {
 
         if (self.isAlreadyTapped == YES) {
 
@@ -288,8 +288,8 @@
 
 - (void)setValueOfFeeds:(UserInfo*)objUserInfo {
 
-    lblName.text = objUserInfo.strUserName;
-    lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserInfo.struserTime];
+    lblName.text = objUserInfo.userName;
+    lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserInfo.time];
 
     NSString *string = [objUserInfo.strUserPost stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
@@ -300,7 +300,7 @@
     lblText.frame = CGRectMake(63, 52, 250, rect.size.height);
     lblText.text = string;
 
-    lblSocialType.text = objUserInfo.strUserSocialType;
+    lblSocialType.text = objUserInfo.userSocialType;
 
     lblInstLikeCount.text = [NSString stringWithFormat:@"%@", objUserInfo.instagramLikeCount];
     lblInstCommentCount.text = [NSString stringWithFormat:@"%@", objUserInfo.instagramCommentCount];
@@ -308,7 +308,7 @@
     lblTweet.text = objUserInfo.retweetCount;
     lblFavourate.text = objUserInfo.favourateCount;
 
-    if (objUserInfo.strPostImg.length != 0) { //set post image
+    if (objUserInfo.postImg.length != 0) { //set post image
 
         imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, 320, 320);
         imgVwPostImg.hidden = NO;
@@ -386,9 +386,9 @@
             self.isAlreadyTapped = YES;
             imgVwBgColor.hidden = NO;
 
-            if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
+            if ([objUserInfo.userSocialType isEqualToString: @"Facebook"]) {
                 [self facebookCellConfiguration:isSelected];
-            } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
+            } else if ([objUserInfo.userSocialType isEqualToString: @"Twitter"]) {
                 [self twitterCellConfiguration:isSelected];
             } else {
                 [self instagramCellConfiguration:YES];
@@ -412,7 +412,7 @@
 
 - (void)setColorOfFBTwitterInstHeading:(UserInfo *)objUserInfo withOtherTimeline:(BOOL)isOtherTimeline {
 
-    if ([objUserInfo.strUserSocialType isEqualToString: @"Facebook"]) {
+    if ([objUserInfo.userSocialType isEqualToString: @"Facebook"]) {
 
         if (isOtherTimeline == NO) {
             lblSocialType.textColor = [UIColor colorWithRed:92/256.0f green:103/256.0f blue:159/256.0f alpha:1.0];
@@ -421,7 +421,7 @@
         }
         [self profileImgOfFbUser:objUserInfo]; //upload profile image
 
-    } else if ([objUserInfo.strUserSocialType isEqualToString: @"Twitter"]) {
+    } else if ([objUserInfo.userSocialType isEqualToString: @"Twitter"]) {
 
         if (isOtherTimeline == NO) {
             lblSocialType.textColor = [UIColor colorWithRed:87/256.0f green:171/256.0f blue:218/256.0f alpha:1.0];
@@ -477,7 +477,7 @@
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{
-        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:objUserInfo.strUserImg]];
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:objUserInfo.userProfileImg]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -495,7 +495,7 @@
 
 - (void)setPostImage:(UserInfo *)objUserInfo {
 
-    imgVwPostImg.imageURL = [NSURL URLWithString:objUserInfo.strPostImg];
+    imgVwPostImg.imageURL = [NSURL URLWithString:objUserInfo.userProfileImg];
 }
 
 #pragma mark - Set User profile images

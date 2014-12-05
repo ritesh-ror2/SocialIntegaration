@@ -150,20 +150,20 @@
             //  NSLog(@"**%@", dictData); //14055301;
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
             UserInfo *userInfo =[[UserInfo alloc]init];
-            userInfo.strUserName = [postUserDetailDict valueForKey:@"name"];
+            userInfo.userName = [postUserDetailDict valueForKey:@"name"];
             userInfo.fromId = [postUserDetailDict valueForKey:@"id"];
-            userInfo.strUserImg = [postUserDetailDict valueForKey:@"profile_image_url"];
+            userInfo.userProfileImg = [postUserDetailDict valueForKey:@"profile_image_url"];
 
             NSArray *arryMedia = [[dictData objectForKey:@"extended_entities"] objectForKey:@"media"];
 
             if (arryMedia.count>0) {
-                userInfo.strPostImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
+                userInfo.postImg = [[arryMedia objectAtIndex:0] valueForKey:@"media_url"];
             }
             userInfo.strUserPost = [dictData valueForKey:@"text"];
-            userInfo.strUserSocialType = @"Twitter";
+            userInfo.userSocialType = @"Twitter";
             userInfo.type = [dictData objectForKey:@"type"];
             NSString *strDate = [Constant convertDateOfTwitterInDatabaseFormate:[dictData objectForKey:@"created_at"]];
-            userInfo.struserTime = [Constant convertDateOFTwitter:strDate];
+            userInfo.time = [Constant convertDateOFTwitter:strDate];
             userInfo.statusId = [dictData valueForKey:@"id"];
             userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
             userInfo.screenName = [postUserDetailDict valueForKey:@"screen_name"];
@@ -239,7 +239,7 @@
 
     if ( sharedAppDelegate.arryOfTwittes.count != 0) {
         if(indexPath.row > [sharedAppDelegate.arryOfTwittes count]-1) {
-            return 44;
+            return 60;
         }
     } else {
         return 0;
@@ -252,7 +252,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    if (objUserInfo.strPostImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
         for (NSString *index in self.arrySelectedIndex) {
 

@@ -34,12 +34,12 @@
 
     [super viewDidLoad];
 
-    if ([self.userInfo.strUserSocialType isEqualToString:@"Facebook"]) {
+    if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
 
-        lblName.text = self.userInfo.strUserName;
+        lblName.text = self.userInfo.userName;
         [self showProfileImageOfFb:self.userInfo];
         imgVwBgImg.image = [UIImage imageNamed:@"facebook-bg.png"];
-    } else  if ([self.userInfo.strUserSocialType isEqualToString:@"Twitter"]) {
+    } else  if ([self.userInfo.userSocialType isEqualToString:@"Twitter"]) {
 
         [self setTwitterUserInformation];
         imgVwBgImg.image = [UIImage imageNamed:@"twitter-bg.png"];

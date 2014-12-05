@@ -56,6 +56,7 @@
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
+
     [self.arrySelectedIndex removeAllObjects];
     [self.arryTappedCell removeAllObjects];
     [self.tbleVwInstagramPost reloadData];
@@ -67,6 +68,8 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+
+    [super viewWillDisappear:animated];
 
     [self.arryOfInstagrame removeAllObjects];
 }
@@ -80,6 +83,9 @@
 }
 
 #pragma mark - Integrate instagrame
+/**************************************************************************************************
+ Function to integrate instagrame
+ **************************************************************************************************/
 
 - (void)getInstagrameIntegration {
 
@@ -93,10 +99,7 @@
         [alert show];
         return;
     }
-
-   /* [self.view addSubview:sharedAppDelegate.spinner];
-    [self.view bringSubviewToFront:sharedAppDelegate.spinner];
-    [sharedAppDelegate.spinner show:YES]; */
+    
     [Constant showNetworkIndicator];
 
     // here i can set accessToken received on previous login
@@ -204,6 +207,9 @@
 }
 
 #pragma mark - Convert user post in to model class
+/**************************************************************************************************
+ Function to convert user post in to model class
+ **************************************************************************************************/
 
 - (void)convertUserPostIntoModel:(NSArray *)arryOfInstagrame1 {
 
@@ -219,23 +225,23 @@
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"caption"];
 
             NSDictionary *dictUserInfo = [postUserDetailDict objectForKey:@"from"];
-            userInfo.strUserName = [dictUserInfo valueForKey:@"username"];
+            userInfo.userName = [dictUserInfo valueForKey:@"username"];
             userInfo.fromId = [dictUserInfo valueForKey:@"id"];
             sharedAppDelegate.InstagramId = userInfo.fromId;
-            userInfo.strUserImg = [dictUserInfo valueForKey:@"profile_picture"];
+            userInfo.userProfileImg = [dictUserInfo valueForKey:@"profile_picture"];
 
             userInfo.strUserPost = [postUserDetailDict valueForKey:@"text"];
             NSString *strDate = [postUserDetailDict objectForKey:@"created_time"];
 
             NSTimeInterval interval = strDate.doubleValue;
             NSDate *convertedDate = [NSDate dateWithTimeIntervalSince1970: interval];
-            userInfo.struserTime = [Constant convertDateOFInstagram:convertedDate];
+            userInfo.time = [Constant convertDateOFInstagram:convertedDate];
 
             NSDictionary *dictImage = [dictData objectForKey:@"images"];
-            userInfo.strPostImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
+            userInfo.postImg = [[dictImage valueForKey:@"low_resolution"]objectForKey:@"url"];
 
             userInfo.type = [dictData objectForKey:@"type"];
-            userInfo.strUserSocialType = @"Instagram";
+            userInfo.userSocialType = @"Instagram";
             [self.arryOfInstagrame addObject:userInfo];
 
             NSLog(@"%@", self.arryOfInstagrame);
@@ -247,6 +253,9 @@
 }
 
 #pragma mark - Show Profile data
+/**************************************************************************************************
+ Function to show user profile
+ **************************************************************************************************/
 
 - (void)showProfileData:(UserProfile *)userProfile {
 
@@ -295,6 +304,8 @@
     return cell;
 }
 
+#pragma mark - UITable view Delegates
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if ( sharedAppDelegate.arryOfInstagrame.count != 0) {
@@ -312,7 +323,7 @@
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    if (objUserInfo.strPostImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
         for (NSString *index in self.arrySelectedIndex) {
 
@@ -376,6 +387,5 @@
 - (void)userProfileBtnTapped:(UserInfo*)userInfo {
 
 }
-
 
 @end
