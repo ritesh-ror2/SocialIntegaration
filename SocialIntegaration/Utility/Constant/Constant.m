@@ -17,7 +17,7 @@
 
 + (UIImage*)maskImage:(UIImage *)image withMask:(UIImage *)maskImage {
 
-    CGImageRef imageReference = image.CGImage;
+  /*  CGImageRef imageReference = image.CGImage;
 	CGImageRef maskReference = maskImage.CGImage;
 
 	CGImageRef imageMask = CGImageMaskCreate(CGImageGetWidth(maskReference),
@@ -35,8 +35,42 @@
 
 	UIImage *maskedImage = [UIImage imageWithCGImage:maskedReference];
 	CGImageRelease(maskedReference);
+	return maskedImage;*/
 
-	return maskedImage;
+    CGImageRef imgRef  = [image CGImage];
+    CGImageRef maskRef = [maskImage CGImage];
+
+
+    int maskWidth      = (int) CGImageGetWidth(maskRef);
+    int maskHeight     = (int) CGImageGetHeight(maskRef);
+        //  round bytesPerRow to the nearest 16 bytes, for performance's sake
+    int bytesPerRow    = (maskWidth + 15) & 0xfffffff0;
+    int bufferSize     = bytesPerRow * maskHeight;
+
+        //  allocate memory for the bits
+    CFMutableDataRef dataBuffer = CFDataCreateMutable(kCFAllocatorDefault, 0);
+    CFDataSetLength(dataBuffer, bufferSize);
+
+        //  the data will be 8 bits per pixel, no alpha
+    CGColorSpaceRef colourSpace = CGColorSpaceCreateDeviceGray();
+    CGContextRef ctx            = CGBitmapContextCreate(CFDataGetMutableBytePtr(dataBuffer),
+                                                        maskWidth, maskHeight,
+                                                        8, bytesPerRow, colourSpace, kCGImageAlphaNone);
+        //  drawing into this context will draw into the dataBuffer.
+    CGContextDrawImage(ctx, CGRectMake(0, 0, maskWidth, maskHeight), maskRef);
+    CGContextRelease(ctx);
+
+        //  now make a mask from the data.
+    CGDataProviderRef dataProvider  = CGDataProviderCreateWithCFData(dataBuffer);
+    CGImageRef mask                 = CGImageMaskCreate(maskWidth, maskHeight, 8, 8, bytesPerRow,
+                                                        dataProvider, NULL, FALSE);
+
+    CGDataProviderRelease(dataProvider);
+    CGColorSpaceRelease(colourSpace);
+    CFRelease(dataBuffer);
+
+    CGImageRef masked = CGImageCreateWithMask(imgRef, mask);
+    return [UIImage imageWithCGImage:masked];
 }
 
 #pragma mark - Show alert view

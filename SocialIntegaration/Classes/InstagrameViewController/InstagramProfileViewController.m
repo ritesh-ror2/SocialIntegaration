@@ -12,6 +12,7 @@
 #import "UserProfile+DatabaseHelper.h"
 #import "Reachability.h"
 #import "CustomTableCell.h"
+#import "CommentViewController.h"
 #import "Constant.h"
 
 #define TABLE_HEIGHT 385
@@ -20,6 +21,9 @@
 @interface InstagramProfileViewController () <CustomTableCellDelegate>
 
 @property (nonatomic, strong) NSMutableArray *arryOfInstagrame;
+@property (nonatomic, strong) NSMutableArray *arryTappedCell;
+@property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
+
 @end
 
 @implementation InstagramProfileViewController
@@ -38,12 +42,28 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
+    
+    self.arryTappedCell = [[NSMutableArray alloc]init];
+    self.arrySelectedIndex = [[NSMutableArray alloc]init];
 }
 
 - (void)didReceiveMemoryWarning {
 
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+    [self.arrySelectedIndex removeAllObjects];
+    [self.arryTappedCell removeAllObjects];
+    [self.tbleVwInstagramPost reloadData];
+
+    for (NSString *cellSelected in sharedAppDelegate.arryOfInstagrame) {
+        NSLog(@"%@", cellSelected);
+        [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -219,6 +239,7 @@
             [self.arryOfInstagrame addObject:userInfo];
 
             NSLog(@"%@", self.arryOfInstagrame);
+            [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
         }
     }
     [Constant hideNetworkIndicator];
@@ -274,11 +295,16 @@
     return cell;
 }
 
-#pragma mark - UITableViewDelegate
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    UserInfo *objUserInfo = [self.arryOfInstagrame objectAtIndex:indexPath.row];
+    if ( sharedAppDelegate.arryOfInstagrame.count != 0) {
+        if(indexPath.row > [sharedAppDelegate.arryOfInstagrame count]-1) {
+            return 44;
+        }
+    } else {
+        return 0;
+    }
+    UserInfo *objUserInfo = [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
@@ -287,9 +313,69 @@
                                        context:nil];
 
     if (objUserInfo.strPostImg.length != 0) {
-        return(rect.size.height + TABLE_HEIGHT);
+
+        for (NSString *index in self.arrySelectedIndex) {
+
+            if (index.integerValue == indexPath.row) {
+                return(rect.size.height + TABLE_HEIGHT + 33);
+            }
+        }
+        return(rect.size.height + TABLE_HEIGHT - 3);
+    }
+
+    for (NSString *index in self.arrySelectedIndex) {
+
+        if (index.integerValue == indexPath.row) {
+            return(rect.size.height + 90);
+        }
     }
     return (rect.size.height + 65);//183 is height of other fixed content
 }
+
+#pragma mark - Custom cell Delegates
+
+/**************************************************************************************************
+ Function to go to detail view to check like, comment favourite and etc
+ **************************************************************************************************/
+
+- (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    CommentViewController *commentVw = [storyboard instantiateViewControllerWithIdentifier:@"CommentView"];
+    commentVw.userInfo = objuserInfo;
+    commentVw.postUserImg = imgName;
+    [[self navigationController] pushViewController:commentVw animated:YES];
+}
+
+/**************************************************************************************************
+ Function to increase cell height
+ **************************************************************************************************/
+
+- (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
+
+    [self.arrySelectedIndex addObject:[NSNumber numberWithInt:cellIndex]];
+        //your code here
+    if (self.arryTappedCell.count != 0) {
+        if (isSelected == YES) {
+            [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];
+        } else {
+            [self.arryTappedCell insertObject:[NSNumber numberWithBool:NO] atIndex:cellIndex];
+        }
+    }
+    [self.tbleVwInstagramPost beginUpdates];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:cellIndex inSection:0];
+    [self.tbleVwInstagramPost reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        //your code here
+    [self.tbleVwInstagramPost endUpdates];
+}
+
+/**************************************************************************************************
+ Function to go to user profile
+ **************************************************************************************************/
+
+- (void)userProfileBtnTapped:(UserInfo*)userInfo {
+
+}
+
 
 @end
