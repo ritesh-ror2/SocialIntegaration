@@ -469,7 +469,11 @@
     }
 
     scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + 235));
-    tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, 250);
+    if (objUserInfo.userProfileImg.length != 0) {
+        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, 250);
+    } else {
+        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, self.view.frame.size.height - (imgVwBackground.frame.size.height+90));
+    }
     imgVwUser.frame = CGRectMake(10, imgVwBackground.frame.size.height+5 , 45, 45);
 
     if ([objUserInfo.type isEqualToString:@"video"]) {
