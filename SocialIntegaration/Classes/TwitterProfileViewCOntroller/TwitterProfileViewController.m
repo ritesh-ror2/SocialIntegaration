@@ -169,7 +169,7 @@
                          [self convertDataOfTwitterIntoModel:arryTwitte];
                      });
                 }
-                }
+            }
                 }];
             }
         }

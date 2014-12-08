@@ -93,7 +93,6 @@ BOOL hasTwitter = NO;
         [self hideNavBar:YES];
          self.imgVwBackground.hidden = NO;
     } else {
-
         [self hideNavBar:NO];
     }
 
