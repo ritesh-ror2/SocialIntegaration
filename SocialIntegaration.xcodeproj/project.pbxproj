@@ -1439,7 +1439,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "c1c02fe9-2d0d-4ddc-a786-6a9d09d0c7f4";
+				PROVISIONING_PROFILE = "107565b6-d565-4a30-a832-1b28395e4072";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1472,7 +1472,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PROVISIONING_PROFILE = "c1c02fe9-2d0d-4ddc-a786-6a9d09d0c7f4";
+				PROVISIONING_PROFILE = "107565b6-d565-4a30-a832-1b28395e4072";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1490,7 +1490,7 @@
 				GCC_PREFIX_HEADER = "SocialIntegaration/SocialIntegaration-Prefix.pch";
 				INFOPLIST_FILE = "SocialIntegaration/SocialIntegaration-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c1c02fe9-2d0d-4ddc-a786-6a9d09d0c7f4";
+				PROVISIONING_PROFILE = "107565b6-d565-4a30-a832-1b28395e4072";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1508,7 +1508,7 @@
 				GCC_PREFIX_HEADER = "SocialIntegaration/SocialIntegaration-Prefix.pch";
 				INFOPLIST_FILE = "SocialIntegaration/SocialIntegaration-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c1c02fe9-2d0d-4ddc-a786-6a9d09d0c7f4";
+				PROVISIONING_PROFILE = "107565b6-d565-4a30-a832-1b28395e4072";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

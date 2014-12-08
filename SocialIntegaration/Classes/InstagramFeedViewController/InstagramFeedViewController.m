@@ -86,7 +86,7 @@
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    NSLog(@" ** count %icount ", sharedAppDelegate.arryOfInstagrame.count);
+    NSLog(@" ** count %lucount ", (unsigned long)sharedAppDelegate.arryOfInstagrame.count);
     
     return [sharedAppDelegate.arryOfInstagrame count];
 }
@@ -174,7 +174,7 @@
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
-    [self.arrySelectedIndex addObject:[NSNumber numberWithInt:cellIndex]];
+    [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
         //your code here
     if (self.arryTappedCell.count != 0) {
         if (isSelected == YES) {

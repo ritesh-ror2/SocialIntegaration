@@ -1120,7 +1120,7 @@
                                     [btnLike setTitleColor:[UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0] forState:UIControlStateNormal];
                                     [btnLike removeTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
                                     [btnLike addTarget:self action:@selector(unlikedPost) forControlEvents:UIControlEventTouchUpInside];
-                                    lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%i",lblFBOrInstLikeCount.text.integerValue +1];
+                                    lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%li",lblFBOrInstLikeCount.text.integerValue +1];
                                   }
                               }];
     }];

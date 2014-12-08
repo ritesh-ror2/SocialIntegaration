@@ -120,7 +120,7 @@
 
 - (void)facebookCellConfiguration:(BOOL)isDisplay {
 
-    NSLog(@"%hhd", isDisplay);
+        //  NSLog(@"%hhd", isDisplay);
 
     if (isDisplay == YES) {
 

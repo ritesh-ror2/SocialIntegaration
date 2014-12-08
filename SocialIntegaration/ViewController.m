@@ -97,8 +97,6 @@ BOOL hasTwitter = NO;
         [self hideNavBar:NO];
     }
 
-    [self appIsInForeground:nil];
-
     if(self.arryTappedCell.count == 0) { //return from other view
         for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {
             NSLog(@"%@", cellSelected);
@@ -121,6 +119,8 @@ BOOL hasTwitter = NO;
         sharedAppDelegate.isFirstTimeLaunch = NO;
         [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0]; // animate
     }
+
+    [self appIsInForeground:nil];
 
     [[NSUserDefaults standardUserDefaults]setInteger:self.index forKey:INDEX_OF_PAGE];
     [[NSUserDefaults standardUserDefaults]synchronize];
@@ -197,12 +197,11 @@ BOOL hasTwitter = NO;
 
 - (void)appIsInForeground:(id)sender {
 
-    [Constant showNetworkIndicator];
-
     if (isInstagramOpen == YES) { //if it only get data from instagram
         isInstagramOpen = NO;
     }
 
+    [Constant showNetworkIndicator];
     // [self getInstagrameIntegration];
     [self showFacebookPost];
 }
@@ -263,7 +262,7 @@ BOOL hasTwitter = NO;
             self.navController.navigationBar.translucent = NO;
 
             if (sharedAppDelegate.arryOfAllFeeds.count == 0) {
-                [Constant showNetworkIndicator];
+                    //[Constant hideNetworkIndicator];
             }
         }];
     }
@@ -435,7 +434,7 @@ BOOL hasTwitter = NO;
             userInfo.type = [dictData objectForKey:@"type"];
             userInfo.strUserPost = [dictData valueForKey:@"message"];
             userInfo.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-            userInfo.userProfileImg = [dictData valueForKey:@"picture"];
+            userInfo.postImg = [dictData valueForKey:@"picture"];
             userInfo.postId = [dictData valueForKey:@"id"];
             userInfo.videoUrl = [dictData valueForKey:@"source"];
 
@@ -489,7 +488,7 @@ BOOL hasTwitter = NO;
         }
 
         [sharedAppDelegate.arryOfTwittes removeAllObjects];
-        NSLog(@" ** %i", sharedAppDelegate.arryOfAllFeeds.count);
+            // NSLog(@" ** %i", sharedAppDelegate.arryOfAllFeeds.count);
         [self getInstagrameIntegration];
         return;
     } else {
@@ -520,11 +519,12 @@ BOOL hasTwitter = NO;
                    [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
 
                       NSLog(@"%@ !#" , [error description]);
-                      NSArray *arryTwitte = [NSJSONSerialization
+                      id result = [NSJSONSerialization
                                              JSONObjectWithData:responseData
                                              options:NSJSONReadingMutableLeaves
                                              error:&error];
 
+                       NSArray *arryTwitte  = (NSArray *)result;
                       if (arryTwitte.count != 0) {
                           dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -553,6 +553,17 @@ BOOL hasTwitter = NO;
 
 - (void)paggingInTwitter {
 
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+
     //The max_id = top of tweets id list . since_id = bottom of tweets id list .
     //TWITTER_TIMELINE_URL since_id=24012619984051000&max_id=250126199840518145&result_type=recent&count=10
 
@@ -575,20 +586,25 @@ BOOL hasTwitter = NO;
     [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
 
        NSLog(@"%@ !#" , [error description]);
-       id result = [NSJSONSerialization
-                    JSONObjectWithData:responseData
-                    options:NSJSONReadingMutableLeaves
-                    error:&error];
+        if (!error) {
 
-       if (![result isKindOfClass:[NSDictionary class]]) {
+            id result = [NSJSONSerialization
+                        JSONObjectWithData:responseData
+                        options:NSJSONReadingMutableLeaves
+                        error:&error];
 
-           isFirstPageTweetsOfTwitter = NO;
-           NSArray *arryTwitte = (NSArray *)result;
-           [self convertDataOfTwitterIntoModel:arryTwitte];
-       } else {
+           if (![result isKindOfClass:[NSDictionary class]]) {
 
-           NSLog(@"error %@", result);
-       }
+               isFirstPageTweetsOfTwitter = NO;
+               NSArray *arryTwitte = (NSArray *)result;
+               [self convertDataOfTwitterIntoModel:arryTwitte];
+           } else {
+
+               NSLog(@"error %@", result);
+           }
+        } else {
+            [Constant showAlert:@"Message" forMessage:@"The Internet connection appears to be offline."];
+        }
      }];
 }
 
@@ -627,11 +643,11 @@ BOOL hasTwitter = NO;
             NSString *strDate = [Constant convertDateOfTwitterInDatabaseFormate:[dictData objectForKey:@"created_at"]];
             userInfo.time = [Constant convertDateOFTwitter:strDate];
             userInfo.statusId = [dictData valueForKey:@"id"];
-            userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
+            userInfo.favourated = [NSString stringWithFormat:@"%li", (long)[[dictData objectForKey:@"favorited"] integerValue]];
             userInfo.screenName = [postUserDetailDict valueForKey:@"screen_name"];
-            userInfo.retweeted = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweeted"] integerValue]];
-            userInfo.retweetCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweet_count"] integerValue]];
-            userInfo.favourateCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorite_count"] integerValue]];
+            userInfo.retweeted = [NSString stringWithFormat:@"%li", (long)[[dictData objectForKey:@"retweeted"] integerValue]];
+            userInfo.retweetCount = [NSString stringWithFormat:@"%li", (long)[[dictData objectForKey:@"retweet_count"] integerValue]];
+            userInfo.favourateCount = [NSString stringWithFormat:@"%li", (long)[[dictData objectForKey:@"favorite_count"] integerValue]];
             userInfo.isFollowing = [[postUserDetailDict valueForKey:@"following"]boolValue];
             userInfo.dicOthertUser = postUserDetailDict;
             [sharedAppDelegate.arryOfTwittes addObject:userInfo];
@@ -971,7 +987,7 @@ Delegate to increase cell height when cell is tapped
         [Constant hideNetworkIndicator];
     });
     [sharedAppDelegate.arryOfAllFeeds removeAllObjects]; //first remove all object
-    NSLog(@"**** %i",sharedAppDelegate.arryOfTwittes.count);
+    NSLog(@"**** %lu",(unsigned long)sharedAppDelegate.arryOfTwittes.count);
 
     [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfFBNewsFeed];
     [sharedAppDelegate.arryOfAllFeeds addObjectsFromArray:sharedAppDelegate.arryOfTwittes];
@@ -983,7 +999,7 @@ Delegate to increase cell height when cell is tapped
     NSArray *sortedArray = [sharedAppDelegate.arryOfAllFeeds sortedArrayUsingDescriptors:sortDescriptors];
     [sharedAppDelegate.arryOfAllFeeds removeAllObjects];
     sharedAppDelegate.arryOfAllFeeds = [sortedArray mutableCopy];
-    NSLog(@"**** %i",sharedAppDelegate.arryOfAllFeeds.count);
+    NSLog(@"**** %lu",(unsigned long)sharedAppDelegate.arryOfAllFeeds.count);
 
     [self.arryTappedCell removeAllObjects];
     for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {

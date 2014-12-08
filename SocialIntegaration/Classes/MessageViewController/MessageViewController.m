@@ -196,8 +196,8 @@
             [self.arryOfFbMessage addObject:arryMessages];
         }
     }
-    [Constant hideNetworkIndicator];
     [self.tbleVwFbMessage reloadData];
+    [Constant hideNetworkIndicator];
 }
 
 #pragma mark - UITable View Datasource

@@ -354,24 +354,25 @@
 
 - (void)postImageOnTwitter:(NSData *)imgData {
 
-    NSURL *url = [NSURL URLWithString:TWITTER_POST_IMAGE];
+    NSURL *urlPostImage = [NSURL URLWithString:TWITTER_POST_IMAGE];
 
     NSDictionary *paramater = @{@"status": self.txtVwTwitter.text};
 
-    SLRequest *postRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:url parameters:paramater];
-    [postRequest addMultipartData:imgData withName:@"media[]" type:@"image/jpeg" filename:@"image.jpg"];
+    NSData *data = UIImagePNGRepresentation(imgSelected);
+    SLRequest *postRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:urlPostImage parameters:paramater];
+    [postRequest addMultipartData:data withName:@"media[]" type:nil filename:nil];
     [postRequest setAccount:sharedAppDelegate.twitterAccount]; // or  postRequest.account = twitterAccount;
 
     [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
                     
-    NSString *output = [NSString stringWithFormat:@"HTTP response status: %i", [urlResponse statusCode]];
+    NSString *output = [NSString stringWithFormat:@"HTTP response status: %li", (long)[urlResponse statusCode]];
                     
     NSLog(@"output = %@",output);
 
-    [Constant showAlert:@"Message" forMessage:@"Tweet Successfully"];
+    //[Constant showAlert:@"Message" forMessage:@"Tweet Successfully"];
                     
     dispatch_async(dispatch_get_main_queue(), ^{
-
+        [self.navigationController popViewControllerAnimated:YES];
         });
 
     }];

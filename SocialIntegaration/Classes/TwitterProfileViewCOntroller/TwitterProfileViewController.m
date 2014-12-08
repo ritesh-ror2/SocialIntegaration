@@ -229,12 +229,12 @@
             userInfo.userSocialType = @"Twitter";
             userInfo.type = [dictData objectForKey:@"type"];
             userInfo.statusId =[dictData valueForKey:@"id"];
-            userInfo.favourated = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorited"] integerValue]];
+            userInfo.favourated = [NSString stringWithFormat:@"%li", (long)[[dictData objectForKey:@"favorited"] integerValue]];
 
             userInfo.screenName = [postUserDetailDict valueForKey:@"screen_name"];
-            userInfo.retweeted = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweeted"] integerValue]];
-            userInfo.retweetCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"retweet_count"] integerValue]];
-            userInfo.favourateCount = [NSString stringWithFormat:@"%i", [[dictData objectForKey:@"favorite_count"] integerValue]];
+            userInfo.retweeted = [NSString stringWithFormat:@"%li", (long)[[dictData objectForKey:@"retweeted"] integerValue]];
+            userInfo.retweetCount = [NSString stringWithFormat:@"%li", (long)[[dictData objectForKey:@"retweet_count"] integerValue]];
+            userInfo.favourateCount = [NSString stringWithFormat:@"%li", (long)[[dictData objectForKey:@"favorite_count"] integerValue]];
 
             NSString *strDate = [Constant convertDateOfTwitterInDatabaseFormate:[dictData objectForKey:@"created_at"]];
             userInfo.time = [Constant convertDateOFTwitter:strDate];
@@ -250,7 +250,7 @@
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    NSLog(@"** %i",self.arrySelfTweets.count);
+        // NSLog(@"** %i",self.arrySelfTweets.count);
     return [self.arrySelfTweets count];
 }
 
@@ -269,7 +269,10 @@
         cell.customCellDelegate = self;
     }
 
-    BOOL isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
+    BOOL isSelected = NO;
+    if (self.arryTappedCell.count > indexPath.row) {
+     isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
+    }
 
     if(indexPath.row < [self.arrySelfTweets count]){
 

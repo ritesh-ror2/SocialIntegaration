@@ -532,9 +532,9 @@
     UserProfile *userProfile = [[UserProfile alloc]init];
     userProfile.userName = [dictData valueForKey:@"screen_name"];
     userProfile.userImg = [dictData valueForKey:@"profile_image_url"];
-    userProfile.following = [NSString stringWithFormat:@"%i", [[dictData valueForKey:@"friends_count"] integerValue]];
-    userProfile.tweet = [NSString stringWithFormat:@"%i",[[dictData valueForKey:@"statuses_count"] integerValue]];
-    userProfile.followers = [NSString stringWithFormat:@"%i",[[dictData valueForKey:@"followers_count"]integerValue]];
+    userProfile.following = [NSString stringWithFormat:@"%li", (long)[[dictData valueForKey:@"friends_count"] integerValue]];
+    userProfile.tweet = [NSString stringWithFormat:@"%li",(long)[[dictData valueForKey:@"statuses_count"] integerValue]];
+    userProfile.followers = [NSString stringWithFormat:@"%li",(long)[[dictData valueForKey:@"followers_count"]integerValue]];
     userProfile.type = @"Twitter";
     userProfile.userId  =  [NSString stringWithFormat:@"%lf",[[[dictData valueForKey:@"status"]valueForKey:@"id"] doubleValue]];
 
@@ -745,10 +745,10 @@
     if ([dictInfo isKindOfClass: [NSDictionary class]]) {
 
         NSDictionary *dictCounts = [dictInfo objectForKey:@"counts"];
-        userProfile.followers = [NSString stringWithFormat:@"%i",[[dictCounts valueForKey:@"followed_by"] integerValue]];
-        userProfile.following = [NSString stringWithFormat:@"%i",[[dictCounts valueForKey:@"follows"]integerValue]];
-        userProfile.post = [NSString stringWithFormat:@"%i",[[dictCounts valueForKey:@"media"] integerValue]];
-        userProfile.userId = [NSString stringWithFormat:@"%i",[[dictInfo valueForKey:@"id"] integerValue]];
+        userProfile.followers = [NSString stringWithFormat:@"%li",(long)[[dictCounts valueForKey:@"followed_by"] integerValue]];
+        userProfile.following = [NSString stringWithFormat:@"%li",(long)[[dictCounts valueForKey:@"follows"]integerValue]];
+        userProfile.post = [NSString stringWithFormat:@"%li",(long)[[dictCounts valueForKey:@"media"] integerValue]];
+        userProfile.userId = [NSString stringWithFormat:@"%li",(long)[[dictInfo valueForKey:@"id"] integerValue]];
         userProfile.userImg = [dictInfo valueForKey:@"profile_picture"];
         userProfile.userName = [dictInfo valueForKey:@"username"];
         userProfile.type = @"Instagram";

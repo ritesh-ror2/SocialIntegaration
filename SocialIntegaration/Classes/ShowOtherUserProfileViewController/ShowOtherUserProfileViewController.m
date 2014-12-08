@@ -82,9 +82,9 @@
     NSDictionary *dictOtherUser = self.userInfo.dicOthertUser;
 
     [self setProfileImageOfTwitterAndInstagram:[dictOtherUser objectForKey:@"profile_image_url"]];
-    lblFolloeingCount.text = [NSString stringWithFormat:@"%i",[[dictOtherUser objectForKey:@"friends_count"] integerValue]];
-    lblFolloweCount.text = [NSString stringWithFormat:@"%i",[[dictOtherUser objectForKey:@"followers_count"]integerValue]];
-    lblTweetCount.text = [NSString stringWithFormat:@"%i",[[dictOtherUser objectForKey:@"listed_count"]integerValue]] ;
+    lblFolloeingCount.text = [NSString stringWithFormat:@"%li",(long)[[dictOtherUser objectForKey:@"friends_count"] integerValue]];
+    lblFolloweCount.text = [NSString stringWithFormat:@"%li",(long)[[dictOtherUser objectForKey:@"followers_count"]integerValue]];
+    lblTweetCount.text = [NSString stringWithFormat:@"%li",(long)[[dictOtherUser objectForKey:@"listed_count"]integerValue]] ;
     lblName.text = [dictOtherUser objectForKey:@"name"];
 
     if (self.userInfo.isFollowing == 1){
@@ -105,7 +105,7 @@
 
         NSDictionary *dictOtherUser = self.userInfo.dicOthertUser;
 
-        NSString *strUserId = [NSString stringWithFormat:@"%i",[[dictOtherUser valueForKey:@"id"]integerValue]];
+        NSString *strUserId = [NSString stringWithFormat:@"%li",(long)[[dictOtherUser valueForKey:@"id"]integerValue]];
         NSDictionary *param = @{@"user_id": strUserId};
         NSURL *requestURL = [NSURL URLWithString:TWITTER_FRIEND_DESTROY];
         SLRequest *timelineRequest = [SLRequest
@@ -134,7 +134,7 @@
 
         NSDictionary *dictOtherUser = self.userInfo.dicOthertUser;
 
-        NSString *strUserId = [NSString stringWithFormat:@"%i",[[dictOtherUser valueForKey:@"id"]integerValue]];
+        NSString *strUserId = [NSString stringWithFormat:@"%li",(long)[[dictOtherUser valueForKey:@"id"]integerValue]];
         NSDictionary *param = @{@"user_id": strUserId, @"follow":@"true"};
         NSURL *requestURL = [NSURL URLWithString:TWITTER_FRIEND_CREATE];
         SLRequest *timelineRequest = [SLRequest

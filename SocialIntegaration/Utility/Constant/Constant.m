@@ -103,7 +103,7 @@
     long diffInDate = components.minute;
 
     NSString *strDiff;
-    NSLog(@"%i", components.month);
+    NSLog(@"%li", (long)components.month);
     if (components.hour == 0 && components.day == 0) {
 
         strDiff = [NSString stringWithFormat:@"%ldm", diffInDate];

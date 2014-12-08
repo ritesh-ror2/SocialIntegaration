@@ -16,6 +16,10 @@
 
 @property (nonatomic, strong) NSMutableArray *arrySearchUserList;
 @property (nonatomic, strong) NSString *strSearchText;
+@property (nonatomic, strong) NSMutableURLRequest *twitterReq;
+@property (nonatomic, strong) NSURLConnection *connection;
+@property (nonatomic, strong) NSMutableData *twitterData;
+
 @end
 
 @implementation ShowUserViewController
@@ -54,7 +58,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 
-    [self viewWillAppear:animated];
+    [super viewWillAppear:animated];
 
     if (self.strSearchText.length != 0) {
 
@@ -92,8 +96,6 @@
 
 - (void)searchOnInstagram:(NSString *)strName {
 
-    https://api.instagram.com/v1/users/search?q=jack&access_token=ACCESS-TOKEN
-
     sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
     sharedAppDelegate.instagram.sessionDelegate = self;
 
@@ -124,11 +126,9 @@
 
 - (void)igDidLogin {
 
-        // here i can store accessToken
     [[NSUserDefaults standardUserDefaults] setObject:sharedAppDelegate.instagram.accessToken forKey:@"accessToken"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
-
-        // [self getInstagrameIntegration];
+    // [self getInstagrameIntegration];
 }
 
 - (void)igDidNotLogin:(BOOL)cancelled {
@@ -202,7 +202,6 @@
             userInfo.type = self.searchKeywordType;
 
             [self.arrySearchUserList addObject:userInfo];
-
         } else {
 
             NSDictionary *dictCaption = [dictData objectForKey:@"caption"];
@@ -235,12 +234,13 @@
     if (isTwitter == NO) {
 
         [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+        [Constant hideNetworkIndicator];
         return;
     }
 
     NSString *strKey;
 
-    if ([self.searchKeywordType isEqualToString:@"user"]) {
+    if ([self.searchKeywordType isEqualToString:@"User"]) {
         strKey = [NSString stringWithFormat:@"@%@",strKeyword];
     } else if ([self.searchKeywordType isEqualToString:@"Keyword"]) {
         strKey = strKeyword;
@@ -313,9 +313,9 @@
         userInfo.isFollowing = [[dictUser valueForKey:@"following"] boolValue];
         userInfo.userSocialType = @"Twitter";
         //set user profile
-        NSString *strFollowers = [NSString stringWithFormat:@"%i",[[dictUser valueForKey:@"followers_count"] integerValue]];
-         NSString *strTweet = [NSString stringWithFormat:@"%i",[[dictUser valueForKey:@"listed_count"] integerValue]];
-        NSString *strFollowing = [NSString stringWithFormat:@"%i",[[dictUser valueForKey:@"friends_count"] integerValue]];
+        NSString *strFollowers = [NSString stringWithFormat:@"%li",(long)[[dictUser valueForKey:@"followers_count"] integerValue]];
+         NSString *strTweet = [NSString stringWithFormat:@"%li",(long)[[dictUser valueForKey:@"listed_count"] integerValue]];
+        NSString *strFollowing = [NSString stringWithFormat:@"%li",(long)[[dictUser valueForKey:@"friends_count"] integerValue]];
         NSDictionary *dictUserData = @{@"friends_count": strFollowing, @"followers_count":strFollowers, @"listed_count":strTweet, @"profile_image_url":userInfo.userProfileImg, @"id":userInfo.fromId};
         userInfo.dicOthertUser = dictUserData;
 
@@ -329,6 +329,7 @@
     }
 
     [self.tbleVwUser reloadData];
+    [self getMoreDataOfuserList];
     [Constant hideNetworkIndicator];
 }
 
@@ -339,24 +340,32 @@
 
 - (void)searchFriendOnFb:(NSString *)strKeyword {
 
-    NSDictionary *param = @{@"q": strKeyword,
-                            @"type":@"user"};
-    [FBRequestConnection startWithGraphPath:@"/search"
-                                 parameters:param
-                                 HTTPMethod:@"GET"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              if (error) {
+    BOOL isFb = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    if (isFb == YES) {
 
-                                  NSLog(@"error %@", [error localizedDescription]);
-                              } else {
-                                  NSArray *arryComment = [result objectForKey:@"data"];
-                                  [self convertFbUsersListIntoModels:arryComment];
-                              }
-                          }];
+        NSDictionary *param = @{@"q": strKeyword,
+                                @"type":@"user"};
+        [FBRequestConnection startWithGraphPath:@"/search"
+                                     parameters:param
+                                     HTTPMethod:@"GET"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+                                  if (error) {
+
+                                      NSLog(@"error %@", [error localizedDescription]);
+                                  } else {
+                                      NSArray *arryComment = [result objectForKey:@"data"];
+                                      [self convertFbUsersListIntoModels:arryComment];
+                                  }
+                              }];
+    } else {
+
+        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+        [Constant hideNetworkIndicator];
+    }
     
 }
 
@@ -440,7 +449,7 @@
 
        if ([strFollow isEqualToString:@"Follow"]) {
 
-        NSString *strUserId = [NSString stringWithFormat:@"%i",[userInfo.fromId integerValue]];
+        NSString *strUserId = [NSString stringWithFormat:@"%li",(long)[userInfo.fromId integerValue]];
         NSDictionary *param = @{@"user_id": strUserId, @"follow":@"true"};
         NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"];
         SLRequest *timelineRequest = [SLRequest
@@ -470,7 +479,7 @@
         return;
     } else {
 
-        NSString *strUserId = [NSString stringWithFormat:@"%i",[userInfo.fromId integerValue]];
+        NSString *strUserId = [NSString stringWithFormat:@"%li",(long)[userInfo.fromId integerValue]];
         NSDictionary *param = @{@"user_id": strUserId};
         NSURL *requestURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/destroy.json"];
         SLRequest *timelineRequest = [SLRequest
@@ -500,6 +509,106 @@
     }
 
     [self.tbleVwUser reloadData];
+}
+
+#pragma mark - Get more feeds of FB
+/**************************************************************************************************
+ Function to get more feeds of FB
+ **************************************************************************************************/
+
+- (void)getMoreDataOfuserList {
+
+    NSString *strKey;
+
+    if ([self.searchKeywordType isEqualToString:@"User"]) {
+        strKey = [NSString stringWithFormat:@"@%@",self.searchDisplayController.searchBar.text];
+    } else if ([self.searchKeywordType isEqualToString:@"Keyword"]) {
+        strKey = self.searchDisplayController.searchBar.text;
+    } else {
+        strKey = [NSString stringWithFormat:@"#%@",self.searchDisplayController.searchBar.text];
+    }
+
+    NSDictionary *param = @{@"q":strKey, @"page":[NSNumber numberWithInt:2]};
+
+    NSURL *requestURL = [NSURL URLWithString:TWITTER_SEACH];
+    SLRequest *timelineRequest = [SLRequest
+                                  requestForServiceType:SLServiceTypeTwitter
+                                  requestMethod:SLRequestMethodGET
+                                  URL:requestURL parameters:param];
+
+    timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+    [timelineRequest performRequestWithHandler:
+     ^(NSData *responseData, NSHTTPURLResponse
+       *urlResponse, NSError *error)
+     {
+       NSLog(@"%@ !#" , [error description]);
+       id dataTwitte = [NSJSONSerialization
+                        JSONObjectWithData:responseData
+                        options:NSJSONReadingMutableLeaves
+                        error:&error];
+
+       if ([dataTwitte isKindOfClass:[NSDictionary class]]) {
+           NSDictionary *dictData = (NSDictionary *)dataTwitte;
+           if ([[dictData objectForKey:@"errors"]count] != 0) {
+
+               NSLog(@"%@", [dictData objectForKey:@"errors"]);
+               return ;
+           }
+       } else {
+           NSArray *arryData1 = (NSArray *)dataTwitte;
+
+           if (arryData1.count != 0) {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [self convertTwitterUsersListIntoModels:arryData1];
+                   NSLog(@"success");
+               });
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+
+                   [Constant hideNetworkIndicator];
+                   [Constant showAlert:@"Message" forMessage:@"No match found."];
+               });
+           }
+       }
+     }];
+
+
+//    NSURL *fbUrl = [NSURL URLWithString:sharedAppDelegate.nextFbUrl];
+//    self.twitterReq = [[NSMutableURLRequest alloc]initWithURL:fbUrl];
+//    self.connection = [[NSURLConnection alloc]initWithRequest:self.twitterReq delegate:self];
+}
+
+#pragma mark NSURLConnection Delegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+
+    self.twitterData = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+
+    [self.twitterData appendData:data];
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
+        // Return nil to indicate not necessary to store a cached response for this connection
+    return nil;
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+
+        //  self.noMoreResultsAvail = YES;
+    id result = [NSJSONSerialization JSONObjectWithData:self.twitterData options:kNilOptions error:nil];
+    NSLog(@"%@", result);
+        // sharedAppDelegate.nextFbUrl = [[result objectForKey:@"paging"]valueForKey:@"next"];
+        //[self convertDataOfFBIntoModel:[result objectForKey:@"data"]];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+
+    NSLog(@"%@", error.description);
 }
 
 #pragma mark - UIsearch view controller delegates

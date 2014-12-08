@@ -364,7 +364,7 @@
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
-    [self.arrySelectedIndex addObject:[NSNumber numberWithInt:cellIndex]];
+    [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
         //your code here
     if (self.arryTappedCell.count != 0) {
         if (isSelected == YES) {

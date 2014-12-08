@@ -86,7 +86,7 @@
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    NSLog(@" ** count %icount ", sharedAppDelegate.arryOfFBNewsFeed.count);
+        //  NSLog(@" ** count %icount ", sharedAppDelegate.arryOfFBNewsFeed.count);
     return [sharedAppDelegate.arryOfFBNewsFeed count]+1;
 }
 
@@ -206,7 +206,7 @@
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
-    [self.arrySelectedIndex addObject:[NSNumber numberWithInt:cellIndex]];
+    [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
 
     if (self.arryTappedCell.count != 0) {
         if (isSelected == YES) {

@@ -166,7 +166,7 @@
     NSDateComponents *components = [gregorianCalendar components:NSMinuteCalendarUnit| NSHourCalendarUnit|NSDayCalendarUnit
                                                         fromDate:fromDate toDate:toDate options:0];
     long diffInDate = components.day;
-    NSLog(@"%i", components.day);
+        // NSLog(@"%i", components.day);
     if (diffInDate != 0)  {
         return diffInDate;
     } else {
