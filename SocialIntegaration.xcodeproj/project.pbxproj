@@ -553,8 +553,9 @@
 			isa = PBXGroup;
 			children = (
 				0A7324311A0B4C0000F10476 /* Main.storyboard */,
-				0A781B951A10F2A200685DBA /* AppDelegate */,
 				0A8D130F1A136FED00112078 /* HomePageViewController */,
+				0A781B951A10F2A200685DBA /* AppDelegate */,
+				0A7EE7BB1A1493B200E5E65A /* FeedPagesViewController */,
 				0A814BB41A275AC900F874D9 /* PageControllerClass */,
 				0A781B941A10F29300685DBA /* ViewController */,
 				0A7EE7B41A14922400E5E65A /* FacebookFeedViewController */,
@@ -811,8 +812,7 @@
 				0A7EE7BC1A1493C000E5E65A /* FeedPagesViewController.h */,
 				0A7EE7BD1A1493C000E5E65A /* FeedPagesViewController.m */,
 			);
-			name = FeedPagesViewController;
-			path = ../FeedPagesViewController;
+			path = FeedPagesViewController;
 			sourceTree = "<group>";
 		};
 		0A7EE7BF1A14BF8100E5E65A /* SettingViewController */ = {
@@ -935,7 +935,6 @@
 				0A8D13111A136FFE00112078 /* HomePageViewController.m */,
 				0A6F23411A2DE4E9004BA975 /* PushSegueWithOutAnimation.h */,
 				0A6F23421A2DE4E9004BA975 /* PushSegueWithOutAnimation.m */,
-				0A7EE7BB1A1493B200E5E65A /* FeedPagesViewController */,
 			);
 			path = HomePageViewController;
 			sourceTree = "<group>";

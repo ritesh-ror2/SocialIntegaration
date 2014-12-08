@@ -495,7 +495,7 @@
 
 - (void)setPostImage:(UserInfo *)objUserInfo {
 
-    imgVwPostImg.imageURL = [NSURL URLWithString:objUserInfo.userProfileImg];
+    imgVwPostImg.imageURL = [NSURL URLWithString:objUserInfo.postImg];
 }
 
 #pragma mark - Set User profile images

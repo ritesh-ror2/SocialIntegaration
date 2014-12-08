@@ -53,7 +53,13 @@
 - (void)viewDidAppear:(BOOL)animated{
 
     [super viewDidAppear:animated];
-    
+
+    [self performSelector:@selector(showPageControlOfprofile) withObject:nil afterDelay:0.1];
+}
+
+- (void)showPageControlOfprofile {
+
+        //>>>>>>> 8bb65de51a914a175ec2eb603298f2f67e902f45
     UIPageControl *pageControl = [UIPageControl appearance];
     pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:1.0 alpha:0.4];
     pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
@@ -67,8 +73,15 @@
     [self setupNavigationPageControlFrame:vwPageControl];
 
     [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
+
+    [self performSelector:@selector(setPageOfPageVwController) withObject:nil afterDelay:0.1];
 }
 
+- (void)setPageOfPageVwController {
+
+    int pageIndex = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"ProfilePage"];
+    [self setPageNumber:pageIndex];
+}
 
 #pragma mark - View controller array
 

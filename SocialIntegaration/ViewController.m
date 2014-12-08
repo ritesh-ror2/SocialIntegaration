@@ -122,9 +122,9 @@ BOOL hasTwitter = NO;
 
     [self appIsInForeground:nil];
 
-    [[NSUserDefaults standardUserDefaults]setInteger:self.index forKey:INDEX_OF_PAGE];
+    [[NSUserDefaults standardUserDefaults]setInteger:0 forKey:INDEX_OF_PAGE];
     [[NSUserDefaults standardUserDefaults]synchronize];
-    
+
     self.navItem.title = @"Timeline";
 }
 
