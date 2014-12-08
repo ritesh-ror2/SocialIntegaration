@@ -40,30 +40,36 @@
 
     [super viewDidLoad];
 
-    self.navigationItem.title = @"Notification";
+    self.navigationItem.title = @"Activity";
     self.navigationController.navigationBarHidden = NO;
 
     self.arryNotifi = [[NSMutableArray alloc]init];
     self.arryNotifiFB = [[NSMutableArray alloc]init];
     self.arryNotifiTwitter = [[NSMutableArray alloc]init];
-    self.navigationItem.hidesBackButton = YES;
 
-    [Constant showNetworkIndicator];
-
-    BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
-    if (isFbUserLogin == NO) {
-
-        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-        [self twitterNotification];
-        return;
-    }
-    [self getFBUserNotification];
 }
 
 - (void)didReceiveMemoryWarning {
 
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+        // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+
+    [super viewDidAppear:animated];
+    [Constant showNetworkIndicator];
+
+    BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    if (isFbUserLogin == NO) {
+
+            //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+        [self.arryNotifiFB removeAllObjects];
+        [self twitterNotification];
+        return;
+    }
+
+    [self getFBUserNotification];
 }
 
 #pragma mark - Get Twitter Notification
@@ -77,12 +83,13 @@
     if (isTwitter == NO) {
 
         [self shortArryOfAllFeeds];
-        [Constant showNetworkIndicator];
-        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+        [self.arryNotifiTwitter removeAllObjects];
+        [Constant hideNetworkIndicator];
+            //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
         return;
     }
 
-    NSURL *requestURL = [NSURL URLWithString:TWITTER_MENTION_URL];
+    NSURL *requestURL = [NSURL URLWithString:TWITTER_MENTION_URL];//@"https://api.twitter.com/1.1/statuses/mentions_timeline.json"];
     SLRequest *timelineRequest = [SLRequest
                                   requestForServiceType:SLServiceTypeTwitter
                                   requestMethod:SLRequestMethodGET
@@ -90,42 +97,40 @@
 
     timelineRequest.account = sharedAppDelegate.twitterAccount;
 
-    [timelineRequest performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error)
-     {
-       NSLog(@"%@ !#" , [error description]);
-       id dataTwitte = [NSJSONSerialization
-                              JSONObjectWithData:responseData
-                              options:NSJSONReadingMutableLeaves
-                              error:&error];
+    [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse*urlResponse, NSError *error) {
 
-       if ([dataTwitte isKindOfClass:[NSDictionary class]]) {
-           NSDictionary *dictData = (NSDictionary *)dataTwitte;
-           if ([[dictData objectForKey:@"errors"]count] != 0) {
+        NSLog(@"%@ !#" , [error description]);
+        id dataTwitte = [NSJSONSerialization
+                         JSONObjectWithData:responseData
+                         options:NSJSONReadingMutableLeaves
+                         error:&error];
 
-               NSLog(@"%@", [dictData objectForKey:@"errors"]);
-               [self shortArryOfAllFeeds];
-               return ;
-           }
-       } else {
-           NSArray *arryData1 = (NSArray *)dataTwitte;
+        if ([dataTwitte isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *dictData = (NSDictionary *)dataTwitte;
+            if ([[dictData objectForKey:@"errors"]count] != 0) {
 
-           if (arryData1.count != 0) {
-               dispatch_async(dispatch_get_main_queue(), ^{
-                   NSLog(@"success");
-                   [self convertDataOfTwitterNotification:arryData1];
-               });
-           } else {
-               [self shortArryOfAllFeeds];
-               dispatch_async(dispatch_get_main_queue(), ^{
+                NSLog(@"%@", [dictData objectForKey:@"errors"]);
+                [self shortArryOfAllFeeds];
+                return ;
+            }
+        } else {
+            NSArray *arryData1 = (NSArray *)dataTwitte;
 
-                   [Constant showNetworkIndicator];
-                   [Constant showAlert:@"Message" forMessage:@"No notification in Twitter account."];
-               });
-           }
-     }
-     }];
+            if (arryData1.count != 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"success");
+                    [self convertDataOfTwitterNotification:arryData1];
+                });
+            } else {
+                [self shortArryOfAllFeeds];
+                dispatch_async(dispatch_get_main_queue(), ^{
+
+                    [Constant hideNetworkIndicator];
+                        // [Constant showAlert:@"Message" forMessage:@"No notification in Twitter account."];
+                });
+            }
+        }
+    }];
 }
 
 #pragma mark - Convert data of twitter in to model class
@@ -134,6 +139,8 @@
  **************************************************************************************************/
 
 - (void)convertDataOfTwitterNotification:(NSArray*)arryNotification {
+
+    [self.arryNotifiTwitter removeAllObjects];
 
     for (NSDictionary *dictData in arryNotification) {
 
@@ -167,22 +174,22 @@
     [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
         sharedAppDelegate.fbSession = session;
 
-	[FBRequestConnection startWithGraphPath:@"/me/notifications"
-                                 parameters:nil
-                                 HTTPMethod:@"GET"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              if (error) {
-                                  [self twitterNotification]; //in case of error
-                              } else {
+        [FBRequestConnection startWithGraphPath:@"/me/notifications"
+                                     parameters:nil
+                                     HTTPMethod:@"GET"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+                                  if (error) {
+                                      [self twitterNotification]; //in case of error
+                                  } else {
 
-                                  NSLog(@"success");
-                                  [self convertDataOfFbNotification:[result valueForKey:@"data"]];
-                              }
-                          }];
+                                      NSLog(@"success");
+                                      [self convertDataOfFbNotification:[result valueForKey:@"data"]];
+                                  }
+                              }];
     }];
 }
 
@@ -193,20 +200,22 @@
 
 - (void)convertDataOfFbNotification:(NSArray*)arryNotification {
 
-   for (NSDictionary *dictData in arryNotification) {
+    [self.arryNotifiFB removeAllObjects];
 
-       if ([[dictData valueForKey:@"unread"]integerValue] == 1) {
+    for (NSDictionary *dictData in arryNotification) {
 
-           UserNotification *userNotif = [[UserNotification alloc]init];
-           userNotif.title = [dictData objectForKey:@"title"];
-           userNotif.notif_id = [dictData objectForKey:@"id"];
-           userNotif.fromId = [[dictData objectForKey:@"from"]objectForKey:@"id"];
-           userNotif.name = [[dictData objectForKey:@"from"]objectForKey:@"name"];
-           userNotif.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
-           userNotif.notifType = @"Facebook";
+        if ([[dictData valueForKey:@"unread"]integerValue] == 1) {
 
-           [self.arryNotifiFB addObject:userNotif];
-       }
+            UserNotification *userNotif = [[UserNotification alloc]init];
+            userNotif.title = [dictData objectForKey:@"title"];
+            userNotif.notif_id = [dictData objectForKey:@"id"];
+            userNotif.fromId = [[dictData objectForKey:@"from"]objectForKey:@"id"];
+            userNotif.name = [[dictData objectForKey:@"from"]objectForKey:@"name"];
+            userNotif.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
+            userNotif.notifType = @"Facebook";
+
+            [self.arryNotifiFB addObject:userNotif];
+        }
     }
     [self twitterNotification];
 }
@@ -252,7 +261,7 @@
     return cell;
 }
 
-#pragma mark - UITable view Delegate
+#pragma mark - UITable view Delegates
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  {
 
@@ -263,7 +272,7 @@
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
-
+    
     return (rect.size.height+45);
 }
 

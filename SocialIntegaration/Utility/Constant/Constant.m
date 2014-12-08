@@ -72,7 +72,6 @@
     CGImageRef masked = CGImageCreateWithMask(imgRef, mask);
     UIImage *imgMasked = [UIImage imageWithCGImage:masked];
     CFRelease(mask);
-    CFRelease(masked);
     return imgMasked;
 }
 

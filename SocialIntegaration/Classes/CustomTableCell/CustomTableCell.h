@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
-#import "AsyncImageView.h"
+#import "UIImageView+WebCache.h"
 
 @protocol CustomTableCellDelegate <NSObject>
 
@@ -27,7 +27,7 @@
     IBOutlet UILabel *lblText;
     IBOutlet UILabel *lblTime;
     IBOutlet UIImageView *imgVwOfUserProfile;
-    IBOutlet AsyncImageView *imgVwPostImg;
+    IBOutlet UIImageView *imgVwPostImg;
     IBOutlet UIButton *btnPlay;
 
     IBOutlet UIImageView *imgVwOfLikeFb;

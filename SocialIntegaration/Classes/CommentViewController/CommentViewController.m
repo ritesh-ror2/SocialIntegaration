@@ -71,6 +71,7 @@
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
 
+
     vwOfComment.backgroundColor = [UIColor colorWithRed:240/256.0f green:240/256.0f blue:240/256.0f alpha:1.0];
     tbleVwComment.backgroundColor = [UIColor clearColor];
     //  [self.view sendSubviewToBack:tbleVwComment];
@@ -450,7 +451,8 @@
         asyVwOfPost.hidden = NO;
         asyVwOfPost.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
         imgVwLagrePostImage.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
-        asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
+            // asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
+        [asyVwOfPost sd_setImageWithURL:[NSURL URLWithString:objUserInfo.postImg] placeholderImage:nil];
         asyVwOfPost.backgroundColor = [UIColor clearColor];
 
         btnShowImageOrVideo.frame = asyVwOfPost.frame;
@@ -1120,7 +1122,7 @@
                                     [btnLike setTitleColor:[UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0] forState:UIControlStateNormal];
                                     [btnLike removeTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
                                     [btnLike addTarget:self action:@selector(unlikedPost) forControlEvents:UIControlEventTouchUpInside];
-                                    lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%i",lblFBOrInstLikeCount.text.integerValue +1];
+                                    lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%li",lblFBOrInstLikeCount.text.integerValue +1];
                                   }
                               }];
     }];
@@ -1407,8 +1409,11 @@
 
     [timelineRequest performRequestWithHandler:
      ^(NSData *responseData, NSHTTPURLResponse
-       *urlResponse, NSError *error)
-     {
+       *urlResponse, NSError *error) {
+
+//         if (<#condition#>) {
+//             <#statements#>
+//         }
        NSLog(@"%@ !#" , [error description]);
        NSArray *arryTwitte = [NSJSONSerialization
                               JSONObjectWithData:responseData

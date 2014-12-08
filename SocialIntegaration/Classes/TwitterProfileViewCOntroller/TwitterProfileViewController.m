@@ -105,11 +105,27 @@
     BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
     if (isTwitterUserLogin == NO) {
 
-        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+            // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+        self.lblUserName.text = @"User is not login by settings.";
+        self.tbleVwTweeterFeeds.hidden = YES;
+        dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(postImageQueue, ^{
+            UIImage *image = [UIImage imageNamed:@"user-selected.png"];
+            NSData *dataImg = UIImagePNGRepresentation(image);
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+                UIImage *img = [UIImage imageWithData:dataImg];
+                UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"mask.png"]];
+                self.imgVwProfileImg.image = imgProfile;
+            });
+        });
+
         [Constant hideNetworkIndicator];
         return;
     } else {
 
+        self.tbleVwTweeterFeeds.hidden = NO;
         UserProfile *userProfile = [UserProfile getProfile:@"Twitter"];
         [self showProfile:userProfile];
         [self getUserTweets:userProfile.userId];
@@ -153,7 +169,8 @@
 
              if (error) {
 
-                 [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
+                     // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
+                 self.lblUserName.text = @"User is not login by settings of app.";
                  return ;
              } else {
 

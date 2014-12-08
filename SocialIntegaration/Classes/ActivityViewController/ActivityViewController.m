@@ -44,23 +44,29 @@
     self.arryActivityFB = [[NSMutableArray alloc]init];
     self.arryActivityTwitter = [[NSMutableArray alloc]init];
 
-    BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
-
-    [Constant showNetworkIndicator];
-
-    if (isFbUserLogin == NO) {
-
-        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-        [self twitterNotification];
-        return;
-    }
-    [self getFBUserNotification];
 }
 
 - (void)didReceiveMemoryWarning {
     
     [super didReceiveMemoryWarning];
         // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+
+    [super viewDidAppear:animated];
+    [Constant showNetworkIndicator];
+
+    BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    if (isFbUserLogin == NO) {
+
+            //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+        [self.arryActivityFB removeAllObjects];
+        [self twitterNotification];
+        return;
+    }
+
+    [self getFBUserNotification];
 }
 
 #pragma mark - Get Twitter Notification
@@ -74,8 +80,9 @@
     if (isTwitter == NO) {
 
         [self shortArryOfAllFeeds];
+        [self.arryActivityTwitter removeAllObjects];
         [Constant hideNetworkIndicator];
-        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
+            //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
         return;
     }
 
@@ -89,38 +96,42 @@
 
     [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse*urlResponse, NSError *error) {
 
-       NSLog(@"%@ !#" , [error description]);
-       id dataTwitte = [NSJSONSerialization
-                        JSONObjectWithData:responseData
-                        options:NSJSONReadingMutableLeaves
-                        error:&error];
+        if (!error) {
 
-       if ([dataTwitte isKindOfClass:[NSDictionary class]]) {
-           NSDictionary *dictData = (NSDictionary *)dataTwitte;
-           if ([[dictData objectForKey:@"errors"]count] != 0) {
+            NSLog(@"%@ !#" , [error description]);
+           id dataTwitte = [NSJSONSerialization
+                            JSONObjectWithData:responseData
+                            options:NSJSONReadingMutableLeaves
+                            error:&error];
 
-               NSLog(@"%@", [dictData objectForKey:@"errors"]);
-               [self shortArryOfAllFeeds];
-               return ;
-           }
-       } else {
-           NSArray *arryData1 = (NSArray *)dataTwitte;
+           if ([dataTwitte isKindOfClass:[NSDictionary class]]) {
+               NSDictionary *dictData = (NSDictionary *)dataTwitte;
+               if ([[dictData objectForKey:@"errors"]count] != 0) {
 
-           if (arryData1.count != 0) {
-               dispatch_async(dispatch_get_main_queue(), ^{
-                   NSLog(@"success");
-                   [self convertDataOfTwitterNotification:arryData1];
-               });
+                   NSLog(@"%@", [dictData objectForKey:@"errors"]);
+                   [self shortArryOfAllFeeds];
+                   return ;
+               }
            } else {
-               [self shortArryOfAllFeeds];
-               dispatch_async(dispatch_get_main_queue(), ^{
+               NSArray *arryData1 = (NSArray *)dataTwitte;
 
-                   [Constant hideNetworkIndicator];
-                    // [Constant showAlert:@"Message" forMessage:@"No notification in Twitter account."];
-               });
+               if (arryData1.count != 0) {
+                   dispatch_async(dispatch_get_main_queue(), ^{
+                       NSLog(@"success");
+                       [self convertDataOfTwitterNotification:arryData1];
+                   });
+               } else {
+                   [self shortArryOfAllFeeds];
+                   dispatch_async(dispatch_get_main_queue(), ^{
+
+                       [Constant hideNetworkIndicator];
+                        // [Constant showAlert:@"Message" forMessage:@"No notification in Twitter account."];
+                   });
+               }
            }
-       }
+        }
      }];
+
 }
 
 #pragma mark - Convert data of twitter in to model class
@@ -129,6 +140,8 @@
  **************************************************************************************************/
 
 - (void)convertDataOfTwitterNotification:(NSArray*)arryNotification {
+
+    [self.arryActivityTwitter removeAllObjects];
 
     for (NSDictionary *dictData in arryNotification) {
 
@@ -187,6 +200,8 @@
  **************************************************************************************************/
 
 - (void)convertDataOfFbNotification:(NSArray*)arryNotification {
+
+    [self.arryActivityFB removeAllObjects];
 
     for (NSDictionary *dictData in arryNotification) {
 

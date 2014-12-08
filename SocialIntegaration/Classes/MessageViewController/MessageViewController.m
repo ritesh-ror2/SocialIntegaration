@@ -42,8 +42,6 @@
 
     [super viewDidLoad];
 
-    [Constant showNetworkIndicator];
-
     userProfile = [UserProfile getProfile:@"Facebook"];
 
     UIBarButtonItem *barBtnProfile = [[UIBarButtonItem alloc]initWithCustomView:[self addUserImgAtLeftSide]];
@@ -73,6 +71,8 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
+
+    [Constant showNetworkIndicator];
 
     [self showInboxMessage];
     self.navigationItem.title = @"Messages";

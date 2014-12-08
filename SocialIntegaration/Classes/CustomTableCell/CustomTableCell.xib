@@ -162,10 +162,10 @@
                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
                     </button>
-                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="rF7-GJ-YA8" customClass="AsyncImageView">
-                        <rect key="frame" x="4" y="94" width="320" height="150"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="ppY-XH-nLs">
+                        <rect key="frame" x="64" y="94" width="320" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    </view>
+                    </imageView>
                 </subviews>
             </tableViewCellContentView>
             <connections>
@@ -179,7 +179,7 @@
                 <outlet property="imgVwOfLikeFb" destination="ck5-GI-5G9" id="HU2-iq-XTe"/>
                 <outlet property="imgVwOfLikeInstagram" destination="vdH-1l-Rgn" id="GRE-RK-NgU"/>
                 <outlet property="imgVwOfUserProfile" destination="nzz-CV-LQp" id="etE-Ae-Th9"/>
-                <outlet property="imgVwPostImg" destination="rF7-GJ-YA8" id="HFP-BO-NGZ"/>
+                <outlet property="imgVwPostImg" destination="ppY-XH-nLs" id="PMX-FK-tBC"/>
                 <outlet property="lblCommentFb" destination="DTA-JA-iAK" id="XFL-Ee-O2o"/>
                 <outlet property="lblFavourate" destination="hCS-d6-mBc" id="zFA-0Q-zFs"/>
                 <outlet property="lblFbLikeCount" destination="AAk-CU-kgQ" id="VII-5l-ZHl"/>
@@ -192,6 +192,7 @@
                 <outlet property="lblTime" destination="Cp9-Mf-82O" id="6w4-S1-wAW"/>
                 <outlet property="lblTweet" destination="h8U-dc-Evt" id="KQE-R5-XYs"/>
             </connections>
+            <point key="canvasLocation" x="455" y="145"/>
         </tableViewCell>
     </objects>
     <resources>
