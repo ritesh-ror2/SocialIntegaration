@@ -58,7 +58,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-
+    [super viewWillAppear:animated];
     self.navController.navigationBarHidden = NO;
     self.noMoreResultsAvail = NO;
     [self.arryTappedCell removeAllObjects];

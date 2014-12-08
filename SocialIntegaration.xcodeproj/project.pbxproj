@@ -553,8 +553,8 @@
 			isa = PBXGroup;
 			children = (
 				0A7324311A0B4C0000F10476 /* Main.storyboard */,
-				0A781B951A10F2A200685DBA /* AppDelegate */,
 				0A8D130F1A136FED00112078 /* HomePageViewController */,
+				0A781B951A10F2A200685DBA /* AppDelegate */,
 				0A7EE7BB1A1493B200E5E65A /* FeedPagesViewController */,
 				0A814BB41A275AC900F874D9 /* PageControllerClass */,
 				0A781B941A10F29300685DBA /* ViewController */,

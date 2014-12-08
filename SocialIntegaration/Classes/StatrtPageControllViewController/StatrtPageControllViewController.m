@@ -59,6 +59,7 @@
 
 - (void)showPageControlOfprofile {
 
+        //>>>>>>> 8bb65de51a914a175ec2eb603298f2f67e902f45
     UIPageControl *pageControl = [UIPageControl appearance];
     pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:1.0 alpha:0.4];
     pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
@@ -73,7 +74,7 @@
 
     [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
 
-    [self performSelector:@selector(setPageOfPageVwController) withObject:nil afterDelay:0.2];
+    [self performSelector:@selector(setPageOfPageVwController) withObject:nil afterDelay:0.1];
 }
 
 - (void)setPageOfPageVwController {

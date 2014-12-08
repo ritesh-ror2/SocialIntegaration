@@ -70,7 +70,10 @@
     CFRelease(dataBuffer);
 
     CGImageRef masked = CGImageCreateWithMask(imgRef, mask);
-    return [UIImage imageWithCGImage:masked];
+    UIImage *imgMasked = [UIImage imageWithCGImage:masked];
+    CFRelease(mask);
+    CFRelease(masked);
+    return imgMasked;
 }
 
 #pragma mark - Show alert view
