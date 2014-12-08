@@ -289,8 +289,10 @@
 
     }
 
-    BOOL isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
-
+    BOOL isSelected = NO;
+    if (indexPath.row < self.arryTappedCell.count) {
+        isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
+    }
     if(indexPath.row < [self.arryOfFBUserFeed count]){
 
             //  self.noMoreResultsAvail = NO;

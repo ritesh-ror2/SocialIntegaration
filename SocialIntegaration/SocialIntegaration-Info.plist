@@ -46,10 +46,10 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
-	<key>FacebookDisplayName</key>
-	<string>Soci­a­l­-­I­n­t­e­g­r­a­tion</string>
 	<key>FacebookAppID</key>
 	<string>1544707672409931</string>
+	<key>FacebookDisplayName</key>
+	<string>Soci­a­l­-­I­n­t­e­g­r­a­tion</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIMainStoryboardFile</key>
@@ -61,8 +61,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 </dict>
 </plist>

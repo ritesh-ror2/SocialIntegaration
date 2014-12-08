@@ -142,6 +142,7 @@ static void *finishedContext            = @"finishedContext";
     BOOL didOpenOtherApp        = NO;
     NSString *igAppUrl          = [IGRequest serializeURL:loginDialogURL params:params];
     didOpenOtherApp             = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:igAppUrl]];
+    NSLog(@"%d",didOpenOtherApp);
 }
 
 - (NSDictionary*)parseURLParams:(NSString *)query {

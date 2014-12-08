@@ -63,7 +63,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-
+    [super viewWillDisappear:animated];
     [self.arryTappedCell removeAllObjects];
 }
 

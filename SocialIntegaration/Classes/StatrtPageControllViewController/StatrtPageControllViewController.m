@@ -29,18 +29,19 @@
     
     id startingViewController = [self viewControllerAtIndex:1];
     ProfileViewController *vwController = (ProfileViewController *)startingViewController;
-    NSArray *viewControllers = @[vwController];
 
-    [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+    dispatch_async (dispatch_get_main_queue(), ^(void) {
 
-    // Change the size of page view controller
-    self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    
-    [self addChildViewController:_pageViewController];
-    [self.view addSubview:_pageViewController.view];
-    [self.pageViewController didMoveToParentViewController:self];
-    [self.pageViewController becomeFirstResponder];
+         NSArray *viewControllers = @[vwController];
+        [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+            // Change the size of page view controller
+        self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
+        [self addChildViewController:_pageViewController];
+        [self.view addSubview:_pageViewController.view];
+        [self.pageViewController didMoveToParentViewController:self];
+        [self.pageViewController becomeFirstResponder];
+    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -51,6 +52,8 @@
 
 - (void)viewDidAppear:(BOOL)animated{
 
+    [super viewDidAppear:animated];
+    
     UIPageControl *pageControl = [UIPageControl appearance];
     pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:1.0 alpha:0.4];
     pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
