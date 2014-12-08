@@ -64,12 +64,17 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
 
+    [super viewWillDisappear:animated];
     [self.arryTappedCell removeAllObjects];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
+
+
+    [[NSUserDefaults standardUserDefaults]setInteger:1 forKey:@"ProfilePage"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
 
     [Constant showNetworkIndicator];
     [self getUserInfoFromTwitter];

@@ -77,6 +77,10 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
+
+    [[NSUserDefaults standardUserDefaults]setInteger:2 forKey:@"ProfilePage"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+
     self.arryOfInstagrame = [[NSMutableArray alloc]init];
     self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:66/256.0f green:106/256.0f blue:151/256.0f alpha:1.0];
     [self getInstagrameIntegration];

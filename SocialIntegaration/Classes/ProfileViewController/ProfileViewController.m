@@ -68,6 +68,9 @@
     [super viewDidAppear:animated];
     [Constant showNetworkIndicator];
 
+    [[NSUserDefaults standardUserDefaults]setInteger:0 forKey:@"ProfilePage"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+
     [self.arryTappedCell removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
     //[self.tbleVwFeeds reloadData];
@@ -289,8 +292,10 @@
 
     }
 
-    BOOL isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
-
+    BOOL isSelected = NO;
+    if (indexPath.row < self.arryTappedCell.count) {
+        isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
+    }
     if(indexPath.row < [self.arryOfFBUserFeed count]){
 
             //  self.noMoreResultsAvail = NO;

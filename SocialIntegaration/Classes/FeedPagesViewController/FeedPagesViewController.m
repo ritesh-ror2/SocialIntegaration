@@ -91,6 +91,7 @@
     [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
 
     self.pageIndex = (int)[[NSUserDefaults standardUserDefaults]integerForKey:INDEX_OF_PAGE];
+
     [self setPageNumber:self.pageIndex];
 }
 
@@ -98,8 +99,8 @@
 
 - (id)viewControllerAtIndex:(NSUInteger)index {
 
-    self.pageIndex = (int)[[NSUserDefaults standardUserDefaults]integerForKey:INDEX_OF_PAGE];
-    [self setPageNumber:self.pageIndex];
+        // self.pageIndex = (int)[[NSUserDefaults standardUserDefaults]integerForKey:INDEX_OF_PAGE];
+        //[self setPageNumber:self.pageIndex];
 
     if (index == 0) {
 

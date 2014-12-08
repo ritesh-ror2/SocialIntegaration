@@ -29,18 +29,19 @@
     
     id startingViewController = [self viewControllerAtIndex:1];
     ProfileViewController *vwController = (ProfileViewController *)startingViewController;
-    NSArray *viewControllers = @[vwController];
 
-    [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+    dispatch_async (dispatch_get_main_queue(), ^(void) {
 
-    // Change the size of page view controller
-    self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    
-    [self addChildViewController:_pageViewController];
-    [self.view addSubview:_pageViewController.view];
-    [self.pageViewController didMoveToParentViewController:self];
-    [self.pageViewController becomeFirstResponder];
+         NSArray *viewControllers = @[vwController];
+        [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+            // Change the size of page view controller
+        self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
+        [self addChildViewController:_pageViewController];
+        [self.view addSubview:_pageViewController.view];
+        [self.pageViewController didMoveToParentViewController:self];
+        [self.pageViewController becomeFirstResponder];
+    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -50,6 +51,13 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+
+    [super viewDidAppear:animated];
+
+    [self performSelector:@selector(showPageControlOfprofile) withObject:nil afterDelay:0.1];
+}
+
+- (void)showPageControlOfprofile {
 
     UIPageControl *pageControl = [UIPageControl appearance];
     pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:1.0 alpha:0.4];
@@ -64,8 +72,15 @@
     [self setupNavigationPageControlFrame:vwPageControl];
 
     [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
+
+    [self performSelector:@selector(setPageOfPageVwController) withObject:nil afterDelay:0.2];
 }
 
+- (void)setPageOfPageVwController {
+
+    int pageIndex = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"ProfilePage"];
+    [self setPageNumber:pageIndex];
+}
 
 #pragma mark - View controller array
 
