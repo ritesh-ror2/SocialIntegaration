@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
-#import "AsyncImageView.h"
 #import "ScrollVwOfComment.h"
 
 @interface CommentViewController : UIViewController {
@@ -18,7 +17,7 @@
     IBOutlet UILabel *lblComment;
     IBOutlet UIImageView *imgVwUser;
     IBOutlet UIImageView *imgVwLagrePostImage;
-    IBOutlet AsyncImageView *asyVwOfPost;
+    IBOutlet UIImageView *asyVwOfPost;
     IBOutlet UIImageView *imgVwNavigation;
     IBOutlet UIImageView * imgVwBackground;
     IBOutlet UILabel *lblName;

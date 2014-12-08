@@ -93,7 +93,6 @@ BOOL hasTwitter = NO;
         [self hideNavBar:YES];
          self.imgVwBackground.hidden = NO;
     } else {
-
         [self hideNavBar:NO];
     }
 
@@ -567,6 +566,7 @@ BOOL hasTwitter = NO;
     //The max_id = top of tweets id list . since_id = bottom of tweets id list .
     //TWITTER_TIMELINE_URL since_id=24012619984051000&max_id=250126199840518145&result_type=recent&count=10
 
+    if (sharedAppDelegate.arryOfTwittes.count > 0) {
     UserInfo *userInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:0];
     int max_Id = userInfo.statusId.intValue;
 
@@ -606,6 +606,7 @@ BOOL hasTwitter = NO;
             [Constant showAlert:@"Message" forMessage:@"The Internet connection appears to be offline."];
         }
      }];
+    }
 }
 
 

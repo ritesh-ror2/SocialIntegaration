@@ -14,8 +14,10 @@
 
 @implementation PageControllerCustomClass
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark - View life cycle
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -23,19 +25,19 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
+
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
--(void)setupNavigationPageControl{
+- (void)setupNavigationPageControl{
 
     UINavigationController *navController = self.navigationController;
 
@@ -51,10 +53,11 @@
 }
 
 - (void)setPageNumber:(int)pageNumber {
+
     self.navigationPageControl.currentPage = pageNumber;
 }
 
--(void)configureNavigationPageControlWithPageControl:(UIPageControl*) pageControl{
+- (void)configureNavigationPageControlWithPageControl:(UIPageControl*) pageControl{
     self.origanalPageControl = pageControl;
     if(self.origanalPageControl){
         self.navigationPageControl.numberOfPages = self.origanalPageControl.numberOfPages;
@@ -62,7 +65,8 @@
     }
 }
 
--(void)autoConfigureNavigationPageControlWithPageViewController:(UIPageViewController*) pageViewController{
+- (void)autoConfigureNavigationPageControlWithPageViewController:(UIPageViewController*) pageViewController{
+
     NSArray *subviews = pageViewController.view.subviews;
     for (int i=0; i<[subviews count]; i++) {
         if ([[subviews objectAtIndex:i] isKindOfClass:[UIPageControl class]]) {
@@ -75,7 +79,8 @@
     }
 }
 
--(void)updateNavigationPageControl{
+- (void)updateNavigationPageControl{
+
     if(self.origanalPageControl){
         self.navigationPageControl.currentPage = self.origanalPageControl.currentPage;
     }

@@ -116,8 +116,20 @@
 
         [Constant hideNetworkIndicator];
 
-        // UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
-        //[alertVw show];
+        self.lblUserName.text = @"User is not login by settings.";
+        self.tbleVwInstagramPost.hidden = YES;
+        dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(postImageQueue, ^{
+            UIImage *image = [UIImage imageNamed:@"user-selected.png"];
+            NSData *dataImg = UIImagePNGRepresentation(image);
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+                UIImage *img = [UIImage imageWithData:dataImg];
+                UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"mask.png"]];
+                self.imgVwProfileImg.image = imgProfile;
+            });
+        });
     } else {
 
         UserProfile *userProfile = [UserProfile getProfile:@"Instagram"];
@@ -203,6 +215,7 @@
 
 - (void)request:(IGRequest *)request didLoad:(id)result {
 
+    self.tbleVwInstagramPost.hidden = NO;
     if ([[result objectForKey:@"data"] isKindOfClass:[NSArray class]]) {
 
         [self convertUserPostIntoModel:[result objectForKey:@"data"]];

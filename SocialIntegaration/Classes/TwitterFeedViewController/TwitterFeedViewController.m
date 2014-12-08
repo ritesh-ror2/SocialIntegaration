@@ -115,19 +115,21 @@
     timelineRequest.account = sharedAppDelegate.twitterAccount;
 
     [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        if (!error) {
 
-        NSLog(@"%@ !#" , [error description]);
-        id result = [NSJSONSerialization
-                             JSONObjectWithData:responseData
-                             options:NSJSONReadingMutableLeaves
-                             error:&error];
+            NSLog(@"%@ !#" , [error description]);
+            id result = [NSJSONSerialization
+                                 JSONObjectWithData:responseData
+                                 options:NSJSONReadingMutableLeaves
+                                 error:&error];
 
-        if (![result isKindOfClass:[NSDictionary class]]) {
+            if (![result isKindOfClass:[NSDictionary class]]) {
 
-            NSArray *arryTwitte = (NSArray *)result;
-            [self convertDataOfTwitterIntoModel:arryTwitte];
-        } else {
-            NSLog(@"error %@", result);
+                NSArray *arryTwitte = (NSArray *)result;
+                [self convertDataOfTwitterIntoModel:arryTwitte];
+            } else {
+                NSLog(@"error %@", result);
+            }
         }
     }];
 }
