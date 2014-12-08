@@ -71,7 +71,6 @@
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
 
-
     vwOfComment.backgroundColor = [UIColor colorWithRed:240/256.0f green:240/256.0f blue:240/256.0f alpha:1.0];
     tbleVwComment.backgroundColor = [UIColor clearColor];
     //  [self.view sendSubviewToBack:tbleVwComment];
@@ -119,7 +118,6 @@
     self.arryTaggedUser = [[NSMutableArray alloc]init];
 
     [self getLikeCountOfFb];
-
 }
 
 - (void)didReceiveMemoryWarning {
@@ -131,6 +129,7 @@
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
+        // [UIApplication sharedApplication].statusBarHidden = YES;
 
     self.navigationController.navigationBarHidden = YES;
     [self setHeadingAndRightBtn];
@@ -152,7 +151,9 @@
 
     if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
 
-        [self getLargeImageOfFacebook];
+        if (self.userInfo.postImg.length != 0) {
+            [self getLargeImageOfFacebook];
+        }
 
         [btnRight setTitle:@"Post" forState:UIControlStateNormal];
         lblHeading.text = @"Facebook";

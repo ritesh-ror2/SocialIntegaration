@@ -375,6 +375,9 @@
  **************************************************************************************************/
 
 - (void)convertFBUserInfoInModel:(NSDictionary *)dictInfo withProfileImg:(NSString *)strProfileImg {
+
+    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISFBLOGIN];
+    [[NSUserDefaults standardUserDefaults]synchronize];
     
     UserProfile *userProfile = [[UserProfile alloc]init];
     userProfile.userName = [dictInfo objectForKey:@"name"];
