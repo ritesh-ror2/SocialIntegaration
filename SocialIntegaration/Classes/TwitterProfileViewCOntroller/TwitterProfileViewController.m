@@ -53,6 +53,12 @@
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
 
+    if (!IS_IPHONE_5_IOS8) {
+
+        self.btnFollowing.hidden = YES;
+        self.btnEdit.frame = self.btnFollowing.frame;
+    }
+
     self.tbleVwTweeterFeeds.hidden = NO;
 }
 
@@ -73,7 +79,6 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
-
 
     [[NSUserDefaults standardUserDefaults]setInteger:1 forKey:@"ProfilePage"];
     [[NSUserDefaults standardUserDefaults]synchronize];

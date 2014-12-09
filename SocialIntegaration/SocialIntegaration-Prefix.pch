@@ -54,8 +54,25 @@
 #define TWEETERDATEFORMATE  @"dd MMM yyyy HH:mm:ss"
     //
 #define APP_ID @"08b82c71973148ffbc52cb6e75102721"//b8d2f232eddb4593b9f333ddfe8bb876"//08b82c71973148ffbc52cb6e75102721
-#define IS_IOS7	(([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) ? YES : NO)
 #define FB_APP_ID @"1544707672409931"
 #define sharedAppDelegate ((AppDelegate*)[[UIApplication sharedApplication] delegate])
+
+
+/*#define SCREEN_WIDTH ([[UIScreen mainScreen] bounds].size.width)
+#define SCREEN_HEIGHT ([[UIScreen mainScreen] bounds].size.height)
+#define SCREEN_MAX_LENGTH (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
+#define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
+
+#define IS_IPHONE_4_OR_LESS (IS_IPHONE && SCREEN_MAX_LENGTH < 568.0)
+#define IS_IPHONE5 (IS_IPHONE && SCREEN_MAX_LENGTH == 568.0)
+#define IS_IPHONE6 (IS_IPHONE && SCREEN_MAX_LENGTH == 667.0)
+#define IS_IPHONE6P (IS_IPHONE && SCREEN_MAX_LENGTH == 736.0)*/
+
+#define IS_IOS7	(([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) ? YES : NO)
+#define IS_IOS8	(([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) ? YES : NO)
+
+#define IS_IPHONE_5_IOS8 (([[UIScreen mainScreen] nativeBounds].size.height/[[UIScreen mainScreen] nativeScale]) == 568.0f)
+#define IS_IPHONE_6_IOS8 (([[UIScreen mainScreen] nativeBounds].size.height/[[UIScreen mainScreen] nativeScale]) == 667.0f)
+#define IS_IPHONE_6P_IOS8 (([[UIScreen mainScreen] nativeBounds].size.height/[[UIScreen mainScreen] nativeScale]) == 736.0f)
 
 #endif

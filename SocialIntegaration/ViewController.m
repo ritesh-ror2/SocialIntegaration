@@ -16,6 +16,7 @@
 #import "CommentViewController.h"
 #import "ShowOtherUserProfileViewController.h"
 #import "Reachability.h"
+#import "HYCircleLoadingView.h"
 #import "ShareCommentAndMessageViewController.h"
 
 NSString *const kSocialServices = @"SocialServices";
@@ -26,6 +27,7 @@ NSString *const kFBSetup = @"FBSetup";
 @interface ViewController () {
 
     BOOL isInstagramOpen;
+    BOOL isShowLoading;
 
     NSMutableData *fbData;
     NSMutableURLRequest *fbRequest;
@@ -39,6 +41,7 @@ NSString *const kFBSetup = @"FBSetup";
 }
 
 @property (nonatomic)BOOL noMoreResultsAvail;
+@property (nonatomic, strong) HYCircleLoadingView *loadingView;
 @property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
 
@@ -58,6 +61,11 @@ BOOL hasTwitter = NO;
     UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(composeMessage:)];
     self.navItem.rightBarButtonItem = barBtnEdit;
 
+    if (sharedAppDelegate.isFirstTimeLaunch == YES) {
+        self.tbleVwPostList.hidden = YES;
+        self.tbleVwPostList.alpha = 0.0;
+    }
+
     //left button
     UIBarButtonItem *barBtnProfile = [[UIBarButtonItem alloc]initWithCustomView:[self addUserImgAtLeftSide]];
    self.navItem.leftBarButtonItem = barBtnProfile;
@@ -69,6 +77,11 @@ BOOL hasTwitter = NO;
 
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
+
+    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 170)/2, 70, 70)];
+    [self.view addSubview:self.loadingView];
+    [self.view bringSubviewToFront:self.loadingView];
+    self.loadingView.hidden = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -90,9 +103,20 @@ BOOL hasTwitter = NO;
 
     if (sharedAppDelegate.isFirstTimeLaunch == YES) {
 
+        if (isShowLoading == NO) {
+
+            isShowLoading = YES;
+            [self performSelector:@selector(showAnimationView) withObject:nil afterDelay:2.5];
+        }
         [self hideNavBar:YES];
          self.imgVwBackground.hidden = NO;
     } else {
+
+        if (sharedAppDelegate.arryOfAllFeeds.count == 0) {
+
+            isShowLoading  = YES;
+            [self performSelector:@selector(showAnimationView) withObject:nil afterDelay:0.0];
+        }
         [self hideNavBar:NO];
     }
 
@@ -215,12 +239,32 @@ BOOL hasTwitter = NO;
     [self animationOfNavsarAndTabbar];
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:3.0];
-
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    [self.tbleVwPostList setHidden:NO];
-    [self.tbleVwPostList setAlpha:1];
     [self.imgVwBackground setAlpha:0];
     [UIView commitAnimations];
+}
+
+- (void)showAnimationOfFeedTableView {
+
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [self.tbleVwPostList setHidden:NO];
+    [UIView setAnimationDuration:3.0];
+    [self.tbleVwPostList setAlpha:1];
+    self.tbleVwPostList.hidden = NO;
+    [UIView commitAnimations];
+}
+
+- (void)showAnimationView {
+
+    BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    BOOL isTwitter = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    BOOL isInstagram = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
+    if(isFbLogin == YES || isTwitter == YES || isInstagram == YES) {
+
+        self.loadingView.hidden = NO;
+        [self.loadingView startAnimation];
+    }
 }
 
 #pragma mark - Show animation of navbar and tabbar
@@ -296,7 +340,11 @@ BOOL hasTwitter = NO;
         });
         return;
     } else {
+            // if (isShowLoading == NO) {
 
+                // isShowLoading = YES;
+                // [self  performSelector:@selector(showAnimationView) withObject:nil afterDelay:2.5];
+                //}
         [FBSettings setDefaultAppID:FB_APP_ID];
         [FBAppEvents activateApp];
 
@@ -491,6 +539,10 @@ BOOL hasTwitter = NO;
         [self getInstagrameIntegration];
         return;
     } else {
+
+        if (isShowLoading == NO) {
+                //  [self showAnimationView];
+        }
 
         ACAccountStore *account = [[ACAccountStore alloc] init];
         ACAccountType *accountType = [account
@@ -838,6 +890,9 @@ Delegate to increase cell height when cell is tapped
         [Constant hideNetworkIndicator];
         [self shortArryOfAllFeeds];
     } else {
+        if (isShowLoading == NO) {
+                // [self showAnimationView];
+        }
 
         if ([sharedAppDelegate.instagram isSessionValid]) {
 
@@ -985,7 +1040,13 @@ Delegate to increase cell height when cell is tapped
 - (void)shortArryOfAllFeeds {
 
     dispatch_async(dispatch_get_main_queue(), ^{
+
         [Constant hideNetworkIndicator];
+
+        if (isShowLoading == YES) {
+            [self.loadingView stopAnimation];
+            [self.loadingView setHidden:YES];
+        }
     });
     [sharedAppDelegate.arryOfAllFeeds removeAllObjects]; //first remove all object
     NSLog(@"**** %lu",(unsigned long)sharedAppDelegate.arryOfTwittes.count);
@@ -1009,6 +1070,11 @@ Delegate to increase cell height when cell is tapped
     }
 
     [self.tbleVwPostList reloadData];
+    if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
+        [self showAnimationOfFeedTableView];
+    } else {
+        [self.tbleVwPostList setHidden:YES];
+    }
 }
 
 #pragma mark - Get more data of Fb news feed

@@ -72,6 +72,7 @@
     sharedAppDelegate.isFirstTimeLaunch = NO;
 
     vwOfComment.backgroundColor = [UIColor colorWithRed:240/256.0f green:240/256.0f blue:240/256.0f alpha:1.0];
+    [self.view sendSubviewToBack:vwOfComment];
     tbleVwComment.backgroundColor = [UIColor clearColor];
     //  [self.view sendSubviewToBack:tbleVwComment];
     //[btnMoreTweet setBackgroundColor:[UIColor redColor]];
@@ -112,10 +113,13 @@
     tbleVwTaggedUser = [[UITableView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 200)/2, (self.view.frame.size.height - 250)/2, 200, 250)];
     tbleVwTaggedUser.dataSource = self;
     tbleVwTaggedUser.delegate = self;
+    tbleVwTaggedUser.tableFooterView =  [[UIView alloc] initWithFrame:CGRectZero];
     [tbleVwTaggedUser setBackgroundColor:[UIColor whiteColor]];
     [vwTaggedUser addSubview:tbleVwTaggedUser];
 
     self.arryTaggedUser = [[NSMutableArray alloc]init];
+
+    tbleVwComment.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
     [self getLikeCountOfFb];
 }
@@ -233,6 +237,22 @@
      }
  }];
 }
+- (void)noCommentInArray {
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        if(self.arryComment.count == 0) {
+
+            [Constant hideNetworkIndicator];
+            scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
+            return;
+        } else {
+            [Constant hideNetworkIndicator];
+            [tbleVwComment reloadData];
+        }
+    });
+}
+
 
 #pragma mark - Convert data of twitter in to model class
 /**************************************************************************************************
@@ -259,15 +279,7 @@
             [self.arryComment addObject:usercomment];
         }
     }
-
-    if(self.arryComment.count == 0) {
-            // [Constant showAlert:@"Messgae" forMessage:@"No comment found."];
-        [Constant hideNetworkIndicator];
-        scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
-        return;
-    }
-    [Constant hideNetworkIndicator];
-    [tbleVwComment reloadData];
+    [self performSelector:@selector(noCommentInArray) withObject:nil afterDelay:0.1];
 }
 
 #pragma mark - Fetch comment of instagram post
@@ -342,15 +354,7 @@
 //           userInfo.type = [dictData objectForKey:@"type"];
         }
     }
-
-    if(self.arryComment.count == 0) {
-            //[Constant showAlert:@"Messgae" forMessage:@"No comment found."];
-        [Constant hideNetworkIndicator];
-        scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
-        return;
-    }
-    [Constant hideNetworkIndicator];
-    [tbleVwComment reloadData];
+    [self performSelector:@selector(noCommentInArray) withObject:nil afterDelay:0.1];
 }
 
 #pragma mark - Fetch comment of fb post
@@ -392,6 +396,20 @@
 - (void)convertDataOfFBComment:(NSArray *)arryPost {
 
     [self.arryComment removeAllObjects];
+
+ /*   dispatch_async(dispatch_get_main_queue(), ^{
+
+        if(arryPost.count == 0) {
+
+            [Constant hideNetworkIndicator];
+            scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
+            return;
+        } else {
+            [Constant hideNetworkIndicator];
+            [tbleVwComment reloadData];
+        }
+    });*/
+
     @autoreleasepool {
 
         for (NSDictionary *dictData in arryPost) {
@@ -409,15 +427,8 @@
             [self.arryComment addObject:userComment];
         }
     }
-    if (self.arryComment.count == 0) {
-            //  [Constant showAlert:@"Message" forMessage:@"No Comment is there."];
-        [Constant hideNetworkIndicator];
-        scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
-        return;
-    }
 
-    [Constant hideNetworkIndicator];
-    [tbleVwComment reloadData];
+    [self performSelector:@selector(noCommentInArray) withObject:nil afterDelay:0.1];
 }
 
 #pragma mark - set comment of post detail
@@ -469,11 +480,29 @@
     }
 
     scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + 235));
-    if (objUserInfo.userProfileImg.length != 0) {
+
+    if (objUserInfo.postImg.length != 0) {
+
         tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, 250);
     } else {
-        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, self.view.frame.size.height - (imgVwBackground.frame.size.height+90));
+
+        int height;
+        if (IS_IPHONE_6_IOS8) {
+            height = 667.0;
+        } else if (IS_IPHONE_6P_IOS8) {
+            height = 736.0;
+        } else {
+            height = 568;
+        }
+        NSLog(@"%f",MAX([UIScreen mainScreen].bounds.size.height,[UIScreen mainScreen].bounds.size.width));
+        CGRect frame = tbleVwComment.frame;
+        frame.origin.y = imgVwBackground.frame.size.height+5;
+        frame.size.height = (height - (imgVwBackground.frame.size.height+ 5 + imgVwNavigation.frame.size.height +44));
+        tbleVwComment.frame = frame;
     }
+
+    NSLog(@"** %f", vwOfComment.frame.size.height);
+
     imgVwUser.frame = CGRectMake(10, imgVwBackground.frame.size.height+5 , 45, 45);
 
     if ([objUserInfo.type isEqualToString:@"video"]) {
@@ -1206,6 +1235,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 
     [btnDelete setHidden:YES]; //hide on tapped any where
+    [vwTaggedUser setHidden:YES];
 
  /*   if ([self.userInfo.type isEqualToString:@"video"]) {
 

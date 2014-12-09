@@ -224,7 +224,7 @@
         [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
     } else {
 
-        if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
+        if (sharedAppDelegate.arryOfTwittes.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 

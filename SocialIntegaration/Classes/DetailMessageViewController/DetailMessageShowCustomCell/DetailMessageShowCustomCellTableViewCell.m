@@ -87,7 +87,7 @@
 
         int width;
         if (rect.size.width < 90) {
-            width = 90;
+            width = 100;
         } else {
             width = rect.size.width+5;
         }
@@ -110,7 +110,7 @@
 
         int width;
         if (rect.size.width < 90) {
-            width = 90;
+            width = 100;
         } else {
             width = rect.size.width+5;
         }

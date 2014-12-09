@@ -71,7 +71,6 @@
     [[NSUserDefaults standardUserDefaults]setInteger:0 forKey:@"ProfilePage"];
     [[NSUserDefaults standardUserDefaults]synchronize];
 
-    [self.arryTappedCell removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
     //[self.tbleVwFeeds reloadData];
 
@@ -213,6 +212,8 @@
 - (void)convertDataOfFBIntoModel:(NSArray *)arryPost {
 
     [self.arryOfFBUserFeed removeAllObjects];
+    [self.arryTappedCell removeAllObjects];
+
     @autoreleasepool {
 
         for (NSDictionary *dictData in arryPost) {

@@ -9,9 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
 
-@interface GiveCommentViewController : UIViewController {
+@interface GiveCommentViewController : UIViewController <UITextViewDelegate> {
 
-    IBOutlet UITextView *txtVwCommnet;
     IBOutlet UIImageView *imgVwProfile;
     IBOutlet UIImageView *imgVwbackg;
     IBOutlet UILabel *lblHeading;
@@ -21,5 +20,7 @@
 }
 
 @property (nonatomic, strong) UserInfo *userInfo;
+@property (nonatomic, strong) IBOutlet UITextView *txtVwGiveComment;
+
 
 @end

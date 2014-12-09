@@ -66,7 +66,12 @@
 
     [self setupNavigationPageControl];
 
-    UIView *vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 230, 60, 40)];
+    UIView *vwPageControl;
+     if (!IS_IPHONE_5_IOS8) {
+          vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 200, 60, 40)];
+     } else {
+         vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 230, 60, 40)];
+     }
     [self.view addSubview:vwPageControl];
     [self.view bringSubviewToFront:vwPageControl];
 

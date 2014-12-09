@@ -38,16 +38,21 @@
 
     [super viewDidLoad];
     [self.view bringSubviewToFront:self.view];
-    txtVwCommnet.inputAccessoryView = navBar;
+        //self.txtVwGiveComment.inputAccessoryView = navBar;
     self.view.backgroundColor = [UIColor whiteColor];
 
-    txtVwCommnet.layer.borderColor = [UIColor lightGrayColor].CGColor;
-    txtVwCommnet.layer.borderWidth = 1.0;
-    txtVwCommnet.layer.cornerRadius = 3.0;
+    self.txtVwGiveComment.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.txtVwGiveComment.layer.borderWidth = 1.0;
+    self.txtVwGiveComment.layer.cornerRadius = 3.0;
 
      userProfileFB = [UserProfile getProfile:@"Facebook"];
     [self showNavigationBarColor];
     [self getFriendList];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+
+    self.txtVwGiveComment.delegate  = self;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,6 +60,27 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - KeyBoard Notification
+
+- (void)keyboardWillShow:(NSNotification*)aNotification {
+
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+
+    if (IS_IOS8) {
+        navBar.frame = CGRectMake(0, kbSize.height+20, navBar.frame.size.width, navBar.frame.size.height);
+    } else {
+        navBar.frame = CGRectMake(0, kbSize.height, navBar.frame.size.width, navBar.frame.size.height);
+    }
+}
+
+- (void)keyboardWillHide:(NSNotification*)aNotification {
+
+    navBar.frame = CGRectMake(0, self.view.frame.size.height ,navBar.frame.size.width, navBar.frame.size.height);
+    navBar.hidden = YES;
+}
+
 
 #pragma mark - Show navbar color accordinf to facebook and twitter
 /**************************************************************************************************
@@ -144,7 +170,7 @@
         sharedAppDelegate.fbSession = session;
 
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-                            txtVwCommnet.text, @"message",
+                            self.txtVwGiveComment.text, @"message",
                             nil
                             ];
     NSString *strUrl = [NSString stringWithFormat:@"/%@/comments",self.userInfo.objectIdFB];
@@ -197,7 +223,7 @@
 
 - (void)postCommentOnTwitter {
 
-    NSDictionary *param = @{@"status": txtVwCommnet.text,
+    NSDictionary *param = @{@"status": self.txtVwGiveComment.text,
                             @"in_reply_to_status_id": self.userInfo.statusId};
 
     NSString *strFavourateUrl = [NSString stringWithFormat:TWITTER_POST_URL];

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0A02A2D41A0BA58F00A1738F /* NSDate+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A02A2D31A0BA58F00A1738F /* NSDate+Helper.m */; };
+		0A1C4CDC1A36E8B6002E9CBB /* HYCircleLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A1C4CDB1A36E8B6002E9CBB /* HYCircleLoadingView.m */; };
 		0A1E537C1A2C83290031529E /* UserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A1E537B1A2C83290031529E /* UserActivity.m */; };
 		0A1E537E1A2CAFBC0031529E /* splash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A1E537D1A2CAFBC0031529E /* splash@2x.png */; };
 		0A1F70F31A1F72B400EC69DD /* Notify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A1F70F21A1F72B400EC69DD /* Notify@2x.png */; };
@@ -187,6 +188,8 @@
 /* Begin PBXFileReference section */
 		0A02A2D21A0BA58F00A1738F /* NSDate+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Helper.h"; sourceTree = "<group>"; };
 		0A02A2D31A0BA58F00A1738F /* NSDate+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Helper.m"; sourceTree = "<group>"; };
+		0A1C4CDA1A36E8B6002E9CBB /* HYCircleLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYCircleLoadingView.h; sourceTree = "<group>"; };
+		0A1C4CDB1A36E8B6002E9CBB /* HYCircleLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYCircleLoadingView.m; sourceTree = "<group>"; };
 		0A1E537A1A2C83290031529E /* UserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserActivity.h; sourceTree = "<group>"; };
 		0A1E537B1A2C83290031529E /* UserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserActivity.m; sourceTree = "<group>"; };
 		0A1E537D1A2CAFBC0031529E /* splash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "splash@2x.png"; sourceTree = "<group>"; };
@@ -463,6 +466,15 @@
 			path = "Nsdate + Helper";
 			sourceTree = "<group>";
 		};
+		0A1C4CD91A36E8B6002E9CBB /* AnimationLoadingView */ = {
+			isa = PBXGroup;
+			children = (
+				0A1C4CDA1A36E8B6002E9CBB /* HYCircleLoadingView.h */,
+				0A1C4CDB1A36E8B6002E9CBB /* HYCircleLoadingView.m */,
+			);
+			path = AnimationLoadingView;
+			sourceTree = "<group>";
+		};
 		0A1E53791A2C83020031529E /* UserActivity */ = {
 			isa = PBXGroup;
 			children = (
@@ -731,6 +743,7 @@
 		0A7324681A0B6C1000F10476 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				0A1C4CD91A36E8B6002E9CBB /* AnimationLoadingView */,
 				0A91F5881A35E5E60036B658 /* SDWebImage */,
 				0A74C3951A2D9D42000FE43C /* ScrollVwOfCommentVw */,
 				0A9F50721A11E12A00BAB0D3 /* Spinner */,
@@ -1393,6 +1406,7 @@
 				0A810FE81A1C550200D1D64D /* UserMessage.m in Sources */,
 				0A9F506E1A11DC7600BAB0D3 /* AsyncImageView.m in Sources */,
 				0A9FF06E1A10A65800FC2B39 /* UIFont+Helper.m in Sources */,
+				0A1C4CDC1A36E8B6002E9CBB /* HYCircleLoadingView.m in Sources */,
 				0A91F5B81A35E5E60036B658 /* UIImageView+WebCache.m in Sources */,
 				0A91F5AA1A35E5E60036B658 /* MKAnnotationView+WebCache.m in Sources */,
 				0A91F5B61A35E5E60036B658 /* UIImage+WebP.m in Sources */,

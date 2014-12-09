@@ -24,6 +24,8 @@
 @property (nonatomic, strong) NSString *strUserText;
 @property (nonatomic, strong) NSString *strUserName;
 
+@property (nonatomic, strong) IBOutlet UIButton *btnFollowing;
+@property (nonatomic, strong) IBOutlet UIButton *btnEdit;
 @property (nonatomic)NSUInteger index;
 
 @end

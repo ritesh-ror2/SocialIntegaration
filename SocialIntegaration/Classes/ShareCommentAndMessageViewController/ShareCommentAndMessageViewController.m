@@ -68,6 +68,28 @@
     [self getListOfFollowers];
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+
+- (void)keyboardWillShow:(NSNotification*)aNotification {
+
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+
+    if (IS_IOS8) {
+        self.toolBar.frame = CGRectMake(0, kbSize.height+20, self.toolBar.frame.size.width, self.toolBar.frame.size.height);
+    } else {
+        self.toolBar.frame = CGRectMake(0, kbSize.height, self.toolBar.frame.size.width, self.toolBar.frame.size.height);
+    }
+}
+
+- (void)keyboardWillHide:(NSNotification*)aNotification {
+
+    self.toolBar.frame = CGRectMake(0, self.view.frame.size.height ,self.toolBar.frame.size.width, self.toolBar.frame.size.height);
+    self.toolBar.hidden = YES;
 }
 
 - (void)didReceiveMemoryWarning {
