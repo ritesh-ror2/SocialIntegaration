@@ -104,6 +104,7 @@
 
             // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER];
         self.lblUserName.text = @"User is not login by settings.";
+        self.lblUserName.hidden = NO;
         self.tbleVwFeeds.hidden = YES;
         dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         dispatch_async(postImageQueue, ^{
@@ -194,8 +195,7 @@
                                  HTTPMethod:@"GET"
                           completionHandler:^( FBRequestConnection *connection, id result,  NSError *error) {
                               if (error) {
-
-                                      // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+                                  // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
                               } else {
 
                                   NSArray *arryPost = [result objectForKey:@"data"];

@@ -82,11 +82,11 @@
 
 - (void)showPageControlOfTimeline {
 
-    UIPageControl *pageControl = [UIPageControl appearance];
-    pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-    pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
 
     [self setupNavigationPageControl];
+        //UIPageControl *pageControl = [UIPageControl appearance];
+    self.navigationPageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+    self.navigationPageControl.currentPageIndicatorTintColor = [UIColor blackColor];
 
     [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
 

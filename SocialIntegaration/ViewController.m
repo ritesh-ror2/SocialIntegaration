@@ -95,7 +95,15 @@ BOOL hasTwitter = NO;
     self.navigationController.navigationBar.translucent = NO;
 
     [self.arrySelectedIndex removeAllObjects];
-    // [self.tbleVwPostList reloadData];
+    [self.arryTappedCell removeAllObjects];
+    [self.tbleVwPostList reloadData];
+
+    if(self.arryTappedCell.count == 0) { //return from other view
+        for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {
+            NSLog(@"%@", cellSelected);
+            [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
+        }
+    }
 
     isFirstPageFeedsOfFb = YES;
     isFirstPageTweetsOfTwitter = YES;
@@ -117,13 +125,6 @@ BOOL hasTwitter = NO;
             [self performSelector:@selector(showAnimationView) withObject:nil afterDelay:0.0];
         }
         [self hideNavBar:NO];
-    }
-
-    if(self.arryTappedCell.count == 0) { //return from other view
-        for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {
-            NSLog(@"%@", cellSelected);
-            [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
-        }
     }
 
     NSLog(@"%@", self.arryTappedCell);
@@ -252,6 +253,9 @@ BOOL hasTwitter = NO;
     [self.tbleVwPostList setAlpha:1];
     self.tbleVwPostList.hidden = NO;
     [UIView commitAnimations];
+
+//    self.loadingView.hidden = YES;
+//    [self.loadingView stopAnimation];
 }
 
 - (void)showAnimationView {

@@ -14,6 +14,7 @@
 #import "MessageCustomCell.h"
 #import "DetailMessageViewController.h"
 #import "ShareCommentAndMessageViewController.h"
+#import "HYCircleLoadingView.h"
 
 @interface MessageViewController () <MessageCellTappedDelegate> {
 
@@ -21,6 +22,8 @@
     NSString *strTitleUserName;
 }
 
+@property (nonatomic) BOOL isLoadingShow;
+@property (nonatomic, strong) HYCircleLoadingView *loadingView;
 @property (nonatomic, strong) NSMutableArray *arryOfFbMessage;
 
 @end
@@ -54,6 +57,15 @@
     self.arryOfFbMessage = [[NSMutableArray alloc]init];
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
+
+    self.tbleVwFbMessage.hidden = YES;
+    self.tbleVwFbMessage.alpha = 0;
+    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 170)/2, 70, 70)];
+    [self.view addSubview:self.loadingView];
+    [self.view bringSubviewToFront:self.loadingView];
+    self.loadingView.hidden = YES;
+
+    [self showAnimationView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -72,11 +84,25 @@
 
     [super viewDidAppear:animated];
 
-    [Constant showNetworkIndicator];
-
+    if(self.isLoadingShow == NO) {
+        [self showAnimationView];
+    }
     [self showInboxMessage];
     self.navigationItem.title = @"Messages";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+}
+
+
+- (void)showAnimationView {
+
+    BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    BOOL isTwitter = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    if(isFbLogin == YES || isTwitter == YES) {
+
+        self.isLoadingShow = YES;
+        self.loadingView.hidden = NO;
+        [self.loadingView startAnimation];
+    }
 }
 
 #pragma mark - Compose message to post on fb and twitter
@@ -121,10 +147,12 @@
 
 - (void)showInboxMessage {
 
+    [Constant showNetworkIndicator];
+
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
     if (isFbUserLogin == NO) {
 
-        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+            //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
         [Constant hideNetworkIndicator];
         return;
     }
@@ -197,8 +225,27 @@
         }
     }
     [self.tbleVwFbMessage reloadData];
+
+    if (self.arryOfFbMessage.count != 0) {
+        [self showAnimationOfActivity];
+    }
     [Constant hideNetworkIndicator];
 }
+
+- (void)showAnimationOfActivity {
+
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [self.tbleVwFbMessage setHidden:NO];
+    [UIView setAnimationDuration:3.0];
+    [self.tbleVwFbMessage setAlpha:1];
+    self.tbleVwFbMessage.hidden = NO;
+    [UIView commitAnimations];
+
+    self.loadingView.hidden = YES;
+    [self.loadingView stopAnimation];
+}
+
 
 #pragma mark - UITable View Datasource
 

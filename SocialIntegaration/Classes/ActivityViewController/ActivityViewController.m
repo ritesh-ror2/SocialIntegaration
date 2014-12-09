@@ -12,9 +12,12 @@
 
 #import "UserNotificationCustomCell.h"
 #import "UserNotification.h"
+#import "HYCircleLoadingView.h"
 
 @interface ActivityViewController ()
 
+@property (nonatomic) BOOL isLoadingShow;
+@property (nonatomic, strong) HYCircleLoadingView *loadingView;
 @property (nonatomic, strong) NSMutableArray *arryActivity;
 @property (nonatomic, strong) NSMutableArray *arryActivityFB;
 @property (nonatomic, strong) NSMutableArray *arryActivityTwitter;
@@ -44,6 +47,15 @@
     self.arryActivityFB = [[NSMutableArray alloc]init];
     self.arryActivityTwitter = [[NSMutableArray alloc]init];
 
+    [self.tbleVwActivity setAlpha:0];
+    self.tbleVwActivity.hidden = YES;
+
+    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 170)/2, 70, 70)];
+    [self.view addSubview:self.loadingView];
+    [self.view bringSubviewToFront:self.loadingView];
+    self.loadingView.hidden = YES;
+
+    [self showAnimationView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,8 +67,10 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
-    [Constant showNetworkIndicator];
 
+    if (self.isLoadingShow == NO) {
+        [self showAnimationView];
+    }
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
     if (isFbUserLogin == NO) {
 
@@ -66,8 +80,22 @@
         return;
     }
 
+    [Constant showNetworkIndicator];
     [self getFBUserNotification];
 }
+
+- (void)showAnimationView {
+
+    BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    BOOL isTwitter = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    if(isFbLogin == YES || isTwitter == YES) {
+
+        self.isLoadingShow = YES;
+        self.loadingView.hidden = NO;
+        [self.loadingView startAnimation];
+    }
+}
+
 
 #pragma mark - Get Twitter Notification
 /**************************************************************************************************
@@ -243,6 +271,25 @@
     [Constant hideNetworkIndicator];
 
     [self.tbleVwActivity reloadData];
+    if (self.arryActivity.count != 0){
+        [self showAnimationOfActivity];
+    } else {
+            // self.tbleVwActivity.hidden = YES;
+    }
+}
+
+- (void)showAnimationOfActivity {
+
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [self.tbleVwActivity setHidden:NO];
+    [UIView setAnimationDuration:3.0];
+    [self.tbleVwActivity setAlpha:1];
+    self.tbleVwActivity.hidden = NO;
+    [UIView commitAnimations];
+
+    self.loadingView.hidden = YES;
+    [self.loadingView stopAnimation];
 }
 
 #pragma mark - UITable view Datasource
