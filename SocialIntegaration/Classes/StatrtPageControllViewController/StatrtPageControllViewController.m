@@ -50,11 +50,23 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+}
+
 - (void)viewDidAppear:(BOOL)animated{
 
     [super viewDidAppear:animated];
 
     [self performSelector:@selector(showPageControlOfprofile) withObject:nil afterDelay:0.1];
+}
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)showPageControlOfprofile {
@@ -67,7 +79,7 @@
     [self setupNavigationPageControl];
 
     UIView *vwPageControl;
-     if (!IS_IPHONE_5_IOS8) {
+     if (!IS_IPHONE5) {
           vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 200, 60, 40)];
      } else {
          vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 230, 60, 40)];

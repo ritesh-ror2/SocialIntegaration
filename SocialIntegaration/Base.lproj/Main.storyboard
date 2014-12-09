@@ -1232,7 +1232,7 @@
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="FNs-2C-vbF">
                                                             <rect key="frame" x="90" y="5" width="24" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <state key="normal" image="7B36311A-8619-4459-BF77-30731F9BADCA">
+                                                            <state key="normal" image="F5FE1B20-CCCF-4AC1-99C3-41CD1A2600B9">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                         </button>
@@ -2481,7 +2481,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="7B36311A-8619-4459-BF77-30731F9BADCA" width="24" height="24">
+        <image name="Activity.png" width="25" height="25"/>
+        <image name="Comment1.png" width="40" height="40"/>
+        <image name="Cross.png" width="20" height="20"/>
+        <image name="F5FE1B20-CCCF-4AC1-99C3-41CD1A2600B9" width="24" height="24">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -2570,9 +2573,6 @@ LQAyADcARgBMAFcAXgBlAHIAeQCBAIMAhQCKAIwAjgCXAJwApwCpAKsArQCyALUAtwC5ALsAvQDCANkA
 KBMtAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAAEy8
 </mutableData>
         </image>
-        <image name="Activity.png" width="25" height="25"/>
-        <image name="Comment1.png" width="40" height="40"/>
-        <image name="Cross.png" width="20" height="20"/>
         <image name="Favourite1.png" width="27" height="25"/>
         <image name="Like-InstActive.png" width="20" height="20"/>
         <image name="Liked.png" width="20" height="20"/>

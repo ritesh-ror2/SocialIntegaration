@@ -71,11 +71,14 @@
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
 
+        // self.view.backgroundColor = [UIColor redColor];
+    NSLog(@"%f",self.view.frame.size.height);
     vwOfComment.backgroundColor = [UIColor colorWithRed:240/256.0f green:240/256.0f blue:240/256.0f alpha:1.0];
     [self.view sendSubviewToBack:vwOfComment];
+        // self.tabBarController.tabBar.hidden = NO;
+        //[self.view bringSubviewToFront:self.tabBarController.tabBar];
     tbleVwComment.backgroundColor = [UIColor clearColor];
-    //  [self.view sendSubviewToBack:tbleVwComment];
-    //[btnMoreTweet setBackgroundColor:[UIColor redColor]];
+
     [self.view bringSubviewToFront:imgVwNavigation];
     [self.view bringSubviewToFront:lblHeading];
     [self.view bringSubviewToFront:btnRight];
@@ -124,6 +127,10 @@
     [self getLikeCountOfFb];
 }
 
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)didReceiveMemoryWarning {
 
     [super didReceiveMemoryWarning];
@@ -133,7 +140,9 @@
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
-        // [UIApplication sharedApplication].statusBarHidden = YES;
+
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 
     self.navigationController.navigationBarHidden = YES;
     [self setHeadingAndRightBtn];
@@ -485,6 +494,8 @@
 
         tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, 250);
     } else {
+
+        NSLog(@"%f", [UIScreen mainScreen].bounds.size.height);
 
         int height;
         if (IS_IPHONE_6_IOS8) {

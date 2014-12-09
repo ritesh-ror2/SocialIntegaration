@@ -40,7 +40,7 @@
 
     [super viewDidLoad];
 
-    self.navigationItem.title = @"Activity";
+    self.navigationItem.title = @"Notification";
     self.navigationController.navigationBarHidden = NO;
 
     self.arryNotifi = [[NSMutableArray alloc]init];

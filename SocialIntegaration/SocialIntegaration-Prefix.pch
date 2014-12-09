@@ -71,8 +71,8 @@
 #define IS_IOS7	(([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) ? YES : NO)
 #define IS_IOS8	(([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) ? YES : NO)
 
-#define IS_IPHONE_5_IOS8 (([[UIScreen mainScreen] nativeBounds].size.height/[[UIScreen mainScreen] nativeScale]) == 568.0f)
-#define IS_IPHONE_6_IOS8 (([[UIScreen mainScreen] nativeBounds].size.height/[[UIScreen mainScreen] nativeScale]) == 667.0f)
+#define IS_IPHONE5 (([[UIScreen mainScreen] bounds].size.height-568)?NO:YES)
+#define IS_IPHONE_6_IOS8 (([[UIScreen mainScreen] bounds].size.height-667)?NO:YES) //(([[UIScreen mainScreen] nativeBounds].size.height/[[UIScreen mainScreen] nativeScale]) == 667.0f)
 #define IS_IPHONE_6P_IOS8 (([[UIScreen mainScreen] nativeBounds].size.height/[[UIScreen mainScreen] nativeScale]) == 736.0f)
 
 #endif

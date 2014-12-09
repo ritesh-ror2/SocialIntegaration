@@ -53,7 +53,7 @@
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
 
-    if (!IS_IPHONE_5_IOS8) {
+    if (!IS_IPHONE5) {
 
         self.btnFollowing.hidden = YES;
         self.btnEdit.frame = self.btnFollowing.frame;
