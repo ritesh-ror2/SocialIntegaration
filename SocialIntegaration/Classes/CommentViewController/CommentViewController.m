@@ -454,7 +454,7 @@
     if (IS_IPHONE_6_IOS8) {
         widthOfComment = [Constant widthOfCommentLblOfTimelineAndProfile] + 50;
     } else if (IS_IPHONE_6P_IOS8) {
-        widthOfComment = iPhone6_Plus_lbl_width;
+        widthOfComment = iPhone6_Plus_lbl_width + 80;
     } else {
         widthOfComment = iPhone5_lbl_width - 10;
     }
@@ -1043,6 +1043,7 @@
     [imgVwOfLikeInstagram setHidden:NO];
     [btnCommentFb setHidden:NO];
     [btnLike setHidden:NO];
+    [btnMoreTweet setHidden: NO];
     [lblFBOrInstLikeCount setHidden:NO];
     [lblFBOrInstCommentCount setHidden:NO];
 

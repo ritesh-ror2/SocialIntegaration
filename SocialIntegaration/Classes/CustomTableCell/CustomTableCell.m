@@ -29,7 +29,7 @@
 
     spinner.hidden = YES;
     spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    spinner.frame = CGRectMake(150, 10, 24, 50);
+    spinner.frame = CGRectMake(([Constant heightOfCellInTableVw] - 37)/2, 5, 37, 37);
     [self.contentView addSubview:spinner];
 }
 
@@ -500,7 +500,7 @@
     } else {
         appendXAxis = 40;
         extraGap = 35;
-        tweetGap = 0;
+        tweetGap = 5;
     }
 
     [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x+appendXAxis+extraGap, yAxis, 20, 20)];
