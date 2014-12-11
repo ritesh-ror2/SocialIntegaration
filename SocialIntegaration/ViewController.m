@@ -304,7 +304,7 @@ BOOL hasTwitter = NO;
 
     tabbar.hidden = NO;
     tabbar = self.tabBarController.tabBar;
-    tabbar.frame = CGRectMake(tabbar.frame.origin.x, 568, tabbar.frame.size.width,  tabbar.frame.size.height); //set tabbar custom frame
+    tabbar.frame = CGRectMake(tabbar.frame.origin.x,(self.view.frame.size.height+37), tabbar.frame.size.width,  tabbar.frame.size.height); //set tabbar custom frame
 
     if (YES) {
 
@@ -312,9 +312,9 @@ BOOL hasTwitter = NO;
         [UIView animateWithDuration:animationDuration animations:^{
 
             navBar.frame = CGRectMake(0, 20,  navBar.frame.size.width,  navBar.frame.size.height);
-            NSLog(@"%@", NSStringFromCGRect(navBar.frame));
+            NSLog(@"%f",self.view.frame.size.height);
 
-            tabbar.frame = CGRectMake(tabbar.frame.origin.x,568 - tabbar.frame.size.height, tabbar.frame.size.width,  tabbar.frame.size.height);
+            tabbar.frame = CGRectMake(tabbar.frame.origin.x, (self.view.frame.size.height+37) - tabbar.frame.size.height, tabbar.frame.size.width,  tabbar.frame.size.height);
             self.navController.navigationBar.hidden = NO;
 
         } completion:^(BOOL finished) {

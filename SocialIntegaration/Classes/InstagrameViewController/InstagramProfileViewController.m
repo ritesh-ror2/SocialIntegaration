@@ -120,8 +120,8 @@
     self.lblUserFollowes.frame = CGRectMake(xAxis, self.lblUserFollowes.frame.origin.y, self.lblUserFollowes.frame.size.width, self.lblUserFollowes.frame.size.height);
     self.lblUserFollowersTitle.frame = CGRectMake(xAxis, self.lblUserFollowersTitle.frame.origin.y, self.lblUserFollowersTitle.frame.size.width, self.lblUserFollowersTitle.frame.size.height);
 
-    self.imgVwLine1.frame = CGRectMake(xAxis - 15 , 227, 1, 30);
-    self.imgVwLine2.frame = CGRectMake(xAxis + self.lblUserFollowersTitle.frame.size.width + 15 , 227, 1, 30);
+    self.imgVwLine1.frame = CGRectMake(xAxis - 15 , self.imgVwLine1.frame.origin.y, 1, 30);
+    self.imgVwLine2.frame = CGRectMake(xAxis + self.lblUserFollowersTitle.frame.size.width + 15 , self.imgVwLine2.frame.origin.y, 1, 30);
 }
 
 

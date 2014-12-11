@@ -449,12 +449,22 @@
 - (void)setCommentOfpostDetail:(UserInfo *)objUserInfo {
 
     NSString *string = objUserInfo.strUserPost;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 400)
+
+    int widthOfComment;
+    if (IS_IPHONE_6_IOS8) {
+        widthOfComment = [Constant widthOfCommentLblOfTimelineAndProfile] + 50;
+    } else if (IS_IPHONE_6P_IOS8) {
+        widthOfComment = iPhone6_Plus_lbl_width;
+    } else {
+        widthOfComment = iPhone5_lbl_width - 10;
+    }
+
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfComment, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    lblComment.frame = CGRectMake(70, 25, 245, rect.size.height+10);
+    lblComment.frame = CGRectMake(70, 25, widthOfComment, rect.size.height+10);
     lblComment.text = objUserInfo.strUserPost;
     lblName.text = objUserInfo.userName;
     
@@ -471,8 +481,8 @@
     if (objUserInfo.postImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
-        asyVwOfPost.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
-        imgVwLagrePostImage.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, 320, 320);
+        asyVwOfPost.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
+        imgVwLagrePostImage.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3,  [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
             // asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
         [asyVwOfPost sd_setImageWithURL:[NSURL URLWithString:objUserInfo.postImg] placeholderImage:nil];
         asyVwOfPost.backgroundColor = [UIColor clearColor];
@@ -480,7 +490,7 @@
         btnShowImageOrVideo.frame = asyVwOfPost.frame;
         [self setFrameOfActivityView:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 10];
         int taggedUser =  [self setFramesOfTaggedUsers:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 35];
-        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, heightPostImg + lblComment.frame.origin.y + 365 + taggedUser);
+        imgVwBackground.frame = CGRectMake(0, 0, self.view.frame.size.width, heightPostImg + lblComment.frame.origin.y + [Constant heightOfCellInTableVw] + 45 + taggedUser);
             //imgVwBackground.backgroundColor = [UIColor redColor];
     } else {
 
@@ -493,7 +503,7 @@
 
     if (objUserInfo.postImg.length != 0) {
 
-        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, scrollVwShowComment.contentSize.height - (imgVwBackground.frame.size.height+45));
+        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, [Constant heightOfCellInTableVw], scrollVwShowComment.contentSize.height - (imgVwBackground.frame.size.height+45));
     } else {
 
         NSLog(@"%f", [UIScreen mainScreen].bounds.size.height);
@@ -799,13 +809,15 @@
     }
 
     int appendXAxis;
+    int extraGap;
 
     if (IS_IPHONE5){
         appendXAxis = 0;
     } else  if (IS_IPHONE_6_IOS8) {
         appendXAxis = 15;
     } else {
-        appendXAxis = 45;
+        appendXAxis = 50;
+        extraGap = 20;
     }
 
     [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x + appendXAxis, yAxis, 20, 21)];
@@ -819,9 +831,9 @@
     [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 20)];
 
     [lblRetweet setFrame:CGRectMake(lblRetweet.frame.origin.x + appendXAxis + 20, yAxis, lblRetweet.frame.size.width, lblRetweet.frame.size.height)];
-    [lblFavourite setFrame:CGRectMake(lblFavourite.frame.origin.x, yAxis, lblFavourite.frame.size.width, lblFavourite.frame.size.height)];
+    [lblFavourite setFrame:CGRectMake(lblFavourite.frame.origin.x+appendXAxis, yAxis, lblFavourite.frame.size.width, lblFavourite.frame.size.height)];
 
-    [btnFavourite setFrame:CGRectMake(btnFavourite.frame.origin.x, yAxis, btnFavourite.frame.size.width, btnFavourite.frame.size.height)];
+    [btnFavourite setFrame:CGRectMake(btnFavourite.frame.origin.x+appendXAxis, yAxis, btnFavourite.frame.size.width, btnFavourite.frame.size.height)];
     [btnReply setFrame:CGRectMake(btnReply.frame.origin.x, yAxis, btnReply.frame.size.width, btnReply.frame.size.height)];
     [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x + appendXAxis + 20, yAxis,  btnRetweet.frame.size.width,  btnRetweet.frame.size.height)];
     [btnMoreTweet setFrame:CGRectMake(btnMoreTweet.frame.origin.x, yAxis,  btnMoreTweet.frame.size.width,  btnMoreTweet.frame.size.height)];
@@ -956,8 +968,17 @@
 
         UserComment *userComment = [self.arryComment objectAtIndex:indexPath.row];
 
+        int widthOfComment;
+        if (IS_IPHONE_6_IOS8) {
+            widthOfComment = [Constant widthOfCommentLblOfTimelineAndProfile] + 50;
+        } else if (IS_IPHONE_6P_IOS8) {
+            widthOfComment = iPhone6_Plus_lbl_width;
+        } else {
+            widthOfComment = iPhone5_lbl_width;
+        }
+
         NSString *string = userComment.userComment;
-        CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 400)
+        CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfComment, 400)
                                            options:NSStringDrawingUsesLineFragmentOrigin
                                         attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                            context:nil];
