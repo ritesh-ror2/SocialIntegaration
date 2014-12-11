@@ -109,9 +109,9 @@
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
 
     if (IS_IOS8) {
-        self.toolBar.frame = CGRectMake(0, kbSize.height+20, self.toolBar.frame.size.width, self.toolBar.frame.size.height);
+        self.toolBar.frame = CGRectMake(0, self.view.frame.size.height -(kbSize.height+44), self.toolBar.frame.size.width, self.toolBar.frame.size.height);
     } else {
-        self.toolBar.frame = CGRectMake(0, kbSize.height, self.toolBar.frame.size.width, self.toolBar.frame.size.height);
+        self.toolBar.frame = CGRectMake(0, self.view.frame.size.height - kbSize.height, self.toolBar.frame.size.width, self.toolBar.frame.size.height);
     }
 }
 
@@ -541,7 +541,7 @@
 
         [self.tbleVwUser reloadData];
         [self.tbleVwUser setHidden:NO];
-        self.tbleVwUser.frame = CGRectMake(0, self.view.frame.size.height - 260, 320, 210);
+        self.tbleVwUser.frame = CGRectMake(0, self.view.frame.size.height - 260, self.view.frame.size.width, 210);
     }];
 }
 

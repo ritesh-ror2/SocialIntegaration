@@ -393,10 +393,11 @@ BOOL hasTwitter = NO;
                       otherUserInfo.fromId  = [dictProfile valueForKey:@"id"];
                       otherUserInfo.strUserSocialType = @"Facebook";}*/
 
-      UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-      ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
       vwController.userInfo = userInfo;
-      [self.navigationController pushViewController:vwController animated:YES];
+    vwController.navController =  self.navController;
+    [self.navigationController pushViewController:vwController animated:YES];
 }
 
 #pragma mark - Login with facebook

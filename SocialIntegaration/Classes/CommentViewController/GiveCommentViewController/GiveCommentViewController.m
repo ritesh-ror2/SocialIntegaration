@@ -81,9 +81,9 @@
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
 
     if (IS_IOS8) {
-        navBar.frame = CGRectMake(0, kbSize.height+20, navBar.frame.size.width, navBar.frame.size.height);
+        navBar.frame = CGRectMake(0, self.view.frame.size.height - (kbSize.height+44), navBar.frame.size.width, navBar.frame.size.height);
     } else {
-        navBar.frame = CGRectMake(0, kbSize.height, navBar.frame.size.width, navBar.frame.size.height);
+        navBar.frame = CGRectMake(0, self.view.frame.size.height - kbSize.height, navBar.frame.size.width, navBar.frame.size.height);
     }
 }
 

@@ -54,6 +54,14 @@
 
         [self setFrameForIPhone6and6Plus];
     }
+
+    NSArray *arry = self.navController.navigationBar.subviews;
+    for (UIView *vw in arry){
+
+        if ([vw isKindOfClass:[UIPageControl class]]) {
+            vw.hidden = YES;
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning {

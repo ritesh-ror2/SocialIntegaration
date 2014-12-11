@@ -552,14 +552,14 @@
     lblWith.textColor = [UIColor lightGrayColor];
     [imgVwBackground addSubview:lblWith];
 
-    lblTaggesName = [[UILabel alloc]initWithFrame:CGRectMake(40, yAxis+5, 280, 21)];
+    lblTaggesName = [[UILabel alloc]initWithFrame:CGRectMake(40, yAxis+5, self.view.frame.size.width - 50, 21)];
     lblTaggesName.textColor = [UIColor lightGrayColor];
     lblTaggesName.font = [UIFont fontWithName:@"Helvetica-Neue" size:13.0];
     lblTaggesName.textColor = [UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0];
     [imgVwBackground addSubview:lblTaggesName];
 
     UIButton *btnTaggedUser = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnTaggedUser.frame = CGRectMake(40, yAxis+5, 280, 30);
+    btnTaggedUser.frame = CGRectMake(40, yAxis+5, self.view.frame.size.width - 50, 30);
     [btnTaggedUser addTarget:self action:@selector(taggedUserBtnTapped) forControlEvents:UIControlEventTouchUpInside];
     [imgVwBackground addSubview:btnTaggedUser];
 

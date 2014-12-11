@@ -492,6 +492,7 @@
     if (IS_IPHONE5){
         appendXAxis = 0;
         extraGap = 0;
+        tweetGap = 0;
     } else  if (IS_IPHONE_6_IOS8) {
         appendXAxis = 20;
         extraGap = 20;
@@ -499,6 +500,7 @@
     } else {
         appendXAxis = 40;
         extraGap = 35;
+        tweetGap = 0;
     }
 
     [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x+appendXAxis+extraGap, yAxis, 20, 20)];
@@ -515,7 +517,6 @@
 
     [lblFavourate setFrame:CGRectMake(lblFavourate.frame.origin.x+appendXAxis+extraGap, yAxis, 70, lblFavourate.frame.size.height)];
     [lblTweet setFrame:CGRectMake(lblTweet.frame.origin.x + tweetGap, yAxis, 70, lblTweet.frame.size.height)];
-    lblTweet.backgroundColor = [UIColor redColor];
 
     [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x+appendXAxis, yAxis, 20, 20)];
     [lblInstCommentCount setFrame:CGRectMake(lblInstCommentCount.frame.origin.x+appendXAxis+extraGap, yAxis, lblInstCommentCount.frame.size.width, 20)];

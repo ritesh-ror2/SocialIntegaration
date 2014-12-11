@@ -29,6 +29,7 @@
 }
 
 @property (nonatomic, weak) IBOutlet UIImageView *imgVwBorderMask;
+@property (nonatomic, strong) UINavigationController *navController;
 
 @property (nonatomic, strong) UserInfo *userInfo;
 
