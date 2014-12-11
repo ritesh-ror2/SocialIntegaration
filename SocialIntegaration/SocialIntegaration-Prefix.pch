@@ -72,7 +72,32 @@
 #define IS_IOS8	(([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) ? YES : NO)
 
 #define IS_IPHONE5 (([[UIScreen mainScreen] bounds].size.height-568)?NO:YES)
-#define IS_IPHONE_6_IOS8 (([[UIScreen mainScreen] bounds].size.height-667)?NO:YES) //(([[UIScreen mainScreen] nativeBounds].size.height/[[UIScreen mainScreen] nativeScale]) == 667.0f)
-#define IS_IPHONE_6P_IOS8 (([[UIScreen mainScreen] nativeBounds].size.height/[[UIScreen mainScreen] nativeScale]) == 736.0f)
+
+    //cell height
+#define iPhone5_Width 320
+#define iPhone6_Width 375
+#define iPhone6_Plus_Width 414
+
+    //lbl width
+#define iPhone5_lbl_width 250
+#define iPhone6_lbl_width 302
+#define iPhone6_Plus_lbl_width 340
+
+
+    //#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define IS_IPHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    //#define IS_IPHONE_5 (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 568.0)
+    //#define IS_IPHONE_6_IOS8 (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 667.0)
+    //#define IS_IPHONE_6P_IOS8 (IS_IPHONE && [[UIScreen mainScreen] nativeScale] == 3.0f)
+    //#define IS_IPHONE_6_PLUS (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 736.0)
+#define IS_RETINA ([[UIScreen mainScreen] scale] == 2.0)
+
+
+#define IS_IPHONE_6_IOS8      ([UIScreen mainScreen].bounds.size.height == 667)
+#define IS_IPHONE_6P_IOS8 ([UIScreen mainScreen].bounds.size.height == 736)
+
+#define Img_Height_iPhone6And6Plus 300
+
+
 
 #endif

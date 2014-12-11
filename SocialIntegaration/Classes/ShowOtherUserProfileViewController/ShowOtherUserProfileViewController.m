@@ -49,6 +49,11 @@
     }
     [self.view bringSubviewToFront:ImgVwCircle];
     sharedAppDelegate.isFirstTimeLaunch = NO;
+
+    if(IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
+
+        [self setFrameForIPhone6and6Plus];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -61,6 +66,26 @@
 
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.translucent = NO;
+}
+
+#pragma mark - Set frame for iphone6 and 6+
+
+- (void)setFrameForIPhone6and6Plus {
+
+    ImgVwProfile.frame = CGRectMake((self.view.frame.size.width - 96)/2, ImgVwProfile.frame.origin.y, 96, 96);
+    self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 100)/2, self.imgVwBorderMask.frame.origin.y, 100, 100);
+
+    int xAxis;
+    if (IS_IPHONE_6P_IOS8) {
+        xAxis = 148;
+    } else {
+        xAxis = 136;
+    }
+    lblFolloweCount.frame = CGRectMake(xAxis, lblFolloweCount.frame.origin.y, lblFolloweCount.frame.size.width, lblFolloweCount.frame.size.height);
+    lblFollower.frame = CGRectMake(xAxis, lblFollower.frame.origin.y, lblFollower.frame.size.width, lblFollower.frame.size.height);
+
+    imgVwLine1.frame = CGRectMake(xAxis - 15 , 227, 1, 30);
+    imgVwLine2.frame = CGRectMake(xAxis + lblFollower.frame.size.width + 15 , 227, 1, 30);
 }
 
 #pragma mark - Show Twitter user information

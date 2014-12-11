@@ -49,7 +49,6 @@
 		0A7629631A1A302200F65048 /* Favourite1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A76295E1A1A302200F65048 /* Favourite1@2x.png */; };
 		0A7629651A1A302200F65048 /* Reply1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A7629601A1A302200F65048 /* Reply1@2x.png */; };
 		0A7629661A1A302200F65048 /* Retweet1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A7629611A1A302200F65048 /* Retweet1@2x.png */; };
-		0A7639D91A1321840034D604 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A7639D81A1321840034D604 /* Default-568h@2x.png */; };
 		0A7639DD1A13397C0034D604 /* StatrtPageControllViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A7639DC1A13397C0034D604 /* StatrtPageControllViewController.m */; };
 		0A781B981A10F2D100685DBA /* InstagramProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A781B971A10F2D100685DBA /* InstagramProfileViewController.m */; };
 		0A7CEB931A1E05FC0094EA61 /* ShowOtherUserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A7CEB921A1E05FC0094EA61 /* ShowOtherUserProfileViewController.m */; };
@@ -249,7 +248,6 @@
 		0A76295E1A1A302200F65048 /* Favourite1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Favourite1@2x.png"; sourceTree = "<group>"; };
 		0A7629601A1A302200F65048 /* Reply1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Reply1@2x.png"; sourceTree = "<group>"; };
 		0A7629611A1A302200F65048 /* Retweet1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Retweet1@2x.png"; sourceTree = "<group>"; };
-		0A7639D81A1321840034D604 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0A7639DB1A13397C0034D604 /* StatrtPageControllViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatrtPageControllViewController.h; sourceTree = "<group>"; };
 		0A7639DC1A13397C0034D604 /* StatrtPageControllViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatrtPageControllViewController.m; sourceTree = "<group>"; };
 		0A781B961A10F2D100685DBA /* InstagramProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstagramProfileViewController.h; sourceTree = "<group>"; };
@@ -719,7 +717,6 @@
 				0A8D12FA1A1367EF00112078 /* Activity@2x.png */,
 				0A8D12FB1A1367EF00112078 /* feed@2x.png */,
 				0A8D12FC1A1367EF00112078 /* feed-active@2x.png */,
-				0A7639D81A1321840034D604 /* Default-568h@2x.png */,
 				0A92369B1A0E103300857D82 /* icon */,
 				0A73246D1A0B6C9300F10476 /* list-mask.png */,
 				0A8D13071A1368BD00112078 /* settings@2x.png */,
@@ -1329,7 +1326,6 @@
 				0A814BB21A27373200F874D9 /* follow@2x.png in Resources */,
 				0A1F70F31A1F72B400EC69DD /* Notify@2x.png in Resources */,
 				0A9236BC1A0E103300857D82 /* Icon-60.png in Resources */,
-				0A7639D91A1321840034D604 /* Default-568h@2x.png in Resources */,
 				0AB16AE01A2EE5F3007DE1BD /* camera@2x.png in Resources */,
 				0A9FF05F1A108B5000FC2B39 /* mask-border.png in Resources */,
 				0A39338D1A1C9F7700B65473 /* favourite_active@2x.png in Resources */,
@@ -1574,6 +1570,8 @@
 		0A73244F1A0B4C0100F10476 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-3";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Shawn Malone (739RYM9SZ5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Shawn Malone (739RYM9SZ5)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1592,6 +1590,8 @@
 		0A7324501A0B4C0100F10476 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-3";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Shawn Malone (739RYM9SZ5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Shawn Malone (739RYM9SZ5)";
 				FRAMEWORK_SEARCH_PATHS = (

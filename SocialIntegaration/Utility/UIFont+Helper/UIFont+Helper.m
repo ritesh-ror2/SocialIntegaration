@@ -12,10 +12,15 @@
 
 #pragma mark - Set font name with style
 
-+ (UIFont *)fontWithCustomName:(NSString *)fontName size:(CGFloat)fontSize {
++ (UIFont *)fontWithRegularWithSize:(CGFloat)fontSize {
 
-     return [UIFont fontWithName:@"Helvetica-Neune" size:fontSize];
+     return [UIFont fontWithName:@"HelveticaNeue" size:fontSize];
 }
 
+
++ (UIFont *)fontWithMediumWithSize:(CGFloat)fontSize {
+
+    return [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
+}
 
 @end

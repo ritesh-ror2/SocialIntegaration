@@ -239,6 +239,7 @@
              } else {
                   dispatch_async(dispatch_get_main_queue(), ^{
                       [Constant hideNetworkIndicator];
+
                           // [Constant showAlert:@"Message" forMessage:@"No Comment is there."];
                        scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
                   });
@@ -448,7 +449,7 @@
 - (void)setCommentOfpostDetail:(UserInfo *)objUserInfo {
 
     NSString *string = objUserInfo.strUserPost;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
@@ -492,7 +493,7 @@
 
     if (objUserInfo.postImg.length != 0) {
 
-        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, 250);
+        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, 320, scrollVwShowComment.contentSize.height - (imgVwBackground.frame.size.height+45));
     } else {
 
         NSLog(@"%f", [UIScreen mainScreen].bounds.size.height);
@@ -796,22 +797,33 @@
     if(yAxis < 50) {
         yAxis = 53;
     }
-    [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x, yAxis, 20, 21)];
+
+    int appendXAxis;
+
+    if (IS_IPHONE5){
+        appendXAxis = 0;
+    } else  if (IS_IPHONE_6_IOS8) {
+        appendXAxis = 15;
+    } else {
+        appendXAxis = 45;
+    }
+
+    [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x + appendXAxis, yAxis, 20, 21)];
     [imgVwOfLikeFb setFrame:CGRectMake(imgVwOfLikeFb.frame.origin.x, yAxis, 20, 21)];
-    [btnCommentFb setFrame:CGRectMake(btnCommentFb.frame.origin.x, yAxis+2,  btnCommentFb.frame.size.width,  btnCommentFb.frame.size.height)];
+    [btnCommentFb setFrame:CGRectMake(btnCommentFb.frame.origin.x + appendXAxis, yAxis+2,  btnCommentFb.frame.size.width,  btnCommentFb.frame.size.height)];
     [btnLike setFrame:CGRectMake(btnLike.frame.origin.x, yAxis+2, btnLike.frame.size.width, btnLike.frame.size.height)];
-    [lblFBOrInstCommentCount setFrame:CGRectMake(lblFBOrInstCommentCount.frame.origin.x, yAxis+2, lblFBOrInstCommentCount.frame.size.width, lblFBOrInstCommentCount.frame.size.height)];
+    [lblFBOrInstCommentCount setFrame:CGRectMake(lblFBOrInstCommentCount.frame.origin.x + appendXAxis, yAxis+2, lblFBOrInstCommentCount.frame.size.width, lblFBOrInstCommentCount.frame.size.height)];
     [lblFBOrInstLikeCount setFrame:CGRectMake(lblFBOrInstLikeCount.frame.origin.x, yAxis+2, lblFBOrInstLikeCount.frame.size.width, lblFBOrInstLikeCount.frame.size.height)];
     [btnShare setFrame:CGRectMake(btnShare.frame.origin.x, yAxis, btnShare.frame.size.width, btnShare.frame.size.height)];
 
     [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 20)];
 
-    [lblRetweet setFrame:CGRectMake(lblRetweet.frame.origin.x, yAxis, lblRetweet.frame.size.width, lblRetweet.frame.size.height)];
+    [lblRetweet setFrame:CGRectMake(lblRetweet.frame.origin.x + appendXAxis + 20, yAxis, lblRetweet.frame.size.width, lblRetweet.frame.size.height)];
     [lblFavourite setFrame:CGRectMake(lblFavourite.frame.origin.x, yAxis, lblFavourite.frame.size.width, lblFavourite.frame.size.height)];
 
     [btnFavourite setFrame:CGRectMake(btnFavourite.frame.origin.x, yAxis, btnFavourite.frame.size.width, btnFavourite.frame.size.height)];
     [btnReply setFrame:CGRectMake(btnReply.frame.origin.x, yAxis, btnReply.frame.size.width, btnReply.frame.size.height)];
-    [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x, yAxis,  btnRetweet.frame.size.width,  btnRetweet.frame.size.height)];
+    [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x + appendXAxis + 20, yAxis,  btnRetweet.frame.size.width,  btnRetweet.frame.size.height)];
     [btnMoreTweet setFrame:CGRectMake(btnMoreTweet.frame.origin.x, yAxis,  btnMoreTweet.frame.size.width,  btnMoreTweet.frame.size.height)];
 }
 
@@ -945,7 +957,7 @@
         UserComment *userComment = [self.arryComment objectAtIndex:indexPath.row];
 
         NSString *string = userComment.userComment;
-        CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+        CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 400)
                                            options:NSStringDrawingUsesLineFragmentOrigin
                                         attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                            context:nil];

@@ -11,9 +11,11 @@
 #import "Constant.h"
 #import "CommentViewController.h"
 
-#define TABLE_HEIGHT 385
+@interface InstagramFeedViewController () <CustomTableCellDelegate> {
 
-@interface InstagramFeedViewController () <CustomTableCellDelegate>
+    int heightOfRowImg;
+    int widthOfCommentLbl;
+}
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwInstagram;
 
@@ -44,6 +46,11 @@
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
+
+    self.tbleVwInstagram.separatorColor = [UIColor clearColor];
+
+    heightOfRowImg = [Constant heightOfCellInTableVw];
+    widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -128,7 +135,7 @@
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
@@ -138,10 +145,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + TABLE_HEIGHT + 33);
+                return(rect.size.height + heightOfRowImg + 33);
             }
         }
-        return(rect.size.height + TABLE_HEIGHT - 3);
+        return(rect.size.height + heightOfRowImg - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {

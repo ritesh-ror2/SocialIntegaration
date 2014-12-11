@@ -44,6 +44,36 @@
     btnTwitter.hidden = YES;
 
     [self userLoginOrNot];
+
+    if (IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
+        [self setFrameOfViewsForiPhone6And6plus];
+    }
+}
+
+- (void)setFrameOfViewsForiPhone6And6plus {
+
+    int yAxis;
+    if (IS_IPHONE_6_IOS8) {
+        yAxis = 195;
+    } else {
+        yAxis = 223;
+    }
+    vwTwitter.frame = CGRectMake (0, yAxis, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
+
+    //twitter
+    imgVwTwitter.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwTwitter.frame.origin.y, 96, 96);
+    imgVwTwitterCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwTwitterCircle.frame.origin.y, 100, 100);
+    btnTwitterAdd.frame = CGRectMake((self.view.frame.size.width - 64)/2, btnTwitterAdd.frame.origin.y, 64, 64);
+
+    //facebook
+    imgVwFB.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwFB.frame.origin.y, 96, 96);
+    imgVwFBCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwFBCircle.frame.origin.y, 100, 100);
+    btnFbAdd.frame = CGRectMake((self.view.frame.size.width - 64)/2, btnFbAdd.frame.origin.y, 64, 64);
+
+    //instagram
+    imgVwInstagram.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwInstagram.frame.origin.y, 96, 96);
+    imgVwInstagramCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwInstagramCircle.frame.origin.y, 100, 100);
+    btnInstagramAdd.frame = CGRectMake((self.view.frame.size.width - 64)/2, btnInstagramAdd.frame.origin.y, 64, 64);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -436,11 +466,11 @@
         [UIView animateWithDuration:0.5 animations:^ {
 
             vwFB.frame = CGRectMake(60, vwFB.frame.origin.y, vwFB.frame.size.width, vwFB.frame.size.height);
-            btnFb.frame =  CGRectMake(0, btnFb.frame.origin.y, 60, 173);
+            btnFb.frame =  CGRectMake(0, btnFb.frame.origin.y, 60, vwFB.frame.size.height);
         }];
     } else {
         vwFB.frame = CGRectMake(0, vwFB.frame.origin.y, vwFB.frame.size.width, vwFB.frame.size.height);
-        btnFb.frame =  CGRectMake(-60, btnFb.frame.origin.y, 60, 173);
+        btnFb.frame =  CGRectMake(-60, btnFb.frame.origin.y, 60, vwFB.frame.size.height);
     }
 }
 
@@ -593,11 +623,11 @@
         [UIView animateWithDuration:0.5 animations:^ {
 
             vwTwitter.frame = CGRectMake(60, vwTwitter.frame.origin.y, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
-            btnTwitter.frame =  CGRectMake(0, btnTwitter.frame.origin.y, 60, 173);
+            btnTwitter.frame =  CGRectMake(0, btnTwitter.frame.origin.y, 60, vwTwitter.frame.size.height);
         }];
     } else {
         vwTwitter.frame = CGRectMake(0, vwTwitter.frame.origin.y, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
-        btnTwitter.frame =  CGRectMake(-60, btnTwitter.frame.origin.y, 60, 173);
+        btnTwitter.frame =  CGRectMake(-60, btnTwitter.frame.origin.y, 60, vwTwitter.frame.size.height);
     }
 }
 
@@ -828,11 +858,11 @@
         [UIView animateWithDuration:0.5 animations:^ {
 
             vwInstagram.frame = CGRectMake(60, vwInstagram.frame.origin.y, vwInstagram.frame.size.width, vwInstagram.frame.size.height);
-            btnInstagram.frame =  CGRectMake(0, btnInstagram.frame.origin.y, 60, 173);
+            btnInstagram.frame =  CGRectMake(0, btnInstagram.frame.origin.y, 60, vwInstagram.frame.size.height);
         }];
     } else {
         vwInstagram.frame = CGRectMake(0, vwInstagram.frame.origin.y, vwInstagram.frame.size.width, vwInstagram.frame.size.height);
-        btnInstagram.frame =  CGRectMake(-60, btnInstagram.frame.origin.y, 60, 173);
+        btnInstagram.frame =  CGRectMake(-60, btnInstagram.frame.origin.y, 60, vwInstagram.frame.size.height);
     }
 }
 
@@ -850,7 +880,7 @@
     [UIView animateWithDuration:0.5 animations:^ {
 
         vwFB.frame = CGRectMake(0, vwFB.frame.origin.y, vwFB.frame.size.width, vwFB.frame.size.height);
-        btnFb.frame =  CGRectMake(-60, btnFb.frame.origin.y, 60, 173);
+        btnFb.frame =  CGRectMake(-60, btnFb.frame.origin.y, 60, vwFB.frame.size.height);
     }];
 }
 
@@ -869,7 +899,7 @@
     [UIView animateWithDuration:0.5 animations:^ {
 
         vwTwitter.frame = CGRectMake(0, vwTwitter.frame.origin.y, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
-        btnTwitter.frame =  CGRectMake(-60, btnTwitter.frame.origin.y, 60, 173);
+        btnTwitter.frame =  CGRectMake(-60, btnTwitter.frame.origin.y, 60, vwTwitter.frame.size.height);
     }];
 }
 
@@ -893,7 +923,7 @@
     [UIView animateWithDuration:0.5 animations:^ {
 
         vwInstagram.frame = CGRectMake(0, vwInstagram.frame.origin.y, vwInstagram.frame.size.width, vwInstagram.frame.size.height);
-        btnInstagram.frame =  CGRectMake(-60, btnInstagram.frame.origin.y, 60, 173);
+        btnInstagram.frame =  CGRectMake(-60, btnInstagram.frame.origin.y, 60, vwInstagram.frame.size.height);
     }];
 }
 

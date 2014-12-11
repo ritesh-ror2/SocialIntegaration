@@ -51,12 +51,12 @@
     lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserComment.time];
 
     NSString *string = objUserComment.userComment;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    lblText.frame = CGRectMake(63, 45, 250, rect.size.height+2);
+    lblText.frame = CGRectMake(63, 45, [Constant widthOfCommentLblOfTimelineAndProfile], rect.size.height+2);
     lblText.text = objUserComment.userComment;
 
     lblSocialType.text = objUserComment.socialType;

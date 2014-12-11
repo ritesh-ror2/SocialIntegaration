@@ -41,12 +41,12 @@
 
     NSString *strSubstring = [userNotification.title substringToIndex: userNotification.title.length - 1];
     NSString *string = [NSString stringWithFormat:@"%@ on %@", strSubstring, userNotification.notifType];
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 100)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 100)
                                       options:NSStringDrawingUsesLineFragmentOrigin
                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}
                                       context:nil];
 
-    lblTitle.frame = CGRectMake(55, 25, 250, rect.size.height);
+    lblTitle.frame = CGRectMake(55, 25, [Constant widthOfCommentLblOfTimelineAndProfile], rect.size.height);
     lblTime.text =  [Constant  calculateTimesBetweenTwoDates:userNotification.time];
 
     NSMutableAttributedString * strAttribut = [[NSMutableAttributedString alloc] initWithString:string];

@@ -316,7 +316,7 @@
     UserNotification *userNotify = [self.arryActivity objectAtIndex:indexPath.row];
 
     NSString *string = [NSString stringWithFormat:@"%@ on %@", userNotify.title, userNotify.notifType];
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 200)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 200)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];

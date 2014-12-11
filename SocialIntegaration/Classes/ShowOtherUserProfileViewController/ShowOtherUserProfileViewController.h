@@ -28,6 +28,8 @@
     IBOutlet UIButton *btnRequestOrFollow;
 }
 
+@property (nonatomic, weak) IBOutlet UIImageView *imgVwBorderMask;
+
 @property (nonatomic, strong) UserInfo *userInfo;
 
 @end

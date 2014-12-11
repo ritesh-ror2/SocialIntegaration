@@ -22,8 +22,6 @@
 NSString *const kSocialServices = @"SocialServices";
 NSString *const kFBSetup = @"FBSetup";
 
-#define TABLE_HEIGHT 385
-
 @interface ViewController () {
 
     BOOL isInstagramOpen;
@@ -38,6 +36,9 @@ NSString *const kFBSetup = @"FBSetup";
 
     UINavigationBar *navBar;
     UITabBar *tabbar;
+
+    int heightOfRowImg;
+    int widthOfCommentLbl;
 }
 
 @property (nonatomic)BOOL noMoreResultsAvail;
@@ -76,11 +77,17 @@ BOOL hasTwitter = NO;
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
 
+     NSLog(@"%f", self.view.frame.size.height);
     //animated loading view
-    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 170)/2, 70, 70)];
+    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 180)/2, 70, 70)];
     [self.view addSubview:self.loadingView];
     [self.view bringSubviewToFront:self.loadingView];
     self.loadingView.hidden = YES;
+
+    self.tbleVwPostList.separatorColor = [UIColor lightGrayColor];
+
+    heightOfRowImg = [Constant heightOfCellInTableVw];
+    widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -112,8 +119,14 @@ BOOL hasTwitter = NO;
 
         if (isShowLoading == NO) {
 
-            isShowLoading = YES;
-            [self performSelector:@selector(showAnimationView) withObject:nil afterDelay:2.5];
+            BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+            BOOL isTwitter = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+            BOOL isInstagram = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
+
+            if(isFbLogin == YES || isTwitter == YES || isInstagram == YES) {
+                isShowLoading = YES;
+                [self performSelector:@selector(showAnimationView) withObject:nil afterDelay:2.5];
+            }
         }
         [self hideNavBar:YES];
          self.imgVwBackground.hidden = NO;
@@ -788,7 +801,7 @@ BOOL hasTwitter = NO;
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
@@ -798,10 +811,10 @@ BOOL hasTwitter = NO;
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + TABLE_HEIGHT+35);
+                return(rect.size.height + heightOfRowImg + 35);
             }
         }
-        return(rect.size.height + TABLE_HEIGHT-3);
+        return(rect.size.height + heightOfRowImg - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {

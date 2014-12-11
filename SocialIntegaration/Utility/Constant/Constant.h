@@ -19,6 +19,9 @@
 
 + (NSString *)calculateTimesBetweenTwoDates:(NSString *)strGivenDate;
 
++ (int)heightOfCellInTableVw;
++ (int)widthOfCommentLblOfTimelineAndProfile;
+
 + (void)showNetworkIndicator;
 + (void)hideNetworkIndicator;
 + (NSString *)convertDateOfTwitterInDatabaseFormate:(NSString *)createdDate;

@@ -12,10 +12,14 @@
 
 @property (nonatomic, weak) IBOutlet UIImageView *imgVwFBBackground;
 @property (nonatomic, weak) IBOutlet UIImageView *imgVwProfileImg;
+@property (nonatomic, weak) IBOutlet UIImageView *imgVwBorderMask;
+@property (nonatomic, weak) IBOutlet UIImageView *imgVwLine1;
+@property (nonatomic, weak) IBOutlet UIImageView *imgVwLine2;
 
 @property (nonatomic, weak) IBOutlet UILabel *lblUserName;
 @property (nonatomic, weak) IBOutlet UILabel *lblUserFollowing;
 @property (nonatomic, weak) IBOutlet UILabel *lblUserFollowes;
+@property (nonatomic, weak) IBOutlet UILabel *lblUserFollowersTitle;
 @property (nonatomic, weak) IBOutlet UILabel *lblUserPost;
 @property (nonatomic, weak) IBOutlet UILabel *lblStatus;
 

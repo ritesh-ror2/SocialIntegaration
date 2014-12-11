@@ -16,6 +16,7 @@
 
 @property (nonatomic, weak) IBOutlet UIImageView *imgVwFBBackground;
 @property (nonatomic, weak) IBOutlet UIImageView *imgVwProfileImg;
+@property (nonatomic, weak) IBOutlet UIImageView *imgVwBorderMask;
 
 @property (nonatomic, weak) IBOutlet UILabel *lblUserName;
 @property (nonatomic, weak) IBOutlet UILabel *lblUserFrdList;

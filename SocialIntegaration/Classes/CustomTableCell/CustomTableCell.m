@@ -9,6 +9,9 @@
 #import "CustomTableCell.h"
 #import "Constant.h"
 
+#define IS_IPHONE_6_IOS8      ([UIScreen mainScreen].bounds.size.height == 667)
+#define IS_IPHONE_6P_IOS8 ([UIScreen mainScreen].bounds.size.height == 736)
+
 @implementation CustomTableCell
 
 @synthesize customCellDelegate;
@@ -291,13 +294,14 @@
     lblName.text = objUserInfo.userName;
     lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserInfo.time];
 
+
     NSString *string = [objUserInfo.strUserPost stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17.0]}
                                        context:nil];
 
-    lblText.frame = CGRectMake(63, 52, 250, rect.size.height);
+    lblText.frame = CGRectMake(63, 52, [Constant widthOfCommentLblOfTimelineAndProfile], rect.size.height);
     lblText.text = string;
 
     lblSocialType.text = objUserInfo.userSocialType;
@@ -308,15 +312,24 @@
     lblTweet.text = objUserInfo.retweetCount;
     lblFavourate.text = objUserInfo.favourateCount;
 
+    int heightWidrhOfImg;
+    if (IS_IPHONE_6_IOS8) {
+        heightWidrhOfImg = iPhone6_Width;
+    } else if (IS_IPHONE5) {
+        heightWidrhOfImg = iPhone5_Width; //iPhone6_Width;
+    } else {
+        heightWidrhOfImg = iPhone6_Plus_Width;//iPhone6_Plus_Width;
+    }
+
     if (objUserInfo.postImg.length != 0) { //set post image
 
-        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, 320, 320);
+        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, heightWidrhOfImg, heightWidrhOfImg);
         imgVwPostImg.hidden = NO;
-        imgVwPostImg.backgroundColor = [UIColor clearColor];
+        imgVwPostImg.backgroundColor = [UIColor redColor];
         btnPlay.frame = imgVwPostImg.frame;
 
         [self setPostImage:objUserInfo];//user profile
-        [self setFrameOfActivityView:imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y+10];//frames of activity
+        [self setFrameOfActivityView:imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y + 10];//frames of activity
         imgVwBgColor.frame = CGRectMake(0, 0, self.frame.size.width, imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y + 38);//image view frame that show gradient color
 
         btnPlay.hidden = NO;
@@ -465,6 +478,53 @@
     [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 20)];
     [lblInstCommentCount setFrame:CGRectMake(lblInstCommentCount.frame.origin.x, yAxis, lblInstCommentCount.frame.size.width, 20)];
     [lblInstLikeCount setFrame:CGRectMake(lblInstLikeCount.frame.origin.x, yAxis, lblInstLikeCount.frame.size.width, 20)];
+
+    [self setFrameSizeOfPostImgVw];
+}
+
+- (void)setFrameSizeOfPostImgVw {
+
+    CGFloat imageSize;
+    CGFloat frameWidth = self.frame.size.width;
+    NSLog(@"%f", self.frame.size.height);
+    if(IS_IPHONE_6P_IOS8) {
+        imageSize = Img_Height_iPhone6And6Plus;
+    } else if (IS_IPHONE5){
+        imageSize = 320;
+    }
+        // imgVwPostImg.frame = CGRectMake((frameWidth-imageSize)/2, imgVwPostImg.frame.origin.y, imageSize, imageSize);
+}
+
+- (void)setFrameForIPhone5:(NSInteger)yAxis  {
+
+    int appendXAxis;
+
+    if (IS_IPHONE5){
+        appendXAxis = 0;
+    } else  if (IS_IPHONE_6_IOS8) {
+        appendXAxis = 30;
+    } else {
+        appendXAxis = 50;
+    }
+
+    [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x+appendXAxis, yAxis, 20, 20)];
+    [imgVwOfLikeFb setFrame:CGRectMake(imgVwOfLikeFb.frame.origin.x+appendXAxis, yAxis, 20, 20)];
+    [lblCommentFb setFrame:CGRectMake(lblCommentFb.frame.origin.x+appendXAxis, yAxis, 80, 20)];
+    [lblLike setFrame:CGRectMake(lblLike.frame.origin.x+appendXAxis , yAxis, 70, 20)];
+    [lblFbLikeCount setFrame:CGRectMake(lblFbLikeCount.frame.origin.x+appendXAxis, yAxis, 70, 20)];
+    [btnMoreFb setFrame:CGRectMake(btnMoreFb.frame.origin.x, yAxis, btnMoreFb.frame.size.width, btnMoreFb.frame.size.height)];
+
+    [btnFavourate setFrame:CGRectMake(btnFavourate.frame.origin.x+appendXAxis, yAxis-2, btnFavourate.frame.size.width, btnFavourate.frame.size.height)];
+    [btnReply setFrame:CGRectMake(btnReply.frame.origin.x+appendXAxis, yAxis-2, btnReply.frame.size.width, btnReply.frame.size.height)];
+    [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x+appendXAxis, yAxis+1, btnRetweet.frame.size.width, btnRetweet.frame.size.height)];
+    [btnMoreTweet setFrame:CGRectMake(btnMoreTweet.frame.origin.x+appendXAxis, yAxis-2, btnMoreTweet.frame.size.width, btnMoreTweet.frame.size.height)];
+
+    [lblFavourate setFrame:CGRectMake(lblFavourate.frame.origin.x+appendXAxis, yAxis, 70, lblFavourate.frame.size.height)];
+    [lblTweet setFrame:CGRectMake(lblTweet.frame.origin.x, yAxis, 70, lblTweet.frame.size.height)];
+
+    [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x+appendXAxis, yAxis, 20, 20)];
+    [lblInstCommentCount setFrame:CGRectMake(lblInstCommentCount.frame.origin.x+appendXAxis, yAxis, lblInstCommentCount.frame.size.width, 20)];
+    [lblInstLikeCount setFrame:CGRectMake(lblInstLikeCount.frame.origin.x+appendXAxis, yAxis, lblInstLikeCount.frame.size.width, 20)];
 }
 
 

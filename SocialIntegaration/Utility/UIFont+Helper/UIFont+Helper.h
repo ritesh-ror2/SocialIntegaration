@@ -10,6 +10,8 @@
 
 @interface UIFont (Helper)
 
-+ (UIFont *)fontWithCustomName:(NSString *)fontName size:(CGFloat)fontSize;
++ (UIFont *)fontWithMediumWithSize:(CGFloat)fontSize;
+
++ (UIFont *)fontWithRegularWithSize:(CGFloat)fontSize;
 
 @end

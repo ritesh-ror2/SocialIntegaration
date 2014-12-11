@@ -428,7 +428,7 @@
         return 47;
     }
     
-    CGRect rect = [strPost boundingRectWithSize:CGSizeMake(250, 100)
+    CGRect rect = [strPost boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 100)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];

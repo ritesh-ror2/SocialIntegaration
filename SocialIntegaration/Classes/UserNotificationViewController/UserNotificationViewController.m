@@ -10,6 +10,7 @@
 #import "Constant.h"
 #import "UserNotification.h"
 #import "UserNotificationCustomCell.h"
+#import "HYCircleLoadingView.h"
 #import <Social/Social.h>
 
 @interface UserNotificationViewController () {
@@ -17,6 +18,8 @@
     BOOL hasFacebook;
 }
 
+@property (nonatomic) BOOL isLoadingShow;
+@property (nonatomic, strong) HYCircleLoadingView *loadingView;
 @property (nonatomic, strong) NSMutableArray *arryNotifi;
 @property (nonatomic, strong) NSMutableArray *arryNotifiFB;
 @property (nonatomic, strong) NSMutableArray *arryNotifiTwitter;
@@ -47,6 +50,16 @@
     self.arryNotifiFB = [[NSMutableArray alloc]init];
     self.arryNotifiTwitter = [[NSMutableArray alloc]init];
 
+    self.navigationItem.hidesBackButton = YES;
+
+    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 170)/2, 70, 70)];
+    [self.view addSubview:self.loadingView];
+    [self.view bringSubviewToFront:self.loadingView];
+    self.loadingView.hidden = YES;
+
+    tbleViewNotification.hidden = YES;
+    tbleViewNotification.alpha = 0.0;
+    [self showAnimationView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -58,6 +71,11 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
+
+    if (self.isLoadingShow == NO) {
+        [self showAnimationView];
+    }
+
     [Constant showNetworkIndicator];
 
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
@@ -70,6 +88,18 @@
     }
 
     [self getFBUserNotification];
+}
+
+- (void)showAnimationView {
+
+    BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    BOOL isTwitter = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    if(isFbLogin == YES || isTwitter == YES) {
+
+        self.isLoadingShow = YES;
+        self.loadingView.hidden = NO;
+        [self.loadingView startAnimation];
+    }
 }
 
 #pragma mark - Get Twitter Notification
@@ -242,6 +272,24 @@
     [Constant hideNetworkIndicator];
 
     [tbleViewNotification reloadData];
+
+    if (self.arryNotifi.count != 0){
+        [self showAnimationOfActivity];
+    }
+}
+
+- (void)showAnimationOfActivity {
+
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [tbleViewNotification setHidden:NO];
+    [UIView setAnimationDuration:3.0];
+    [tbleViewNotification setAlpha:1];
+    tbleViewNotification.hidden = NO;
+    [UIView commitAnimations];
+
+    self.loadingView.hidden = YES;
+    [self.loadingView stopAnimation];
 }
 
 #pragma mark - UITable view Datasource
@@ -268,7 +316,7 @@
     UserNotification *userNotify = [self.arryNotifi objectAtIndex:indexPath.row];
 
     NSString *string = [NSString stringWithFormat:@"%@ on %@", userNotify.title, userNotify.notifType];
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 200)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 200)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];

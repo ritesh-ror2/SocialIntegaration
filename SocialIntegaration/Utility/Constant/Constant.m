@@ -230,5 +230,39 @@
     app.networkActivityIndicatorVisible = NO;
 }
 
++ (int)heightOfCellInTableVw {
+
+    int heightCell;
+
+    if (IS_IPHONE_6P_IOS8) {
+        heightCell = iPhone6_Plus_Width + 65;
+    } else if (IS_IPHONE_6_IOS8) {
+        heightCell = iPhone6_Width + 65;
+    } else {
+        heightCell = iPhone5_Width + 65;
+    }
+    return heightCell;
+}
+
++ (int)widthOfCommentLblOfTimelineAndProfile {
+
+    int widthOfcommentLbl;
+
+    if (IS_IPHONE5) {
+        widthOfcommentLbl = iPhone5_lbl_width;
+    } else if (IS_IPHONE_6_IOS8) {
+        widthOfcommentLbl = iPhone6_lbl_width;
+    } else {
+        widthOfcommentLbl = iPhone6_Plus_lbl_width;
+    }
+
+//    if (IS_IPHONE_6P_IOS8) {
+//        widthOfcommentLbl = iPhone6_lbl_width;
+//    } else if (IS_IPHONE5) {
+//        widthOfcommentLbl = iPhone5_lbl_width;
+//    }
+
+    return widthOfcommentLbl;
+}
 
 @end

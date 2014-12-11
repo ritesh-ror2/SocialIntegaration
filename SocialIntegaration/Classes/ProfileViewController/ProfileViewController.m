@@ -16,12 +16,15 @@
 #import "ProfileTableViewCustomCell.h"
 #import "CommentViewController.h"
 #import "ShowOtherUserProfileViewController.h"
+#import "UIFont+Helper.h"
 #import <Social/Social.h>
 #import <Accounts/Accounts.h>
 
-#define TABLE_HEIGHT 385
+@interface ProfileViewController () <CustomTableCellDelegate> {
 
-@interface ProfileViewController () <CustomTableCellDelegate>
+    int heightOfRowImg;
+    int widthOfCommentLbl;
+}
 
 @property (nonatomic, strong) NSMutableArray *arryOfFBUserFeed;
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
@@ -51,6 +54,20 @@
     self.arryOfFBUserFeed = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
+
+    self.lblUserName.hidden = NO;
+    self.lblUserFrdList.hidden = NO;
+    self.imgVwProfileImg.hidden = NO;
+
+    if(IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
+
+            // [self.lblUserName setFont:[UIFont fontWithMediumWithSize:15]];
+            // [self.lblUserFrdList setFont:[UIFont fontWithMediumWithSize:15]];
+        [self setFrameForIPhone6and6Plus];
+     }
+
+    heightOfRowImg = [Constant heightOfCellInTableVw];
+    widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -77,6 +94,12 @@
     [self getFBUserInfo];
     UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
     [self setFBUserInfo:userProfile];
+}
+
+- (void)setFrameForIPhone6and6Plus {
+
+    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 96)/2, self.imgVwProfileImg.frame.origin.y, 96, 96);
+    self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 100)/2, self.imgVwBorderMask.frame.origin.y, 100, 100);
 }
 
 #pragma mark - Get FB User Info
@@ -335,7 +358,7 @@
     UserInfo *objUserInfo = [self.arryOfFBUserFeed objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
@@ -345,10 +368,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + TABLE_HEIGHT + 35);
+                return(rect.size.height + heightOfRowImg + 35);
             }
         }
-        return(rect.size.height + TABLE_HEIGHT - 3);
+        return(rect.size.height + heightOfRowImg - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {

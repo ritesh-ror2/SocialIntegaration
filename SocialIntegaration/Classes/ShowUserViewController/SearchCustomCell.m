@@ -45,7 +45,7 @@
     lblResult.text = userInfo.userName;
 
     NSString *string = userInfo.strUserPost;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 100)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 100)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
@@ -54,12 +54,12 @@
     if ([userInfo.type isEqualToString:@"Keyword"]|| [userInfo.type isEqualToString:@"HashTag"]) {
 
         lblDescription.hidden = NO;
-        lblResult.frame = CGRectMake(55, 5, 250, 21);
+        lblResult.frame = CGRectMake(55, 5, [Constant widthOfCommentLblOfTimelineAndProfile], 21);
         lblDescription.text = userInfo.strUserPost;
-        lblDescription.frame = CGRectMake(55, 27, 250, rect.size.height);
+        lblDescription.frame = CGRectMake(55, 27, [Constant widthOfCommentLblOfTimelineAndProfile], rect.size.height);
     } else {
         btnFollow.hidden = NO;
-        lblResult.frame = CGRectMake(55, 10, 250, 21);
+        lblResult.frame = CGRectMake(55, 10, [Constant widthOfCommentLblOfTimelineAndProfile], 21);
     }
 
     btnFollow.layer.cornerRadius = 5.0;

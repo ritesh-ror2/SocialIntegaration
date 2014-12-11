@@ -12,13 +12,14 @@
 #import "Constant.h"
 #import "ShowOtherUserProfileViewController.h"
 
-#define TABLE_HEIGHT 385
-
 @interface FacebookFeedViewController () <CustomTableCellDelegate, NSURLConnectionDelegate> {
 
     NSMutableData *fbData;
     NSMutableURLRequest *fbRequest;
     NSURLConnection *connetion;
+
+    int heightOfRowImg;
+    int widthOfCommentLbl;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwFB;
@@ -49,6 +50,11 @@
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
+
+    heightOfRowImg = [Constant heightOfCellInTableVw];
+    widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
+
+    self.tbleVwFB.separatorColor = [UIColor lightGrayColor];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -148,7 +154,7 @@
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
@@ -158,10 +164,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + TABLE_HEIGHT + 35);
+                return(rect.size.height + heightOfRowImg + 35);
             }
         }
-        return(rect.size.height + TABLE_HEIGHT - 3);
+        return(rect.size.height + heightOfRowImg - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {

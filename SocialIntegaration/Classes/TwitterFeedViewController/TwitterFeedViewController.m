@@ -14,9 +14,11 @@
 #import <Social/Social.h>
 #import "ShowOtherUserProfileViewController.h"
 
-#define TABLE_HEIGHT 385
+@interface TwitterFeedViewController () <CustomTableCellDelegate> {
 
-@interface TwitterFeedViewController () <CustomTableCellDelegate>
+    int heightOfRowImg;
+    int widthOfCommentLbl;
+}
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwTwitter;
 @property (nonatomic, strong) NSMutableArray *arrySelectedIndex;
@@ -57,6 +59,12 @@
         UserInfo *userInfoSince = [sharedAppDelegate.arryOfTwittes objectAtIndex:0];
         self.since_Id = userInfoSince.statusId.intValue;
     }
+    self.tbleVwTwitter.separatorColor = [UIColor lightGrayColor];
+    self.tbleVwTwitter.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
+    
+    heightOfRowImg = [Constant heightOfCellInTableVw];
+    widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -249,7 +257,7 @@
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
@@ -259,10 +267,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + TABLE_HEIGHT + 35);
+                return(rect.size.height + heightOfRowImg + 35);
             }
         }
-        return(rect.size.height + TABLE_HEIGHT - 3);
+        return(rect.size.height + heightOfRowImg - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {

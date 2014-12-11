@@ -14,11 +14,13 @@
 #import "CustomTableCell.h"
 #import "CommentViewController.h"
 #import "Constant.h"
+#import "UIFont+Helper.h"
 
-#define TABLE_HEIGHT 385
+@interface InstagramProfileViewController () <CustomTableCellDelegate> {
 
-
-@interface InstagramProfileViewController () <CustomTableCellDelegate>
+    int heightOfRowImg;
+    int widthOfCommentLbl;
+}
 
 @property (nonatomic, strong) NSMutableArray *arryOfInstagrame;
 @property (nonatomic, strong) NSMutableArray *arryTappedCell;
@@ -45,6 +47,22 @@
     
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
+
+    if(IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
+
+        [self setFrameForIPhone6and6Plus];
+
+      /*[self.lblUserName  setFont:[UIFont fontWithMediumWithSize:15]];
+        [self.lblStatus setFont:[UIFont fontWithMediumWithSize:15]];
+
+        [self.lblUserFollowes setFont:[UIFont fontWithRegularWithSize:14]];
+        [self.lblUserFollowing setFont:[UIFont fontWithRegularWithSize:14]];
+        [self.lblUserPost setFont:[UIFont fontWithRegularWithSize:14]];*/
+    }
+
+
+    heightOfRowImg = [Constant heightOfCellInTableVw];
+    widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -85,6 +103,27 @@
     self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:66/256.0f green:106/256.0f blue:151/256.0f alpha:1.0];
     [self getInstagrameIntegration];
 }
+
+#pragma mark - Set frame for iphone6 and 6+
+
+- (void)setFrameForIPhone6and6Plus {
+
+    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 96)/2, self.imgVwProfileImg.frame.origin.y, 96, 96);
+    self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 100)/2, self.imgVwBorderMask.frame.origin.y, 100, 100);
+
+    int xAxis;
+    if (IS_IPHONE_6P_IOS8) {
+        xAxis = 148;
+    } else {
+        xAxis = 136;
+    }
+    self.lblUserFollowes.frame = CGRectMake(xAxis, self.lblUserFollowes.frame.origin.y, self.lblUserFollowes.frame.size.width, self.lblUserFollowes.frame.size.height);
+    self.lblUserFollowersTitle.frame = CGRectMake(xAxis, self.lblUserFollowersTitle.frame.origin.y, self.lblUserFollowersTitle.frame.size.width, self.lblUserFollowersTitle.frame.size.height);
+
+    self.imgVwLine1.frame = CGRectMake(xAxis - 15 , 227, 1, 30);
+    self.imgVwLine2.frame = CGRectMake(xAxis + self.lblUserFollowersTitle.frame.size.width + 15 , 227, 1, 30);
+}
+
 
 #pragma mark - Integrate instagrame
 /**************************************************************************************************
@@ -335,7 +374,7 @@
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row];
 
     NSString *string = objUserInfo.strUserPost;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
@@ -345,10 +384,10 @@
         for (NSString *index in self.arrySelectedIndex) {
 
             if (index.integerValue == indexPath.row) {
-                return(rect.size.height + TABLE_HEIGHT + 33);
+                return(rect.size.height + heightOfRowImg + 33);
             }
         }
-        return(rect.size.height + TABLE_HEIGHT - 3);
+        return(rect.size.height + heightOfRowImg - 3);
     }
 
     for (NSString *index in self.arrySelectedIndex) {

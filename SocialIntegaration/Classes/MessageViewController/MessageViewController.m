@@ -273,7 +273,7 @@
     UserComment *objUserComment = [[self.arryOfFbMessage objectAtIndex:indexPath.row]objectAtIndex:0];
 
     NSString *string = objUserComment.userComment;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake(250, 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];

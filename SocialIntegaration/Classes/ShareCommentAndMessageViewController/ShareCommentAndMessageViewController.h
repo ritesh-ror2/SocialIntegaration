@@ -20,6 +20,7 @@
     IBOutlet UIImageView *imgVwFBUserProfile;
     IBOutlet UIImageView *imgVwTwitterUserProfile;
 
+    IBOutlet UIButton *btnTwitterPost;
 
     IBOutlet UILabel *lblComment;
     IBOutlet UILabel *lblCommentTwitter;
