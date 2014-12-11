@@ -33,6 +33,10 @@
     IBOutlet UILabel *lblFBName;
     IBOutlet UILabel *lblTwitterName;
     IBOutlet UILabel *lblInstagramName;
+
+    IBOutlet UILabel *lblFBTitle;
+    IBOutlet UILabel *lblTwitterTitle;
+    IBOutlet UILabel *lblInstagramTitle;
 }
 
 

@@ -496,7 +496,7 @@
     } else  if (IS_IPHONE_6_IOS8) {
         appendXAxis = 20;
         extraGap = 20;
-        tweetGap = 10;
+        tweetGap = 0;
     } else {
         appendXAxis = 40;
         extraGap = 35;
