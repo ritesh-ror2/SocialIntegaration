@@ -308,7 +308,7 @@
             [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
         }
     }
-        [self.tbleVwFB reloadData];
+    [self.tbleVwFB reloadData];
 }
 
 @end

@@ -250,7 +250,11 @@
                 userInfo.fromId = [fromUser valueForKey:@"id"];
                 userInfo.strUserPost = [dictData valueForKey:@"message"];
                 userInfo.userSocialType = @"Facebook";
-                userInfo.objectIdFB = [dictData objectForKey:@"id"];
+                if ([[dictData objectForKey:@"type"] isEqualToString:@"photo"]) {
+                     userInfo.objectIdFB = [dictData objectForKey:@"object_id"];
+                } else {
+                    userInfo.objectIdFB = [dictData objectForKey:@"id"];
+                }
                 userInfo.type = [dictData objectForKey:@"type"];
                 userInfo.time = [Constant convertDateOFFB:[dictData objectForKey:@"created_time"]];
                 userInfo.postImg = [dictData valueForKey:@"picture"];

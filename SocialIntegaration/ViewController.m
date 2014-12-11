@@ -752,7 +752,6 @@ BOOL hasTwitter = NO;
             arryObjects = [[NSBundle mainBundle]loadNibNamed:@"CustomTableCell" owner:nil options:nil];
             cell = [arryObjects objectAtIndex:0];
             cell.customCellDelegate = self;
-
         }
 
     BOOL isSelected = NO;
@@ -1081,6 +1080,7 @@ Delegate to increase cell height when cell is tapped
     NSLog(@"**** %lu",(unsigned long)sharedAppDelegate.arryOfAllFeeds.count);
 
     [self.arryTappedCell removeAllObjects];
+    [self.arrySelectedIndex removeAllObjects];
     for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {
         NSLog(@"%@", cellSelected);
         [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];

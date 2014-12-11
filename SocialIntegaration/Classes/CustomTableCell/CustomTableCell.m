@@ -460,31 +460,6 @@
 
 - (void)setFrameOfActivityView:(NSInteger)yAxis {
 
-    [self setFrameForIPhone5:yAxis];
-   /* [imgVwOfComentFb setFrame:CGRectMake(imgVwOfComentFb.frame.origin.x, yAxis, 20, 20)];
-    [imgVwOfLikeFb setFrame:CGRectMake(imgVwOfLikeFb.frame.origin.x, yAxis, 20, 20)];
-    [lblCommentFb setFrame:CGRectMake(lblCommentFb.frame.origin.x, yAxis, 80, 20)];
-    [lblLike setFrame:CGRectMake(lblLike.frame.origin.x, yAxis, 70, 20)];
-    [lblFbLikeCount setFrame:CGRectMake(lblFbLikeCount.frame.origin.x, yAxis, 70, 20)];
-    [btnMoreFb setFrame:CGRectMake(btnMoreFb.frame.origin.x, yAxis, btnMoreFb.frame.size.width, btnMoreFb.frame.size.height)];
-
-    [btnFavourate setFrame:CGRectMake(btnFavourate.frame.origin.x, yAxis-2, btnFavourate.frame.size.width, btnFavourate.frame.size.height)];
-    [btnReply setFrame:CGRectMake(btnReply.frame.origin.x, yAxis-2, btnReply.frame.size.width, btnReply.frame.size.height)];
-    [btnRetweet setFrame:CGRectMake(btnRetweet.frame.origin.x, yAxis+1, btnRetweet.frame.size.width, btnRetweet.frame.size.height)];
-    [btnMoreTweet setFrame:CGRectMake(btnMoreTweet.frame.origin.x, yAxis-2, btnMoreTweet.frame.size.width, btnMoreTweet.frame.size.height)];
-
-    [lblFavourate setFrame:CGRectMake(lblFavourate.frame.origin.x, yAxis, 70, lblFavourate.frame.size.height)];
-    [lblTweet setFrame:CGRectMake(lblTweet.frame.origin.x, yAxis, 70, lblTweet.frame.size.height)];
-
-    [imgVwOfLikeInstagram setFrame:CGRectMake(imgVwOfLikeInstagram.frame.origin.x, yAxis, 20, 20)];
-    [lblInstCommentCount setFrame:CGRectMake(lblInstCommentCount.frame.origin.x, yAxis, lblInstCommentCount.frame.size.width, 20)];
-    [lblInstLikeCount setFrame:CGRectMake(lblInstLikeCount.frame.origin.x, yAxis, lblInstLikeCount.frame.size.width, 20)];*/
-
-        //[self setFrameSizeOfPostImgVw];
-}
-
-- (void)setFrameForIPhone5:(NSInteger)yAxis  {
-
     int appendXAxis;
     int extraGap;
     int tweetGap;
@@ -522,7 +497,6 @@
     [lblInstCommentCount setFrame:CGRectMake(lblInstCommentCount.frame.origin.x+appendXAxis+extraGap, yAxis, lblInstCommentCount.frame.size.width, 20)];
     [lblInstLikeCount setFrame:CGRectMake(lblInstLikeCount.frame.origin.x+appendXAxis, yAxis, lblInstLikeCount.frame.size.width, 20)];
 }
-
 
 #pragma mark - Set profile image of twitter and Instagram
 /**************************************************************************************************

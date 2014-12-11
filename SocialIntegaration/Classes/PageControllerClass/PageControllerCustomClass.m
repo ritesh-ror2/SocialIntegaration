@@ -37,6 +37,8 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Set page controller in navigation controller
+
 - (void)setupNavigationPageControl{
 
     UINavigationController *navController = self.navigationController;
@@ -52,10 +54,14 @@
     [navController.navigationBar addSubview:self.navigationPageControl];
 }
 
+#pragma mark - Set page number
+
 - (void)setPageNumber:(int)pageNumber {
 
     self.navigationPageControl.currentPage = pageNumber;
 }
+
+#pragma mark - Configure page controller in navigation controller
 
 - (void)configureNavigationPageControlWithPageControl:(UIPageControl*) pageControl{
     self.origanalPageControl = pageControl;
@@ -79,12 +85,16 @@
     }
 }
 
+#pragma mark - Set curent page
+
 - (void)updateNavigationPageControl{
 
     if(self.origanalPageControl){
         self.navigationPageControl.currentPage = self.origanalPageControl.currentPage;
     }
 }
+
+#pragma mark - Set page controller frame
 
 - (void)setupNavigationPageControlFrame:(UIView *)vwPageController {
 
