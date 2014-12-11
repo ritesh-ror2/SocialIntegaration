@@ -103,8 +103,14 @@
         imgVwArrow.frame = CGRectMake(50, 8, 7, 14);
     } else {
 
+        CGFloat extra = 0;
+        if(IS_IPHONE_6_IOS8)
+            extra = 55;
+        else if(IS_IPHONE_6P_IOS8)
+            extra = 85;
+            
         lblMessage.text = objComment.userComment;
-        lblMessage.frame = CGRectMake((263 - rect.size.width), 5, rect.size.width, rect.size.height+2);
+        lblMessage.frame = CGRectMake((263 - rect.size.width) + extra, 5, rect.size.width, rect.size.height+2);
         lblMessage.backgroundColor = [UIColor clearColor];
         lblMessage.textColor = [UIColor lightGrayColor];// [UIColor colorWithRed:170/255.0f green:170/255.0f blue:170/255.0f alpha:1.0];
 
@@ -114,15 +120,15 @@
         } else {
             width = rect.size.width+5;
         }
-        lblTime.frame = CGRectMake((264 - width), rect.size.height + 7, width , 21);
+        lblTime.frame = CGRectMake((264 - width) + extra, rect.size.height + 7, width , 21);
         lblTime.textAlignment = NSTextAlignmentLeft;
 
-        imgVwBackground.frame = CGRectMake((258 - rect.size.width), 3, rect.size.width+10, rect.size.height+6);
+        imgVwBackground.frame = CGRectMake((258 - rect.size.width) + extra, 3, rect.size.width+10, rect.size.height+6);
         imgVwBackground.backgroundColor = [UIColor colorWithRed:238/255.0f green:238/255.0f blue:238/255.0f alpha:1.0];
 
-        imgVwUser.frame = CGRectMake(275, 0, 40, 40);
+        imgVwUser.frame = CGRectMake(275 + extra, 0, 40, 40);
         imgVwArrow.image = [UIImage imageNamed:@"arrow-gray.png"];
-        imgVwArrow.frame = CGRectMake(265, 8, 7, 14);
+        imgVwArrow.frame = CGRectMake(265 + extra, 8, 7, 14);
     }
     [self uploadProfileImage:objComment];
     NSLog(@"%@", objComment.userComment);

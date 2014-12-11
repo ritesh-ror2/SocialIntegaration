@@ -37,6 +37,13 @@
 
 - (void)setNotificationIntableView:(UserNotification *)userNotification {
 
+    CGFloat extra = 0;
+    if(IS_IPHONE_6_IOS8)
+        extra = 25;
+    else if(IS_IPHONE_6P_IOS8)
+        extra = 60;
+
+
     lblName.text = userNotification.name;
 
     NSString *strSubstring = [userNotification.title substringToIndex: userNotification.title.length - 1];
@@ -46,7 +53,9 @@
                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]}
                                       context:nil];
 
-    lblTitle.frame = CGRectMake(55, 25, [Constant widthOfCommentLblOfTimelineAndProfile], rect.size.height);
+    lblTitle.frame = CGRectMake(55, 25, [Constant widthOfCommentLblOfTimelineAndProfile]-70, rect.size.height);
+    
+    lblTime.frame = CGRectMake([Constant widthOfCommentLblOfTimelineAndProfile] - extra, 5, 37, 21);
     lblTime.text =  [Constant  calculateTimesBetweenTwoDates:userNotification.time];
 
     NSMutableAttributedString * strAttribut = [[NSMutableAttributedString alloc] initWithString:string];
