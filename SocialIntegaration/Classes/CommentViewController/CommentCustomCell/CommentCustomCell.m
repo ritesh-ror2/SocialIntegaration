@@ -37,13 +37,22 @@
     lblName.text = objUserComment.userName;
     lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserComment.time];
 
+    int widthOfComment;
+    if (IS_IPHONE_6_IOS8) {
+        widthOfComment = [Constant widthOfCommentLblOfTimelineAndProfile] + 50;
+    } else if (IS_IPHONE_6P_IOS8) {
+        widthOfComment = iPhone6_Plus_lbl_width;
+    } else {
+        widthOfComment = iPhone5_lbl_width;
+    }
+
     NSString *string = objUserComment.userComment;
-    CGRect rect = [string boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 400)
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfComment, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
                                        context:nil];
 
-    lblText.frame = CGRectMake(63, 30, [Constant widthOfCommentLblOfTimelineAndProfile], rect.size.height+2);
+    lblText.frame = CGRectMake(63, 30, widthOfComment, rect.size.height+2);
     lblText.text = objUserComment.userComment;
 
     if ([objUserComment.socialType isEqualToString: @"Facebook"]) {

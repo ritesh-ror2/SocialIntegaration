@@ -80,8 +80,8 @@
 
     //lbl width
 #define iPhone5_lbl_width 250
-#define iPhone6_lbl_width 302
-#define iPhone6_Plus_lbl_width 340
+#define iPhone6_lbl_width 250
+#define iPhone6_Plus_lbl_width 330
 
 
     //#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
