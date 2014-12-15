@@ -35,6 +35,8 @@
 
 @implementation ProfileViewController
 
+@synthesize btnEdit, btnRequest;
+
 #pragma mark - View life cycle
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -72,6 +74,8 @@
         [self setFrameForIPhone6and6Plus];
      }
 
+    self.tbleVwFeeds.separatorColor = [UIColor lightGrayColor];
+
     heightOfRowImg = [Constant heightOfCellInTableVw];
     widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }
@@ -102,10 +106,15 @@
     [self setFBUserInfo:userProfile];
 }
 
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)setFrameForIPhone6and6Plus {
 
-    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 96)/2, self.imgVwProfileImg.frame.origin.y, 96, 96);
-    self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 100)/2, self.imgVwBorderMask.frame.origin.y, 100, 100);
+    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 80)/2, self.imgVwProfileImg.frame.origin.y+35, 80, 80);
+    self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 84)/2, self.imgVwBorderMask.frame.origin.y+35, 84, 84);
+    self.lblUserName.frame = CGRectMake((self.view.frame.size.width - self.lblUserName.frame.size.width)/2, self.imgVwBorderMask.frame.origin.y+self.imgVwBorderMask.frame.size.height+10, self.lblUserName.frame.size.width, 21);
 }
 
 #pragma mark - Get FB User Info
@@ -348,12 +357,12 @@
     if(indexPath.row < [self.arryOfFBUserFeed count]){
 
             //  self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
+        [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES];
     } else {
 
         if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
 
-            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:isSelected withPagging:YES withOtherTimeline:YES];
+            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:YES];
             cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
         }
     }

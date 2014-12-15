@@ -76,7 +76,7 @@
         [self.lblUserTweet setFont:[UIFont fontWithRegularWithSize:14]];
         */
     }
-
+    self.tbleVwTweeterFeeds.separatorColor = [UIColor lightGrayColor];
     heightOfRowImg = [Constant heightOfCellInTableVw];
     widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }
@@ -106,12 +106,17 @@
     [self getUserInfoFromTwitter];
 }
 
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 #pragma mark - Set frame for iphone6 and 6+
 
 - (void)setFrameForIPhone6and6Plus {
 
-    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 96)/2, self.imgVwProfileImg.frame.origin.y, 96, 96);
-    self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 100)/2, self.imgVwBorderMask.frame.origin.y, 100, 100);
+    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 80)/2, self.imgVwProfileImg.frame.origin.y+35, 80, 80);
+    self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 84)/2, self.imgVwBorderMask.frame.origin.y+35, 84, 84);
+    self.lblUserName.frame = CGRectMake((self.view.frame.size.width - self.lblUserName.frame.size.width)/2, self.imgVwBorderMask.frame.origin.y+self.imgVwBorderMask.frame.size.height+10, self.lblUserName.frame.size.width, 21);
 
     int xAxis;
     if (IS_IPHONE_6P_IOS8) {
@@ -344,7 +349,7 @@
 
     if(indexPath.row < [self.arrySelfTweets count]){
 
-        [cell setValueInSocialTableViewCustomCell:[self.arrySelfTweets objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
+    [cell setValueInSocialTableViewCustomCell:[self.arrySelfTweets objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES];
     }
     return cell;
 }

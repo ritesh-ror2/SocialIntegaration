@@ -9,6 +9,7 @@
 #import "HomePageViewController.h"
 #import "ViewController.h"
 #import "LoginViewController.h"
+#import "LinkViewController.h"
 #import "SignUpViewController.h"
 
 @interface HomePageViewController () {
@@ -16,6 +17,7 @@
     ViewController* vc;
     LoginViewController *vwController;
     SignUpViewController *vwControllerSignUp;
+    LinkViewController *viewControllerLink;
 
     NSString*strSignUp;
 }
@@ -51,7 +53,7 @@
 
 - (IBAction)loginBtnTapped:(id)sender {
 
-    [self performSegueWithIdentifier:@"loginuser" sender:sender];
+    [self performSegueWithIdentifier:@"linklogin" sender:sender];
 
   /*  UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LoginViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"loginuser"];
@@ -63,8 +65,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 
     NSString * segueIdentifier = [segue identifier];
-    if([segueIdentifier isEqualToString:@"loginuser"]){
-         vwController = [segue destinationViewController];
+    if ([segueIdentifier isEqualToString:@"linklogin"]){
+        viewControllerLink = [segue destinationViewController];
     } else if ([segueIdentifier isEqualToString:@"signup"]){
         vwControllerSignUp = [segue destinationViewController];
     }

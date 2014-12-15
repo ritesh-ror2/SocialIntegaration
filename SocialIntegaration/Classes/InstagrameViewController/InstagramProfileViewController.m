@@ -51,13 +51,6 @@
     if(IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
 
         [self setFrameForIPhone6and6Plus];
-
-      /*[self.lblUserName  setFont:[UIFont fontWithMediumWithSize:15]];
-        [self.lblStatus setFont:[UIFont fontWithMediumWithSize:15]];
-
-        [self.lblUserFollowes setFont:[UIFont fontWithRegularWithSize:14]];
-        [self.lblUserFollowing setFont:[UIFont fontWithRegularWithSize:14]];
-        [self.lblUserPost setFont:[UIFont fontWithRegularWithSize:14]];*/
     }
 
     if (!IS_IPHONE5) {
@@ -65,7 +58,8 @@
         self.btnFollowing.hidden = YES;
         self.btnEdit.frame = self.btnFollowing.frame;
     }
-    
+
+    self.tbleVwInstagramPost.separatorColor = [UIColor lightGrayColor];
     heightOfRowImg = [Constant heightOfCellInTableVw];
     widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }
@@ -109,12 +103,17 @@
     [self getInstagrameIntegration];
 }
 
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 #pragma mark - Set frame for iphone6 and 6+
 
 - (void)setFrameForIPhone6and6Plus {
 
-    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 96)/2, self.imgVwProfileImg.frame.origin.y, 96, 96);
-    self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 100)/2, self.imgVwBorderMask.frame.origin.y, 100, 100);
+    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 80)/2, self.imgVwProfileImg.frame.origin.y+35, 80, 80);
+    self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 84)/2, self.imgVwBorderMask.frame.origin.y+35, 84, 84);
+    self.lblUserName.frame = CGRectMake((self.view.frame.size.width - self.lblUserName.frame.size.width)/2, self.imgVwBorderMask.frame.origin.y+self.imgVwBorderMask.frame.size.height+10, self.lblUserName.frame.size.width, 21);
 
     int xAxis;
     if (IS_IPHONE_6P_IOS8) {

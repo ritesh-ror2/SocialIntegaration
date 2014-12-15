@@ -10,7 +10,11 @@
 #import "LinkViewController.h"
 #import "ViewController.h"
 
-@interface SignUpViewController ()
+@interface SignUpViewController () {
+
+    ViewController *viewControllerTimeline;
+    LinkViewController *viewControllerLink;
+}
 
 @end
 
@@ -34,9 +38,9 @@
 
     NSString * segueIdentifier = [segue identifier];
     if([segueIdentifier isEqualToString:@"Tabbar"]){
-       ViewController *vc = [segue destinationViewController];
+       viewControllerTimeline = [segue destinationViewController];
     } else if ([segueIdentifier isEqualToString:@"link"]){
-        LinkViewController *vc = [segue destinationViewController];
+       viewControllerLink = [segue destinationViewController];
     }
 }
 

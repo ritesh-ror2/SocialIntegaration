@@ -63,9 +63,7 @@
     self.arryUsers = [[NSMutableArray alloc]init];
 
     self.scrollVwComposre.frame = CGRectMake(0, self.scrollVwComposre.frame.origin.y, self.view.frame.size.width, self.scrollVwComposre.frame.size.height);
-
-//    self.tbleVwUser.layer.borderColor = [[UIColor blackColor]CGColor];
-//    self.tbleVwUser.layer.borderWidth = 1.0;
+    [self.tbleVwUser setHidden:YES];
 
     [self.vwTwitter setFrame:CGRectMake(self.scrollVwComposre.frame.size.width, self.vwTwitter.frame.origin.y, self.view.frame.size.width, self.scrollVwComposre.frame.size.height)];
 
@@ -95,9 +93,9 @@
 - (void)setFramesOfTwitterVw {
 
     imgVwTwitter.frame = CGRectMake(0, 0, self.view.frame.size.width, 64);
-    self.txtVwTwitter.frame = CGRectMake(69, 77, [Constant widthOfCommentLblOfTimelineAndProfile] - 10, 131);
+    self.txtVwTwitter.frame = CGRectMake(69, 77, self.txtVwFB.frame.size.width, 131);
     lblTwitterHeading.frame = CGRectMake((self.view.frame.size.width - 150)/2, 28, 150, 21);
-    btnTwitterPost.frame = CGRectMake((self.view.frame.size.width - 70), 20, 54, 44);
+    btnTwitterPost.frame = CGRectMake((self.view.frame.size.width - 60), 15, 54, 44);
 }
 
 #pragma mark - Keyboard notification

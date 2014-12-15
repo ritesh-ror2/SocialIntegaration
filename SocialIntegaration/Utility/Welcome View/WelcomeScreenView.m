@@ -38,18 +38,24 @@
 
     [welcomeScreenPageControl setHidden:YES];
 
-        //CGRect * rect =
+    CGRect frame1 = self.frame;
+    frame1.origin.y = frame1.origin.x - 20;
+    frame1.size.height =  frame1.size.height + 20;
+
     //scroll view
-    welcomeScreenScrollVw = [[UIScrollView alloc]initWithFrame:self.frame];
+    welcomeScreenScrollVw = [[UIScrollView alloc]initWithFrame:frame1];
     welcomeScreenScrollVw.pagingEnabled = YES;
     welcomeScreenScrollVw.scrollEnabled = YES;
     welcomeScreenScrollVw.delegate = self;
     welcomeScreenScrollVw.showsHorizontalScrollIndicator = NO;
-    welcomeScreenScrollVw.backgroundColor = [UIColor blackColor];
     [self addSubview:welcomeScreenScrollVw];
 
     //page controller
-    welcomeScreenPageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, 170, welcomeScreenScrollVw.frame.size.width, 36)];
+    if(IS_IPHONE5) {
+        welcomeScreenPageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, 165, welcomeScreenScrollVw.frame.size.width, 36)];
+    } else {
+         welcomeScreenPageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, 210, welcomeScreenScrollVw.frame.size.width, 36)];
+    }
     welcomeScreenPageControl.currentPage = 0;
     welcomeScreenPageControl.currentPageIndicatorTintColor = [UIColor blackColor];
     welcomeScreenPageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
@@ -65,6 +71,11 @@
 - (void)hidePageController:(BOOL)isHidden {
 
     welcomeScreenPageControl.hidden = isHidden;
+}
+
+- (void)setbackgroundColor {
+
+    self.backgroundColor = [UIColor colorWithRed:245/256.0f green:245/256.0f blue:245/256.0f alpha:1.0];
 }
 
 #pragma mark - Load scroll View 
@@ -95,7 +106,7 @@
 
 - (void)setContentsOfWelcomeScreensScrollVw {
 
-    int pageCount = [self.delegate numberOfPagesInWelcomeScreen:self];
+    NSInteger pageCount = [self.delegate numberOfPagesInWelcomeScreen:self];
     int xAxisOfPage;
     if ([self.delegate canMoveInCircleOfWelcomeScreen:self] == YES) {
         xAxisOfPage = 320;
@@ -122,12 +133,12 @@
 
     if ([self.delegate canMoveInCircleOfWelcomeScreen:self] == YES) {
 
-        welcomeScreenScrollVw.contentSize = CGSizeMake(welcomeScreenScrollVw.frame.size.width *(pageCount+2), welcomeScreenScrollVw.frame.size.height);
-        [welcomeScreenScrollVw scrollRectToVisible:CGRectMake(320, 0, welcomeScreenScrollVw.frame.size.width, welcomeScreenScrollVw.frame.size.height) animated:YES];
+        welcomeScreenScrollVw.contentSize = CGSizeMake(welcomeScreenScrollVw.frame.size.width *(pageCount+2), welcomeScreenScrollVw.frame.size.height-30);
+            // [welcomeScreenScrollVw scrollRectToVisible:CGRectMake(320, 0, welcomeScreenScrollVw.frame.size.width, welcomeScreenScrollVw.frame.size.height) animated:YES];
     } else {
 
-        welcomeScreenScrollVw.contentSize = CGSizeMake(welcomeScreenScrollVw.frame.size.width *pageCount, welcomeScreenScrollVw.frame.size.height);
-        [welcomeScreenScrollVw scrollRectToVisible:CGRectMake(0, 0, welcomeScreenScrollVw.frame.size.width, welcomeScreenScrollVw.frame.size.height) animated:YES];
+        welcomeScreenScrollVw.contentSize = CGSizeMake(welcomeScreenScrollVw.frame.size.width *pageCount, welcomeScreenScrollVw.frame.size.height-30);
+            //[welcomeScreenScrollVw scrollRectToVisible:CGRectMake(0, 0, welcomeScreenScrollVw.frame.size.width, welcomeScreenScrollVw.frame.size.height) animated:YES];
     }
 }
 
@@ -249,7 +260,7 @@
 
     if ([self.delegate canMoveInCircleOfWelcomeScreen:self] == YES) {
 
-        int pageCount = [self.delegate numberOfPagesInWelcomeScreen:self];//page count
+        NSInteger pageCount = [self.delegate numberOfPagesInWelcomeScreen:self];//page count
         int xAxis = (welcomeScreenScrollVw.frame.size.width*pageCount); //xaxis of screen
         //  int page2 = (welcomeScreenScrollVw.frame.size.width*pageCount);
 

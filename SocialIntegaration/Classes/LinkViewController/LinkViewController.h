@@ -10,9 +10,9 @@
 
 @interface LinkViewController : UIViewController {
 
-    IBOutlet UIView *vwFB;
-    IBOutlet UIView *vwTwitter;
-    IBOutlet UIView *vwInstagram;
+    IBOutlet UIImageView *vwFB;
+    IBOutlet UIImageView *vwTwitter;
+    IBOutlet UIImageView *vwInstagram;
 
     IBOutlet UIImageView *imgVwFB;
     IBOutlet UIImageView *imgVwTwitter;

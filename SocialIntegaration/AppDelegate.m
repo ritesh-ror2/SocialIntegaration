@@ -35,19 +35,14 @@
 
     BOOL isInstalled = [[NSUserDefaults standardUserDefaults]boolForKey:@"IsInstalled"];
 
-        // if(isInstalled == NO) {
+    if(isInstalled == NO) {
 
-       /* UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        self.vwControllerWelcome = [storyboard instantiateViewControllerWithIdentifier:@"WelcomeViewController"];
-
-        self.window.rootViewController = self.vwControllerWelcome;
-        [[NSUserDefaults standardUserDefaults]setBool:@"YES" forKey:@"IsInstalled"];*/
-
-//    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-//    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
-//    self.vwControllerWelcome = (WelcomeViewController*)[mainStoryboard instantiateViewControllerWithIdentifier: @"WelcomeViewController"];
-//    [navigationController pushViewController:self.vwControllerWelcome animated:NO];
-        // }
+        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"IsInstalled"];
+        UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
+        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
+        self.vwControllerWelcome = (WelcomeViewController*)[mainStoryboard instantiateViewControllerWithIdentifier: @"WelcomeViewController"];
+        [navigationController pushViewController:self.vwControllerWelcome animated:NO];
+    }
 
     return YES;
 }
@@ -60,7 +55,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
 
-    sharedAppDelegate.isFirstTimeLaunch = YES;
+        //sharedAppDelegate.isFirstTimeLaunch = NO;
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }

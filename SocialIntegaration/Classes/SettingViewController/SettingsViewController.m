@@ -43,7 +43,7 @@
     btnInstagram.hidden = YES;
     btnTwitter.hidden = YES;
     sharedAppDelegate.isFirstTimeLaunch = NO;
-    
+
     [self userLoginOrNot];
 
     if (IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
@@ -119,7 +119,6 @@
     btnFb.hidden = YES;
     btnInstagram.hidden = YES;
     btnTwitter.hidden = YES;
-    self.navigationController.navigationBarHidden = NO;
 }
 
 #pragma mark - User Login or not

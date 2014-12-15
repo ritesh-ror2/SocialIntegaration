@@ -154,10 +154,10 @@
         imgVwBackground.frame = CGRectMake(0, 0, self.view.frame.size.width, heightPostComment + lblComment.frame.origin.y + [Constant heightOfCellInTableVw] + 15);
     } else {
 
-        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, heightPostComment + (lblComment.frame.origin.y + 45));
+        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, heightPostComment + (lblComment.frame.origin.y + 22));
     }
 
-        // imgVwBackground.backgroundColor = [UIColor lightGrayColor];
+    imgVwBackground.backgroundColor = [UIColor colorWithRed:245/256.0f green:245/256.0f blue:245/256.0f alpha:1.0];
 
     scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + 235));
 
@@ -171,7 +171,7 @@
     }
 
     imgVwProfile.frame = CGRectMake(10, imgVwBackground.frame.size.height+5, 45, 45);
-    self.txtVwGiveComment.frame = CGRectMake(80, imgVwBackground.frame.size.height, self.view.frame.size.width - 90, 150);
+    self.txtVwGiveComment.frame = CGRectMake(80, imgVwBackground.frame.size.height + 5, self.view.frame.size.width - 90, 150);
     lblHeading.frame = CGRectMake(85, imgVwBackground.frame.size.height+5, 250, 21);
 }
 

@@ -196,12 +196,16 @@
         lblHeading.text = @"Facebook";
         strBtnTitle = @"Post";
 
-        [self facebookConfiguration];
         [self fectchFBComment];
+        [self facebookConfiguration];
+
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
     } else if ([self.userInfo.userSocialType isEqualToString:@"Instagram"]) {
 
         [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateNormal];
+        [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateSelected];
+        [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateHighlighted];
+
         lblHeading.text = @"Instagram";
 
         [self setCommentOfpostDetail:self.userInfo];
@@ -518,7 +522,6 @@
             //imgVwBackground.backgroundColor = [UIColor redColor];
     } else {
 
-
         [self setFrameOfActivityView:lblComment.frame.size.height + lblComment.frame.origin.y + 10];
         int taggedUser =  [self setFramesOfTaggedUsers:lblComment.frame.size.height + lblComment.frame.origin.y + 40];
         imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 45) + taggedUser);
@@ -528,7 +531,7 @@
 
     if (objUserInfo.postImg.length != 0) {
 
-        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+5, [Constant heightOfCellInTableVw], scrollVwShowComment.contentSize.height - (imgVwBackground.frame.size.height+45));
+        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+1, [Constant heightOfCellInTableVw], scrollVwShowComment.contentSize.height - (imgVwBackground.frame.size.height+45));
     } else {
 
         NSLog(@"%f", [UIScreen mainScreen].bounds.size.height);
@@ -543,7 +546,7 @@
         }
         NSLog(@"%f",MAX([UIScreen mainScreen].bounds.size.height,[UIScreen mainScreen].bounds.size.width));
         CGRect frame = tbleVwComment.frame;
-        frame.origin.y = imgVwBackground.frame.size.height+5;
+        frame.origin.y = imgVwBackground.frame.size.height+2;
         frame.size.height = (height - (imgVwBackground.frame.size.height+ 5 + imgVwNavigation.frame.size.height +44));
         tbleVwComment.frame = frame;
     }

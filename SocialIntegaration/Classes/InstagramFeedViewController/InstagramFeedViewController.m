@@ -118,7 +118,7 @@
         isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
     }
 
-    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
+    [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfInstagrame objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES];
 
     return cell;
 }

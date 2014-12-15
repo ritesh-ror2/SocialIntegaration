@@ -10,7 +10,9 @@
 #import "UIFont+Helper.h"
 #import "HomePageViewController.h"
 
-@interface WelcomeViewController ()
+@interface WelcomeViewController () {
+    HomePageViewController *vwControllerHome;
+}
 
 @end
 
@@ -23,6 +25,7 @@
     welcomeScreenVw = [[WelcomeScreenView alloc]initWithFrame:self.view.frame withDelegate:self];
     [self.view addSubview:welcomeScreenVw];
     self.navigationController.navigationBarHidden = YES;
+        // self.view.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -98,6 +101,8 @@
 
 - (void)viewOfWelcome:(UIView *)welcomeVw {
 
+    [welcomeScreenVw setbackgroundColor];
+
     UIImage *imgScroll1 = [UIImage imageNamed:@"home.png"];
 
     UIImageView *imgVwOfWelcomeImg = [[UIImageView alloc]init];
@@ -105,10 +110,10 @@
     imgVwOfWelcomeImg.image = imgScroll1;
     imgVwOfWelcomeImg.contentMode = UIViewContentModeScaleAspectFill;
 
-    UILabel *lblTitle1 = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 140)/2, self.view.frame.size.height - 70, 140, 21)];
+    UILabel *lblTitle1 = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 140)/2, self.view.frame.size.height - 70, 140, 25)];
     lblTitle1.numberOfLines = 0;
     lblTitle1.textColor = [UIColor colorWithRed:103/256.0f green:188/256.0f blue:246/256.0f alpha:1.0];
-    lblTitle1.font = [UIFont fontWithRegularWithSize:17];
+    lblTitle1.font = [UIFont fontWithRegularWithSize:21];
     NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc]initWithString:@"Swipe to begin"];
     [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:17] range:NSMakeRange(0, 5)];
     lblTitle1.attributedText = attrStr;
@@ -122,15 +127,16 @@
 
 - (void)viewForWelcomeSceen1:(UIView*)welcomeVw {
 
-        //Locally image view for scroll view images
+    //Locally image view for scroll view images
 
-    UILabel *lblTitle1 = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 290)/2, 60, 290, 25)];
+    [welcomeScreenVw setbackgroundColor];
+    UILabel *lblTitle1 = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 310)/2, 60, 310, 25)];
     lblTitle1.numberOfLines = 0;
     lblTitle1.textColor = [UIColor darkGrayColor];
     lblTitle1.textAlignment = NSTextAlignmentCenter;
     lblTitle1.font = [UIFont fontWithLightWithSize:21];
     NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc]initWithString:@"One sorts your timeline by time."];
-    [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:17] range:NSMakeRange(attrStr.length - 5,5)];
+    [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:21] range:NSMakeRange(attrStr.length - 5,5)];
     lblTitle1.attributedText = attrStr;
      [welcomeVw addSubview:lblTitle1];
 
@@ -155,12 +161,14 @@
 
 - (void)viewForWelcomeSceen2:(UIView*)welcomeVw {
 
+    [welcomeScreenVw setbackgroundColor];
+
     UILabel *lblTitle1 = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 310)/2, 60, 310, 25)];
     lblTitle1.numberOfLines = 0;
     lblTitle1.textColor = [UIColor darkGrayColor];
     lblTitle1.font = [UIFont fontWithLightWithSize:21];
     NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc]initWithString:@"Swipe right to hide a post."];
-    [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:17] range:NSMakeRange(0, 5)];
+    [attrStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:21] range:NSMakeRange(0, 5)];
     lblTitle1.attributedText = attrStr;
     lblTitle1.textAlignment = NSTextAlignmentCenter;
     [welcomeVw addSubview:lblTitle1];
@@ -170,7 +178,7 @@
     lblTitle2.textColor = [UIColor darkGrayColor];
     lblTitle2.font = [UIFont fontWithLightWithSize:21];
     lblTitle2.textAlignment = NSTextAlignmentCenter;
-    lblTitle2.text = @"The post won't br deleted just hidden from your timeline.";
+    lblTitle2.text = @"The post won't be deleted just hidden from your timeline.";
     [welcomeVw addSubview:lblTitle2];
 
     UIImage *imgScroll1 = [UIImage imageNamed:@"Setup3.png"];
@@ -186,7 +194,9 @@
 
 - (void)viewForWelcomeSceen3:(UIView*)welcomeVw {
 
-    UILabel *lblTitle1 = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 280)/2, 60, 280, 25)];
+    welcomeScreenVw.backgroundColor = [UIColor colorWithRed:245/256.0f green:245/256.0f blue:245/256.0f alpha:1.0];
+
+    UILabel *lblTitle1 = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 310)/2, 60, 310, 25)];
     lblTitle1.numberOfLines = 0;
     lblTitle1.textColor = [UIColor darkGrayColor];
     lblTitle1.font = [UIFont fontWithLightWithSize:21];
@@ -216,7 +226,7 @@
     UIButton *btnLogin = [UIButton buttonWithType:UIButtonTypeCustom];
     [btnLogin setTitle:@"Login" forState:UIControlStateNormal];
     [btnLogin setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    btnLogin.frame = CGRectMake(self.view.frame.size.width - 100, self.view.frame.size.height - 50 , 100, 44);
+    btnLogin.frame = CGRectMake(self.view.frame.size.width - 70, self.view.frame.size.height - 50 , 70, 44);
     //[btnLogin setBackgroundColor:[UIColor blackColor]];
     [btnLogin addTarget:self action:@selector(loginBtnTapp:) forControlEvents:UIControlEventTouchUpInside];
     [welcomeVw addSubview:btnLogin];
@@ -233,7 +243,7 @@
 
     NSString * segueIdentifier = [segue identifier];
     if([segueIdentifier isEqualToString:@"home"]){
-        HomePageViewController *vwController = [segue destinationViewController];
+        vwControllerHome = [segue destinationViewController];
     }
 }
 

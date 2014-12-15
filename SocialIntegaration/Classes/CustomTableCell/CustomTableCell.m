@@ -369,7 +369,7 @@
  Function to set values in feed list
  **************************************************************************************************/
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(BOOL)isSelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline {
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(NSMutableArray *)arrySelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline {
 
     if (isPagging == YES) {
         spinner.hidden = NO;
@@ -394,15 +394,27 @@
 
         [self setIconWhenActivityHasUsedByUser:objUserInfo]; //set activity icon
 
-        if (isSelected == YES) {  //BOOL isSelected = [[arrySelectedCell objectAtIndex:row]boolValue];
+        BOOL iRowSelected = NO;
+        if (arrySelected.count != 0) {
+            for (NSString*iValue in arrySelected) {
+
+                if ([iValue integerValue] == row) {
+                    iRowSelected = YES;
+                    break;
+                } else {
+                    iRowSelected = NO;
+                }
+            }
+        }
+        if (iRowSelected == YES) {  //BOOL isSelected = [[arrySelectedCell objectAtIndex:row]boolValue];
 
             self.isAlreadyTapped = YES;
             imgVwBgColor.hidden = NO;
 
             if ([objUserInfo.userSocialType isEqualToString: @"Facebook"]) {
-                [self facebookCellConfiguration:isSelected];
+                [self facebookCellConfiguration:YES];
             } else if ([objUserInfo.userSocialType isEqualToString: @"Twitter"]) {
-                [self twitterCellConfiguration:isSelected];
+                [self twitterCellConfiguration:YES];
             } else {
                 [self instagramCellConfiguration:YES];
             }
@@ -410,6 +422,7 @@
             self.isAlreadyTapped = NO;
             imgVwBgColor.hidden = YES;
         }
+
 
         if ([objUserInfo.type isEqualToString:@"video"]) {
             [btnPlay setImage:[UIImage imageNamed:@"play-btn.png"] forState:UIControlStateNormal];

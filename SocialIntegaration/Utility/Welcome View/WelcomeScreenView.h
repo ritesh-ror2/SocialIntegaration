@@ -26,6 +26,7 @@
 - (void)reloadWelcomeScreenScrollView;
 - (CustomPageOfScrollView *)getViewFromScrollViewatIndexPage:(NSInteger)indexPage;
 - (void)hidePageController:(BOOL)isHidden;
+- (void)setbackgroundColor;
 
 @end
 

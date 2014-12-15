@@ -64,6 +64,6 @@
 
 #pragma mark - Function
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(BOOL)isSelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline;
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(NSMutableArray *)arrySelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline ;
 
 @end

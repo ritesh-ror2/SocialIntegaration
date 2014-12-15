@@ -78,7 +78,7 @@ BOOL hasTwitter = NO;
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
 
-     NSLog(@"%f", self.view.frame.size.height);
+        // NSLog(@"%f", self.view.frame.size.height);
     //animated loading view
     int yAxisOfLoader;
     if (IS_IPHONE5) {
@@ -139,6 +139,9 @@ BOOL hasTwitter = NO;
          self.imgVwBackground.hidden = NO;
     } else {
 
+        self.navigationController.navigationBar.hidden = NO;
+        self.navController.navigationBar.translucent = NO;
+
         if (sharedAppDelegate.arryOfAllFeeds.count == 0) {
 
             isShowLoading  = YES;
@@ -146,8 +149,6 @@ BOOL hasTwitter = NO;
         }
         [self hideNavBar:NO];
     }
-
-    NSLog(@"%@", self.arryTappedCell);
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -163,7 +164,10 @@ BOOL hasTwitter = NO;
         sharedAppDelegate.isFirstTimeLaunch = NO;
         [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0]; // animate
     } else {
+
         self.navigationController.navigationBar.hidden = NO;
+        self.navController.navigationBar.translucent = NO;
+
     }
 
     [self appIsInForeground:nil];
@@ -317,8 +321,6 @@ BOOL hasTwitter = NO;
         [UIView animateWithDuration:animationDuration animations:^{
 
             navBar.frame = CGRectMake(0, 20,  navBar.frame.size.width,  navBar.frame.size.height);
-            NSLog(@"%f",self.view.frame.size.height);
-
             tabbar.frame = CGRectMake(tabbar.frame.origin.x, (self.view.frame.size.height+37) - tabbar.frame.size.height, tabbar.frame.size.width,  tabbar.frame.size.height);
             self.navController.navigationBar.hidden = NO;
 
@@ -456,7 +458,6 @@ BOOL hasTwitter = NO;
 		return;
 	}
 
-    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	parameters[@"access_token"] = sharedAppDelegate.fbSession.accessTokenData;
 
@@ -464,7 +465,7 @@ BOOL hasTwitter = NO;
     [FBSession setActiveSession:sharedAppDelegate.fbSession];
 
 	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        NSLog(@"%@", [error description]);
+            // NSLog(@"%@", [error description]);
 		if (error) {
 
             // [Constant showAlert:ERROR_CONNECTING forMessage:@"Feeds is not comming"];
@@ -512,8 +513,6 @@ BOOL hasTwitter = NO;
              } else {
                  userInfo.objectIdFB = [dictData valueForKey:@"object_id"];
              }
-
-            NSLog(@"** %@", userInfo.type);
             [sharedAppDelegate.arryOfFBNewsFeed addObject:userInfo];
         }
     }
@@ -591,7 +590,7 @@ BOOL hasTwitter = NO;
 
                    [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
 
-                      NSLog(@"%@ !#" , [error description]);
+                           //NSLog(@"%@ !#" , [error description]);
                       id result = [NSJSONSerialization
                                              JSONObjectWithData:responseData
                                              options:NSJSONReadingMutableLeaves
@@ -613,7 +612,6 @@ BOOL hasTwitter = NO;
                     }];
                  }
            } else {
-               NSLog(@"Grant not access");
            }
          }];
     }
@@ -659,7 +657,7 @@ BOOL hasTwitter = NO;
 
     [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
 
-       NSLog(@"%@ !#" , [error description]);
+            //NSLog(@"%@ !#" , [error description]);
         if (!error) {
 
             id result = [NSJSONSerialization
@@ -674,7 +672,7 @@ BOOL hasTwitter = NO;
                [self convertDataOfTwitterIntoModel:arryTwitte];
            } else {
 
-               NSLog(@"error %@", result);
+                   //  NSLog(@"error %@", result);
            }
         } else {
             [Constant showAlert:@"Message" forMessage:@"The Internet connection appears to be offline."];
@@ -698,8 +696,6 @@ BOOL hasTwitter = NO;
     @autoreleasepool {
 
         for (NSDictionary *dictData in arryPost) {
-
-            NSLog(@"**%@", dictData); //14055301;
 
             NSDictionary *postUserDetailDict = [dictData objectForKey:@"user"];
             UserInfo *userInfo =[[UserInfo alloc]init];
@@ -766,14 +762,14 @@ BOOL hasTwitter = NO;
     if(indexPath.row < [sharedAppDelegate.arryOfAllFeeds count]){
 
         self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:NO];
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:NO];
     } else {
 
         if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:isSelected withPagging:YES withOtherTimeline:NO];
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:NO];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
 
                 [self getMoreDataOfFBFeed];
@@ -1091,12 +1087,20 @@ Delegate to increase cell height when cell is tapped
     sharedAppDelegate.arryOfAllFeeds = [sortedArray mutableCopy];
     NSLog(@"**** %lu",(unsigned long)sharedAppDelegate.arryOfAllFeeds.count);
 
-    [self.arryTappedCell removeAllObjects];
-    [self.arrySelectedIndex removeAllObjects];
-    for (NSString *cellSelected in sharedAppDelegate.arryOfAllFeeds) {
-        NSLog(@"%@", cellSelected);
-        [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
-    }
+        // [self.arryTappedCell removeAllObjects];
+        // [self.arrySelectedIndex removeAllObjects];
+
+     if(self.arryTappedCell.count == 0 && self.arryTappedCell.count < sharedAppDelegate.arryOfAllFeeds.count) {
+
+         for  (int iLoop=0; iLoop<sharedAppDelegate.arryOfAllFeeds.count; iLoop++) {
+
+             BOOL isSelected = NO;
+             if (self.arryTappedCell.count >= sharedAppDelegate.arryOfAllFeeds.count) {
+                isSelected = [self.arryTappedCell objectAtIndex:iLoop];
+             }
+             [self.arryTappedCell addObject:[NSNumber numberWithBool:isSelected]];
+        }
+     }
 
     [self.tbleVwPostList reloadData];
     [self performSelector:@selector(setTranslucentOfNavigationBar) withObject:nil afterDelay:1.0];

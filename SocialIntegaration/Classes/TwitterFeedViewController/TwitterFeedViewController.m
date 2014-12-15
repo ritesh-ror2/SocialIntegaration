@@ -229,14 +229,14 @@
 
     if(indexPath.row < [sharedAppDelegate.arryOfTwittes count]){
 
-        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:isSelected withPagging:NO withOtherTimeline:YES];
+            [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES];
     } else {
 
         if (sharedAppDelegate.arryOfTwittes.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:isSelected withPagging:YES withOtherTimeline:YES];
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:YES];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
                 [self paggingInTwitter];
             }

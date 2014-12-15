@@ -46,6 +46,26 @@
 
     if (IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
         [self setFrameOfViewsForiPhone6And6plus];
+    } else {
+
+        BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+        if (isFbLogin == YES)  {
+            vwFB.frame = CGRectMake (0, vwFB.frame.origin.y-50, vwFB.frame.size.width, vwFB.frame.size.height);
+        }
+
+        BOOL isTwitterLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+        if (isTwitterLogin == YES)  {
+            vwTwitter.frame = CGRectMake (0, 0, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
+        } else {
+            vwTwitter.frame = CGRectMake (0, 112, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
+        }
+
+        BOOL isInstLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
+        if (isInstLogin == YES)  {
+            vwInstagram.frame = CGRectMake (0, 0, vwInstagram.frame.size.width,200);
+        } else {
+            vwInstagram.frame = CGRectMake (0, 195, vwInstagram.frame.size.width,200);
+        }
     }
 }
 
@@ -71,34 +91,60 @@
 
     int yAxis;
     int yAxisOfContent;
+    int startFrameInst;
+    int startFrameTwit;
+
     if (IS_IPHONE_6_IOS8) {
         yAxis = 250;
         yAxisOfContent = 30;
+        startFrameInst = 230;
+        startFrameTwit = 128;
     } else {
         yAxis = 280;
         yAxisOfContent = 55;
+        startFrameInst = 245;
+        startFrameTwit = 134;
     }
-    vwTwitter.frame = CGRectMake (0, yAxis, vwTwitter.frame.size.width, vwTwitter.frame.size.height-10);
+    BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    if (isTwitterUserLogin == YES) {
 
+        if (IS_IPHONE_6_IOS8) {
+            vwTwitter.frame = CGRectMake (0, 30, vwTwitter.frame.size.width, vwTwitter.frame.size.height-10);
+        } else {
+            vwTwitter.frame = CGRectMake (0, 40, vwTwitter.frame.size.width, vwTwitter.frame.size.height-10);
+        }
+    } else {
+        vwTwitter.frame = CGRectMake (0, startFrameTwit, vwTwitter.frame.size.width, vwTwitter.frame.size.height-10);
+    }
+    [self.view sendSubviewToBack:vwTwitter];
         //twitter
     imgVwTwitter.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwTwitter.frame.origin.y+yAxisOfContent, 96, 96);
     imgVwTwitterCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwTwitterCircle.frame.origin.y+yAxisOfContent, 100, 100);
-    btnTwitterAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnTwitterAdd.frame.origin.y+yAxisOfContent, btnTwitterAdd.frame.size.width, btnTwitterAdd.frame.size.height);
+    btnTwitterAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnTwitterAdd.frame.origin.y+yAxisOfContent+yAxisOfContent+10, btnTwitterAdd.frame.size.width, btnTwitterAdd.frame.size.height);
     lblTwitterName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwTwitter.frame.origin.y + imgVwTwitter.frame.size.height + 5, lblTwitterName.frame.size.width, lblTwitterName.frame.size.height);
     lblTwitterTitle.frame = CGRectMake(lblTwitterTitle.frame.origin.x, lblTwitterName.frame.origin.y + lblTwitterName.frame.size.height + 5, lblTwitterTitle.frame.size.width, lblTwitterTitle.frame.size.height);
 
-        //facebook
-    imgVwFB.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwFB.frame.origin.y, 96, 96);
-    imgVwFBCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwFBCircle.frame.origin.y, 100, 100);
-    btnFbAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnFbAdd.frame.origin.y+70, btnTwitterAdd.frame.size.width, btnTwitterAdd.frame.size.height);
-    lblFBName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwFB.frame.origin.y + imgVwFB.frame.size.height + 5, lblFBName.frame.size.width,lblFBName.frame.size.height);
-    lblFBTitle.frame = CGRectMake(lblFBTitle.frame.origin.x, lblFBName.frame.origin.y + lblFBName.frame.size.height + 5, lblFBTitle.frame.size.width, lblFBTitle.frame.size.height);
+    BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    if (isFbLogin == YES) {  //facebook
+        vwFB.frame = CGRectMake (0, 0, vwFB.frame.size.width, vwFB.frame.size.height-10);
+    }
+        imgVwFB.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwFB.frame.origin.y, 96, 96);
+        imgVwFBCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwFBCircle.frame.origin.y, 100, 100);
+        btnFbAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnFbAdd.frame.origin.y+70, btnFbAdd.frame.size.width, btnFbAdd.frame.size.height);
+        lblFBName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwFB.frame.origin.y + imgVwFB.frame.size.height + 5, lblFBName.frame.size.width,lblFBName.frame.size.height);
+        lblFBTitle.frame = CGRectMake(lblFBTitle.frame.origin.x, lblFBName.frame.origin.y + lblFBName.frame.size.height + 5, lblFBTitle.frame.size.width, lblFBTitle.frame.size.height);
 
-    vwInstagram.frame = CGRectMake (0, vwInstagram.frame.origin.y-15, vwInstagram.frame.size.width, vwInstagram.frame.size.height+15);
+    BOOL isInstUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
+    if (isInstUserLogin == YES) {
+        vwInstagram.frame = CGRectMake (0, 0, vwInstagram.frame.size.width, vwInstagram.frame.size.height+20);
+    } else {
+        vwInstagram.frame = CGRectMake (0,startFrameInst , vwInstagram.frame.size.width, vwInstagram.frame.size.height+20);
+    }
+
         //instagram
     imgVwInstagram.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwInstagram.frame.origin.y-yAxisOfContent, 96, 96);
     imgVwInstagramCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwInstagramCircle.frame.origin.y-yAxisOfContent, 100, 100);
-    btnInstagramAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnInstagramAdd.frame.origin.y, btnTwitterAdd.frame.size.width, btnTwitterAdd.frame.size.height);
+    btnInstagramAdd.frame = CGRectMake((self.view.frame.size.width - btnInstagramAdd.frame.size.width)/2, btnInstagramAdd.frame.origin.y-20, btnInstagramAdd.frame.size.width, btnInstagramAdd.frame.size.height);
     lblInstagramName.frame = CGRectMake(lblInstagramName.frame.origin.x, imgVwInstagram.frame.origin.y + imgVwInstagram.frame.size.height +5, lblInstagramName.frame.size.width, lblInstagramName.frame.size.height);
     lblInstagramTitle.frame = CGRectMake(lblInstagramTitle.frame.origin.x, lblInstagramName.frame.origin.y + lblInstagramName.frame.size.height + 5, lblInstagramTitle.frame.size.width, lblInstagramTitle.frame.size.height);
 }
@@ -395,6 +441,8 @@
 
 - (void)convertFBUserInfoInModel:(NSDictionary *)dictInfo withProfileImg:(NSString *)strProfileImg {
 
+    vwFB.frame = CGRectMake (0, 34, vwFB.frame.size.width, vwFB.frame.size.height-10);
+
     [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISFBLOGIN];
     [[NSUserDefaults standardUserDefaults]synchronize];
 
@@ -415,7 +463,8 @@
 
 - (void)setFBUserInfo:(UserProfile*)userProfile {
 
-    vwFB.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+        // vwFB.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+    [self setGradientColorOfFB];
     [lblFBTitle setHidden:NO];
 
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
@@ -556,7 +605,8 @@
     BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
     [self hideTwitterBtn:isTwitterUserLogin];
 
-    vwTwitter.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
+        // vwTwitter.frame = CGRectMake (0, 34, vwTwitter.frame.size.width, vwTwitter.frame.size.height-10);
+    [self setGradientColorOfTwitter];
     [lblTwitterTitle setHidden:NO];
 
     [Constant hideNetworkIndicator];
@@ -767,7 +817,9 @@
     BOOL isInstagramUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
     [self hideInstagramBtn:isInstagramUserLogin];
 
-    vwInstagram.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+        //vwInstagram.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+    [self setGradientColorOfInstagram];
+
     [lblInstagramTitle setHidden:NO];
 
     [Constant hideNetworkIndicator];
@@ -797,6 +849,46 @@
     if([segueIdentifier isEqualToString:@"tabbar1"]){
         vwController = [segue destinationViewController];
     }
+}
+
+#pragma mark - Instagram cell gradient
+/**************************************************************************************************
+ Function to set instagram cell gradient
+ **************************************************************************************************/
+
+- (void)setGradientColorOfInstagram {
+
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = vwInstagram.frame;
+    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:56/255.0f green:94/256.0f blue:135/256.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:61/255.0f green:124/255.0f blue:177/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:61/255.0f green:125/255.0f blue:178/255.0f alpha:1.0]CGColor], nil];
+    [vwInstagram.layer insertSublayer:gradient atIndex:0];
+}
+
+#pragma mark - Twitter cell gradient
+/**************************************************************************************************
+ Function to set twitter cell gradient
+ **************************************************************************************************/
+
+- (void)setGradientColorOfTwitter {
+
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = vwTwitter.frame;
+    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:70/255.0f green:144/256.0f blue:241/256.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:74/255.0f green:146/255.0f blue:244/255.0f alpha:1.0] CGColor], (id)[[UIColor colorWithRed:75/255.0f green:160/255.0f blue:245/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:80/255.0f green:172/255.0f blue:247/255.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:87/255.0f green:179/255.0f blue:249/255.0f alpha:1.0] CGColor], nil];
+    [vwTwitter.layer insertSublayer:gradient atIndex:0];
+}
+
+
+#pragma mark - FB cell gradient
+/**************************************************************************************************
+ Function to set fb cell gradient
+ **************************************************************************************************/
+
+- (void)setGradientColorOfFB {
+
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = vwFB.frame;
+    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:59/255.0f green:90/256.0f blue:153/256.0f alpha:1.0] CGColor],(id)[[UIColor colorWithRed:66/255.0f green:99/255.0f blue:159/255.0f alpha:1.0]CGColor] ,(id)[[UIColor colorWithRed:75/255.0f green:114/255.0f blue:195/255.0f alpha:1.0] CGColor], (id)[[UIColor colorWithRed:79/255.0f green:120/255.0f blue:204/255.0f alpha:1.0] CGColor], nil];
+    [vwFB.layer insertSublayer:gradient atIndex:0];
 }
 
 @end
