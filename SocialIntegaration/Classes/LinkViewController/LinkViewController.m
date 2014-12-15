@@ -7,8 +7,17 @@
 //
 
 #import "LinkViewController.h"
+#import "Constant.h"
+#import "ViewController.h"
+#import "Reachability.h"
+#import "UserProfile.h"
+#import "UserProfile+DatabaseHelper.h"
+#import <Social/Social.h>
 
-@interface LinkViewController ()
+@interface LinkViewController () <IGRequestDelegate, IGSessionDelegate> {
+
+    ViewController *vwController;
+}
 
 @end
 
@@ -26,16 +35,768 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    self.navigationController.navigationBarHidden = YES;
+
+    btnFb.hidden = YES;
+    btnInstagram.hidden = YES;
+    btnTwitter.hidden = YES;
+
+    [self userLoginOrNot];
+
+    if (IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
+        [self setFrameOfViewsForiPhone6And6plus];
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+
+    [super viewDidAppear:animated];
+
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+    self.navigationController.navigationBarHidden = YES;
+    btnFb.hidden = NO;
+    btnInstagram.hidden = NO;
+    btnTwitter.hidden = NO;
+
+}
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
+}
+
+
+- (void)setFrameOfViewsForiPhone6And6plus {
+
+    int yAxis;
+    int yAxisOfContent;
+    if (IS_IPHONE_6_IOS8) {
+        yAxis = 250;
+        yAxisOfContent = 30;
+    } else {
+        yAxis = 280;
+        yAxisOfContent = 55;
+    }
+    vwTwitter.frame = CGRectMake (0, yAxis, vwTwitter.frame.size.width, vwTwitter.frame.size.height-10);
+
+        //twitter
+    imgVwTwitter.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwTwitter.frame.origin.y+yAxisOfContent, 96, 96);
+    imgVwTwitterCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwTwitterCircle.frame.origin.y+yAxisOfContent, 100, 100);
+    btnTwitterAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnTwitterAdd.frame.origin.y+yAxisOfContent, btnTwitterAdd.frame.size.width, btnTwitterAdd.frame.size.height);
+    lblTwitterName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwTwitter.frame.origin.y + imgVwTwitter.frame.size.height + 5, lblTwitterName.frame.size.width, lblTwitterName.frame.size.height);
+    lblTwitterTitle.frame = CGRectMake(lblTwitterTitle.frame.origin.x, lblTwitterName.frame.origin.y + lblTwitterName.frame.size.height + 5, lblTwitterTitle.frame.size.width, lblTwitterTitle.frame.size.height);
+
+        //facebook
+    imgVwFB.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwFB.frame.origin.y, 96, 96);
+    imgVwFBCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwFBCircle.frame.origin.y, 100, 100);
+    btnFbAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnFbAdd.frame.origin.y+70, btnTwitterAdd.frame.size.width, btnTwitterAdd.frame.size.height);
+    lblFBName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwFB.frame.origin.y + imgVwFB.frame.size.height + 5, lblFBName.frame.size.width,lblFBName.frame.size.height);
+    lblFBTitle.frame = CGRectMake(lblFBTitle.frame.origin.x, lblFBName.frame.origin.y + lblFBName.frame.size.height + 5, lblFBTitle.frame.size.width, lblFBTitle.frame.size.height);
+
+    vwInstagram.frame = CGRectMake (0, vwInstagram.frame.origin.y-15, vwInstagram.frame.size.width, vwInstagram.frame.size.height+15);
+        //instagram
+    imgVwInstagram.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwInstagram.frame.origin.y-yAxisOfContent, 96, 96);
+    imgVwInstagramCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwInstagramCircle.frame.origin.y-yAxisOfContent, 100, 100);
+    btnInstagramAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnInstagramAdd.frame.origin.y, btnTwitterAdd.frame.size.width, btnTwitterAdd.frame.size.height);
+    lblInstagramName.frame = CGRectMake(lblInstagramName.frame.origin.x, imgVwInstagram.frame.origin.y + imgVwInstagram.frame.size.height +5, lblInstagramName.frame.size.width, lblInstagramName.frame.size.height);
+    lblInstagramTitle.frame = CGRectMake(lblInstagramTitle.frame.origin.x, lblInstagramName.frame.origin.y + lblInstagramName.frame.size.height + 5, lblInstagramTitle.frame.size.width, lblInstagramTitle.frame.size.height);
 }
 
 - (void)didReceiveMemoryWarning {
 
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+        // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBarHidden = YES;
+
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+
+    [super viewWillDisappear:animated];
+
+    btnFb.hidden = YES;
+    btnInstagram.hidden = YES;
+    btnTwitter.hidden = YES;
+        //self.navigationController.navigationBarHidden = YES;
+}
+
+#pragma mark - User Login or not
+
+- (void)userLoginOrNot {
+
+    BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+
+    if (isFbUserLogin == YES) {
+
+        if (![SLComposeViewController
+              isAvailableForServiceType:SLServiceTypeFacebook]) {
+
+                // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER_SETTING];
+            [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISFBLOGIN];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            [UserProfile deleteProfile:@"Facebook"];
+            [Constant hideNetworkIndicator];
+            return;
+        }
+        UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
+        [self setFBUserInfo:userProfile];
+    } else {
+
+        [self hideFBBtn:NO];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISFBLOGIN];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+    }
+
+        //twitter login
+    BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+
+    if (isTwitterUserLogin == YES) {
+
+        if (![SLComposeViewController
+              isAvailableForServiceType:SLServiceTypeTwitter]) {
+
+            [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER_SETTING];
+            [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISTWITTERLOGIN];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            [UserProfile deleteProfile:@"Twitter"];
+
+            [Constant hideNetworkIndicator];
+
+            return;
+        }
+        [self hideTwitterBtn:YES];
+        UserProfile *userProfile = [UserProfile getProfile:@"Twitter"];
+        [self setTwitterUserInfo:userProfile];
+    } else {
+
+        [self hideTwitterBtn:NO];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISTWITTERLOGIN];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+    }
+
+        //instagram
+    BOOL isInstagramUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
+
+    if (isInstagramUserLogin == YES) {
+
+        [self hideInstagramBtn:YES];
+        UserProfile *userProfile = [UserProfile getProfile:@"Instagram"];
+        [self setInstagramUserInfo:userProfile];
+    } else {
+
+        [self hideInstagramBtn:NO];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISINSTAGRAMLOGIN];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+    }
+}
+
+#pragma mark - Hide Twitter btn
+/**************************************************************************************************
+ Function to hide twitter btn
+ **************************************************************************************************/
+
+- (void)hideTwitterBtn:(BOOL)isLogin {
+
+    if (isLogin == YES) {
+
+        [btnTwitterAdd setHidden:YES];
+        [imgVwTwitter setHidden:NO];
+        [imgVwTwitterCircle setHidden:NO];
+        lblTwitterName.hidden = NO;
+    } else {
+
+        [btnTwitterAdd setHidden:NO];
+        [imgVwTwitter setHidden:YES];
+        [imgVwTwitterCircle setHidden:YES];
+        lblTwitterName.hidden = YES;
+    }
+}
+
+#pragma mark - Hide facebook btn
+/**************************************************************************************************
+ Function to hide facebook btn
+ **************************************************************************************************/
+
+- (void)hideFBBtn:(BOOL)isLogin {
+
+    if (isLogin == YES) {
+
+        [btnFbAdd setHidden:YES];
+        [imgVwFB setHidden:NO];
+        [imgVwFBCircle setHidden:NO];
+        lblFBName.hidden = NO;
+    } else {
+
+        [btnFbAdd setHidden:NO];
+        [imgVwFB setHidden:YES];
+        [imgVwFBCircle setHidden:YES];
+        lblFBName.hidden = YES;
+    }
+}
+
+#pragma mark - Hide instagram btn
+/**************************************************************************************************
+ Function to hide instagram btn
+ **************************************************************************************************/
+
+- (void)hideInstagramBtn:(BOOL)isLogin {
+
+    if (isLogin == YES) {
+
+        [btnInstagramAdd setHidden:YES];
+        [imgVwInstagram setHidden:NO];
+        [imgVwInstagramCircle setHidden:NO];
+        lblInstagramName.hidden = NO;
+    } else {
+
+        [btnInstagramAdd setHidden:NO];
+        [imgVwInstagram setHidden:YES];
+        [imgVwInstagramCircle setHidden:YES];
+        lblInstagramName.hidden = YES;
+    }
 }
 
 
+#pragma mark - Facebook btn tapped
+/**************************************************************************************************
+ Function to facebook btn tapped
+ **************************************************************************************************/
 
+- (IBAction)facebookBtnTapped:(id)sender {
+
+    /* [self.view addSubview:sharedAppDelegate.spinner];
+     [self.view bringSubviewToFront:sharedAppDelegate.spinner];
+     [sharedAppDelegate.spinner show:YES];*/
+
+    [Constant showNetworkIndicator];
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        [Constant hideNetworkIndicator];
+
+        return;
+    }
+
+    if (![SLComposeViewController
+          isAvailableForServiceType:SLServiceTypeFacebook]) {
+
+        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB_SETTING];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISFBLOGIN];
+        [Constant hideNetworkIndicator];
+
+        return;
+    } else {
+
+        if (FBSession.activeSession.state == FBSessionStateOpen ||
+            FBSession.activeSession.state == FBSessionStateOpenTokenExtended) {
+
+            sharedAppDelegate.fbSession = FBSession.activeSession;
+            sharedAppDelegate.hasFacebook = YES;
+        }
+    }
+    [self getProfileOfFB];
+}
+
+#pragma mark - Login with facebook
+/**************************************************************************************************
+ Function to login on facebook
+ **************************************************************************************************/
+
+- (void)loginFacebook {
+
+    [FBSession openActiveSessionWithReadPermissions:@[ @"basic_info",  @"read_stream"]  allowLoginUI:YES
+                                  completionHandler:^(FBSession *session,
+                                                      FBSessionState state,
+                                                      NSError *error) {
+                                      if (error) {
+
+                                          sharedAppDelegate.hasFacebook = NO;
+                                          [Constant hideNetworkIndicator];
+                                      } else {
+
+                                          sharedAppDelegate.fbSession = session;
+                                          sharedAppDelegate.hasFacebook = YES;
+
+                                          [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISFBLOGIN];
+                                          [[NSUserDefaults standardUserDefaults]synchronize];
+
+                                          [self getProfileOfFB];
+                                      }
+                                  }];
+}
+
+#pragma mark - Get user facebook profile info
+/**************************************************************************************************
+ Function to get user facebook profile info
+ **************************************************************************************************/
+
+- (void)getProfileOfFB {
+
+    if (!sharedAppDelegate.hasFacebook) {
+        [self loginFacebook];
+        return;
+    }
+
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"access_token"] = sharedAppDelegate.fbSession.accessTokenData;
+
+    FBRequest *request = [FBRequest requestForGraphPath:@"me"];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (error) {
+
+                //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+            [Constant hideNetworkIndicator];
+        } else {
+
+            NSDictionary *dictInfo = (NSDictionary *)result;
+            [self getProfileImg:dictInfo];
+        }
+    }];
+}
+
+#pragma mark - Get profile image
+/**************************************************************************************************
+ Function to get  profile image
+ **************************************************************************************************/
+
+- (void)getProfileImg:(NSDictionary *)userInfo {
+
+    FBRequest *request = [FBRequest requestForGraphPath:@"me?fields=picture"];
+
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (error) {
+                // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+        } else {
+
+            NSDictionary *dictInfo = (NSDictionary *)result;
+            NSString *strProfileImg = [[[dictInfo objectForKey:@"picture"] objectForKey:@"data"]objectForKey:@"url"];
+            [self convertFBUserInfoInModel:userInfo withProfileImg:strProfileImg];
+        }
+    }];
+}
+
+#pragma mark - Convert profile into model class object
+/**************************************************************************************************
+ Function to convert profile into model class object
+ **************************************************************************************************/
+
+- (void)convertFBUserInfoInModel:(NSDictionary *)dictInfo withProfileImg:(NSString *)strProfileImg {
+
+    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISFBLOGIN];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+
+    UserProfile *userProfile = [[UserProfile alloc]init];
+    userProfile.userName = [dictInfo objectForKey:@"name"];
+    userProfile.userImg = strProfileImg;
+    userProfile.userId = [dictInfo objectForKey:@"id"];
+    userProfile.type = @"Facebook";
+
+    [self setFBUserInfo:userProfile];
+    [userProfile saveUserProfile];
+}
+
+#pragma mark - Show user profile info
+/**************************************************************************************************
+ Function to convert profile into model class object
+ **************************************************************************************************/
+
+- (void)setFBUserInfo:(UserProfile*)userProfile {
+
+    vwFB.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+    [lblFBTitle setHidden:NO];
+
+    BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    [self hideFBBtn:isFbUserLogin];
+
+    [Constant hideNetworkIndicator];
+
+    lblFBName.text = userProfile.userName;
+
+    dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(postImageQueue, ^{
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            UIImage *img = [UIImage imageWithData:image];
+            UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"mask_Link.png"]];
+            imgVwFB.image = imgProfile;
+        });
+    });
+}
+
+#pragma mark - Twitter btn tapped
+/**************************************************************************************************
+ Function to twitter btn tapped
+ **************************************************************************************************/
+
+- (IBAction)twitterBtnTapped:(id)sender {
+
+    [Constant showNetworkIndicator];
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        [Constant hideNetworkIndicator];
+        return;
+    }
+
+    if (![SLComposeViewController
+          isAvailableForServiceType:SLServiceTypeTwitter]) {
+
+        [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_TWITTER_SETTING];
+        [[NSUserDefaults standardUserDefaults]removeObjectForKey:ISTWITTERLOGIN];
+        [Constant hideNetworkIndicator];
+        return;
+    } else {
+
+        ACAccountStore *account = [[ACAccountStore alloc] init];
+        ACAccountType *accountType = [account
+                                      accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+
+        [account requestAccessToAccountsWithType:accountType
+                                         options:nil completion:^(BOOL granted, NSError *error)
+         {
+           if (granted == YES) {
+               NSArray *arrayOfAccounts = [account
+                                           accountsWithAccountType:accountType];
+
+               if ([arrayOfAccounts count] > 0)
+                 {
+                   sharedAppDelegate.twitterAccount = [arrayOfAccounts lastObject];
+
+                   NSURL *requestURL = [NSURL URLWithString:TWITTER_USER_PROFILE];
+                   SLRequest *timelineRequest = [SLRequest
+                                                 requestForServiceType:SLServiceTypeTwitter
+                                                 requestMethod:SLRequestMethodGET
+                                                 URL:requestURL parameters:nil];
+
+                   timelineRequest.account = sharedAppDelegate.twitterAccount;
+
+                   [timelineRequest performRequestWithHandler:
+                    ^(NSData *responseData, NSHTTPURLResponse
+                      *urlResponse, NSError *error) {
+
+                        if (error) {
+
+                                //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
+                            return ;
+                        } else {
+
+                            NSArray *arryTwitte = [NSJSONSerialization
+                                                   JSONObjectWithData:responseData
+                                                   options:NSJSONReadingMutableLeaves
+                                                   error:&error];
+
+                            if (arryTwitte.count != 0) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+
+                                    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISTWITTERLOGIN];
+                                    [[NSUserDefaults standardUserDefaults]synchronize];
+
+                                    NSDictionary *dictInfo = (NSDictionary *)arryTwitte;
+                                    [self convertTwitterProfileInfo:dictInfo];
+                                });
+                            }
+                        }
+                    }];
+                 }
+           } else {
+
+                   // [Constant showAlert:ERROR_CONNECTING forMessage:ERROR_AUTHEN];
+           }
+         }];
+    }
+}
+
+#pragma mark - Twitter btn tapped
+/**************************************************************************************************
+ Function to twitter btn tapped
+ **************************************************************************************************/
+
+- (void)convertTwitterProfileInfo:(NSDictionary *)dictData {
+
+    UserProfile *userProfile = [[UserProfile alloc]init];
+    userProfile.userName = [dictData valueForKey:@"screen_name"];
+    userProfile.userImg = [dictData valueForKey:@"profile_image_url"];
+    userProfile.following = [NSString stringWithFormat:@"%li", (long)[[dictData valueForKey:@"friends_count"] integerValue]];
+    userProfile.tweet = [NSString stringWithFormat:@"%li",(long)[[dictData valueForKey:@"statuses_count"] integerValue]];
+    userProfile.followers = [NSString stringWithFormat:@"%li",(long)[[dictData valueForKey:@"followers_count"]integerValue]];
+    userProfile.type = @"Twitter";
+    userProfile.userId  =  [NSString stringWithFormat:@"%lf",[[[dictData valueForKey:@"status"]valueForKey:@"id"] doubleValue]];
+
+    [self setTwitterUserInfo:userProfile];
+    [userProfile saveUserProfile];
+}
+
+#pragma mark - Set twitter user info
+/**************************************************************************************************
+ Function to set twitter user info
+ **************************************************************************************************/
+
+- (void)setTwitterUserInfo:(UserProfile*)userProfile {
+
+    BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
+    [self hideTwitterBtn:isTwitterUserLogin];
+
+    vwTwitter.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
+    [lblTwitterTitle setHidden:NO];
+
+    [Constant hideNetworkIndicator];
+
+    lblTwitterName.text = userProfile.userName;
+
+    dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(postImageQueue, ^{
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            UIImage *img = [UIImage imageWithData:image];
+            UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"mask_Link.png"]];
+            imgVwTwitter.image = imgProfile;
+        });
+    });
+}
+
+#pragma amrk - Instagram btn tapped
+/**************************************************************************************************
+ Function to instagram btn tapped
+ **************************************************************************************************/
+
+- (IBAction)instagramBtnTapped:(id)sender {
+
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+
+    [Constant showNetworkIndicator];
+
+        // here i can set accessToken received on previous login
+    sharedAppDelegate.instagram.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
+    sharedAppDelegate.instagram.sessionDelegate = self;
+    NSLog(@"%@",  sharedAppDelegate.InstagramId);
+    if ([sharedAppDelegate.instagram isSessionValid]) {
+
+        if (sharedAppDelegate.InstagramId.length == 0) {
+
+                // api.instagram.com/v1/users/self?
+            NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"users/self", @"method", nil]; //fetch feed
+            [sharedAppDelegate.instagram requestWithParams:params
+                                                  delegate:self];
+            return;
+        }
+
+            //        NSString *strInstagrameUserId = [NSString stringWithFormat:@"users/%@",sharedAppDelegate.InstagramId];
+            //        NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strInstagrameUserId, @"method", nil]; //fetch feed
+            //        [sharedAppDelegate.instagram requestWithParams:params
+            //                                                  delegate:self];
+            //        return;
+    } else {
+
+        [Constant hideNetworkIndicator];
+        UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
+        [alertVw show];
+    }
+}
+
+#pragma mark - UIAlert View Delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+
+    if (buttonIndex == 0) {
+        [sharedAppDelegate.instagram authorize:[NSArray arrayWithObjects:@"comments", @"likes", nil]];
+    }
+}
+
+#pragma mark - Login
+
+- (void)login {
+
+    [sharedAppDelegate.instagram authorize:[NSArray arrayWithObjects:@"comments", @"likes", nil]];
+}
+
+#pragma - IGSessionDelegate
+
+- (void)igDidLogin {
+
+    NSLog(@"Instagram did login");
+        // here i can store accessToken
+    [[NSUserDefaults standardUserDefaults] setObject:sharedAppDelegate.instagram.accessToken forKey:@"accessToken"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    [self instagramBtnTapped:nil];
+}
+
+- (void)igDidNotLogin:(BOOL)cancelled {
+
+    NSLog(@"Instagram did not login");
+    NSString* message = nil;
+    if (cancelled) {
+        message = @"Access cancelled!";
+    } else {
+        message = @"Access denied!";
+    }
+    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:message
+                                                       delegate:nil
+                                              cancelButtonTitle:@"Ok"
+                                              otherButtonTitles:nil];
+    [alertView show];
+}
+
+- (void)igDidLogout {
+
+    NSLog(@"Instagram did logout");
+        // remove the accessToken
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"accessToken"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)igSessionInvalidated {
+
+    NSLog(@"Instagram session was invalidated");
+}
+
+#pragma mark - IGRequestDelegate
+
+- (void)request:(IGRequest *)request didFailWithError:(NSError *)error {
+
+    NSLog(@"Instagram did fail: %@", error);
+    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:[error localizedDescription]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"Ok"
+                                              otherButtonTitles:nil];
+    [alertView show];
+}
+
+- (void)request:(IGRequest *)request didLoad:(id)result {
+
+        //    if (sharedAppDelegate.InstagramId.length == 0) {
+        //    NSArray *arry = [result objectForKey:@"data"];
+        //    if (arry.count == 0) {
+        //
+        //        [sharedAppDelegate.spinner hide:YES];
+        //        return;
+        //    }
+        //    NSString *strInstagrameId = [NSString stringWithFormat:@"%@", [[[[arry objectAtIndex:0] valueForKey:@"caption"]valueForKey:@"from"]valueForKey:@"id"]];
+        //    sharedAppDelegate.InstagramId = strInstagrameId;
+        //    NSString *strInstagrameUserId = [NSString stringWithFormat:@"users/%@",sharedAppDelegate.InstagramId];
+        //    NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:strInstagrameUserId, @"method", nil]; //fetch feed
+        //    [sharedAppDelegate.instagram requestWithParams:params
+        //                                          delegate:self];
+        //    }
+        //
+        //    NSLog(@"Instagram did load: %@", result);
+    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISINSTAGRAMLOGIN];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+
+    [self convertInstagramProfileData:[result objectForKey:@"data"]];
+}
+
+#pragma mark - Convert profile Info of instagram
+/**************************************************************************************************
+ Function to convert profile Info of instagram
+ **************************************************************************************************/
+
+- (void)convertInstagramProfileData:(NSDictionary *)dictInfo {
+
+    UserProfile *userProfile = [[UserProfile alloc]init];
+
+    if ([dictInfo isKindOfClass: [NSDictionary class]]) {
+
+        NSDictionary *dictCounts = [dictInfo objectForKey:@"counts"];
+        userProfile.followers = [NSString stringWithFormat:@"%li",(long)[[dictCounts valueForKey:@"followed_by"] integerValue]];
+        userProfile.following = [NSString stringWithFormat:@"%li",(long)[[dictCounts valueForKey:@"follows"]integerValue]];
+        userProfile.post = [NSString stringWithFormat:@"%li",(long)[[dictCounts valueForKey:@"media"] integerValue]];
+        userProfile.userId = [NSString stringWithFormat:@"%li",(long)[[dictInfo valueForKey:@"id"] integerValue]];
+        userProfile.userImg = [dictInfo valueForKey:@"profile_picture"];
+        userProfile.userName = [dictInfo valueForKey:@"username"];
+        userProfile.type = @"Instagram";
+        [[NSUserDefaults standardUserDefaults]setValue:userProfile.userId forKey:@"InstagramId"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+
+        sharedAppDelegate.InstagramId = userProfile.userId;
+
+        [self setInstagramUserInfo:userProfile];
+        [userProfile saveUserProfile];
+    }
+}
+
+#pragma mark - Back btn tapped
+/**************************************************************************************************
+ Function to back btn tapped
+ **************************************************************************************************/
+
+- (IBAction)backBtnTapped:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark - Set instagram user info
+/**************************************************************************************************
+ Function to set instagram user info
+ **************************************************************************************************/
+
+- (void)setInstagramUserInfo:(UserProfile*)userProfile {
+
+    BOOL isInstagramUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
+    [self hideInstagramBtn:isInstagramUserLogin];
+
+    vwInstagram.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+    [lblInstagramTitle setHidden:NO];
+
+    [Constant hideNetworkIndicator];
+    lblInstagramName.text = userProfile.userName;
+
+    dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(postImageQueue, ^{
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            UIImage *img = [UIImage imageWithData:image];
+            UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"mask_Link.png"]];
+            imgVwInstagram.image = imgProfile;
+        });
+    });
+}
+
+- (IBAction)doneBtnTapped:(id)sender{
+
+    [self performSegueWithIdentifier:@"tabbar1" sender:nil];
+}
+ 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+
+    NSString * segueIdentifier = [segue identifier];
+    if([segueIdentifier isEqualToString:@"tabbar1"]){
+        vwController = [segue destinationViewController];
+    }
+}
 
 @end

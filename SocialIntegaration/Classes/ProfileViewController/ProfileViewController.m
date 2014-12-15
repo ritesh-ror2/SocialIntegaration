@@ -59,6 +59,12 @@
     self.lblUserFrdList.hidden = NO;
     self.imgVwProfileImg.hidden = NO;
 
+    if (!IS_IPHONE5) {
+
+        self.btnRequest.hidden = YES;
+        self.btnEdit.frame = self.btnRequest.frame;
+    }
+    
     if(IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
 
             // [self.lblUserName setFont:[UIFont fontWithMediumWithSize:15]];

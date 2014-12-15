@@ -124,6 +124,7 @@
 
     tbleVwComment.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
+    [self addUserImgAtLeftSide];
     [self getLikeCountOfFb];
 }
 
@@ -135,6 +136,29 @@
 
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)addUserImgAtLeftSide {
+
+    UserProfile *userProfile1 = [UserProfile getProfile:@"Facebook"];
+
+    if (userProfile1 != nil) {
+
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile1.userImg]];
+        UIImage *img = [UIImage imageWithData:image];
+        UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"list-mask.png"]];
+        UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
+        imgVwProile.frame = CGRectMake(8, 22, 35, 35);
+        [imgVwNavigation addSubview:imgVwProile];
+        [imgVwNavigation bringSubviewToFront:imgVwProile];
+        return;
+    }
+    UIImage *imgProfile = [Constant maskImage:[UIImage imageNamed: @"user-selected.png"] withMask:[UIImage imageNamed:@"list-mask.png"]];
+    UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
+    imgVwProile.frame = CGRectMake(8, 25, 35, 35);
+
+    [imgVwNavigation addSubview:imgVwProile];
+    [imgVwNavigation bringSubviewToFront:imgVwProile];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -177,14 +201,13 @@
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
     } else if ([self.userInfo.userSocialType isEqualToString:@"Instagram"]) {
 
-        [btnRight setTitle:@"Post" forState:UIControlStateNormal];
+        [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateNormal];
         lblHeading.text = @"Instagram";
-        strBtnTitle = @"Post";
 
         [self setCommentOfpostDetail:self.userInfo];
         [self fetchInstagrameComment];
         [self instagramConfiguration];
-        imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+        imgVwNavigation.backgroundColor = [UIColor colorWithRed:36/256.0f green:84/256.0f blue:130/256.0f alpha:1.0];
     } else {
 
         [btnRight setTitle:@"Tweet" forState:UIControlStateNormal];
@@ -254,9 +277,10 @@
         if(self.arryComment.count == 0) {
 
             [Constant hideNetworkIndicator];
-            scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height);
+            scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height+50);
             return;
         } else {
+                //scrollVwShowComment.contentSize = CGSizeMake(320, imgVwBackground.frame.size.height+235);
             [Constant hideNetworkIndicator];
             [tbleVwComment reloadData];
         }
@@ -493,6 +517,7 @@
         imgVwBackground.frame = CGRectMake(0, 0, self.view.frame.size.width, heightPostImg + lblComment.frame.origin.y + [Constant heightOfCellInTableVw] + 45 + taggedUser);
             //imgVwBackground.backgroundColor = [UIColor redColor];
     } else {
+
 
         [self setFrameOfActivityView:lblComment.frame.size.height + lblComment.frame.origin.y + 10];
         int taggedUser =  [self setFramesOfTaggedUsers:lblComment.frame.size.height + lblComment.frame.origin.y + 40];
@@ -1638,6 +1663,8 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     GiveCommentViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"givecomment"];
     viewController.userInfo = self.userInfo;
+    viewController.imgPostImg = imgVwLagrePostImage.image;
+    viewController.strPostUserProfileUrl = self.postUserImg;
     [[self navigationController] pushViewController:viewController animated:YES];
 }
 

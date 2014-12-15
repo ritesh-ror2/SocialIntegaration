@@ -50,7 +50,7 @@
     [self.tbleVwActivity setAlpha:0];
     self.tbleVwActivity.hidden = YES;
 
-    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 100)/2, 70, 70)];
+    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 70)/2, 70, 70)];
     [self.view addSubview:self.loadingView];
     [self.view bringSubviewToFront:self.loadingView];
     self.loadingView.hidden = YES;

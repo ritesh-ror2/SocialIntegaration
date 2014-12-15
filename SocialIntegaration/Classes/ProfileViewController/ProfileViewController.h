@@ -28,6 +28,9 @@
 
 @property (nonatomic)NSUInteger index;
 
+@property (nonatomic, strong) IBOutlet UIButton *btnRequest;
+@property (nonatomic, strong) IBOutlet UIButton *btnEdit;
+
 @property (nonatomic, strong) UINavigationController *navController;
 
 @end

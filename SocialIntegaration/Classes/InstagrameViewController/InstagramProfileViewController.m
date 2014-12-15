@@ -60,7 +60,12 @@
         [self.lblUserPost setFont:[UIFont fontWithRegularWithSize:14]];*/
     }
 
+    if (!IS_IPHONE5) {
 
+        self.btnFollowing.hidden = YES;
+        self.btnEdit.frame = self.btnFollowing.frame;
+    }
+    
     heightOfRowImg = [Constant heightOfCellInTableVw];
     widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }

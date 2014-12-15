@@ -17,9 +17,23 @@
     IBOutlet UILabel *lblNavHeading;
     IBOutlet UINavigationBar *navBar;
     IBOutlet UIButton *btnPost;
+    IBOutlet UIButton *btnShowImageOrVideo;
+
+    IBOutlet UIView *vwOfComment;
+    IBOutlet UIImageView *imgVwPostUser;
+    IBOutlet UILabel *lblComment;
+    IBOutlet UIImageView *imgVwLagrePostImage;
+    IBOutlet UIImageView *asyVwOfPost;
+    IBOutlet UIImageView * imgVwBackground;
+    IBOutlet UILabel *lblName;
+
+
+    IBOutlet UIScrollView *scrollVwShowComment;
 }
 
 @property (nonatomic, strong) UserInfo *userInfo;
+@property (nonatomic, strong) NSString *strPostUserProfileUrl;
+@property (nonatomic, strong) UIImage *imgPostImg;
 @property (nonatomic, strong) IBOutlet UITextView *txtVwGiveComment;
 
 

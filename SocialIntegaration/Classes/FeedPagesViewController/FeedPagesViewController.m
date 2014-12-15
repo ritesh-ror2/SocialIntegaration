@@ -29,6 +29,7 @@
 
     [super viewDidLoad];
 
+    self.navigationController.navigationBar.hidden = YES;
     // Create page view controller
     self.pageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FeedPageView"];
     self.pageViewController.dataSource = self;

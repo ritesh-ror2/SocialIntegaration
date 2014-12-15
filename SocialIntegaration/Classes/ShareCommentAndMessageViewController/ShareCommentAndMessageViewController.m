@@ -98,7 +98,6 @@
     self.txtVwTwitter.frame = CGRectMake(69, 77, [Constant widthOfCommentLblOfTimelineAndProfile] - 10, 131);
     lblTwitterHeading.frame = CGRectMake((self.view.frame.size.width - 150)/2, 28, 150, 21);
     btnTwitterPost.frame = CGRectMake((self.view.frame.size.width - 70), 20, 54, 44);
-
 }
 
 #pragma mark - Keyboard notification
@@ -411,7 +410,7 @@
 
     NSData *data = UIImagePNGRepresentation(imgSelected);
     SLRequest *postRequest = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:urlPostImage parameters:paramater];
-    [postRequest addMultipartData:data withName:@"media[]" type:nil filename:nil];
+    [postRequest addMultipartData:data withName:@"media[]" type:@"image/png" filename:nil];
     [postRequest setAccount:sharedAppDelegate.twitterAccount]; // or  postRequest.account = twitterAccount;
 
     [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {

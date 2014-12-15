@@ -42,7 +42,8 @@
     btnFb.hidden = YES;
     btnInstagram.hidden = YES;
     btnTwitter.hidden = YES;
-
+    sharedAppDelegate.isFirstTimeLaunch = NO;
+    
     [self userLoginOrNot];
 
     if (IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {

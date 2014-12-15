@@ -20,6 +20,7 @@
     IBOutlet UIImageView *asyVwOfPost;
     IBOutlet UIImageView *imgVwNavigation;
     IBOutlet UIImageView * imgVwBackground;
+    IBOutlet UIImageView *imgVwUserProfileImg;
     IBOutlet UILabel *lblName;
 
     IBOutlet UIButton *btnRight;

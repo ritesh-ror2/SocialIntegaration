@@ -8,10 +8,16 @@
 
 #import "HomePageViewController.h"
 #import "ViewController.h"
+#import "LoginViewController.h"
+#import "SignUpViewController.h"
 
 @interface HomePageViewController () {
 
     ViewController* vc;
+    LoginViewController *vwController;
+    SignUpViewController *vwControllerSignUp;
+
+    NSString*strSignUp;
 }
 
 @end
@@ -45,16 +51,28 @@
 
 - (IBAction)loginBtnTapped:(id)sender {
 
-    [self performSegueWithIdentifier:@"Tabbar" sender:sender];
+    [self performSegueWithIdentifier:@"loginuser" sender:sender];
+
+  /*  UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LoginViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"loginuser"];
+    [self.navigationController pushViewController:vwController animated:YES];*/
+
+        // [self performSegueWithIdentifier:@"Tabbar" sender:sender];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 
     NSString * segueIdentifier = [segue identifier];
-    if([segueIdentifier isEqualToString:@"Tabbar"]){
-
-         vc = [segue destinationViewController];
+    if([segueIdentifier isEqualToString:@"loginuser"]){
+         vwController = [segue destinationViewController];
+    } else if ([segueIdentifier isEqualToString:@"signup"]){
+        vwControllerSignUp = [segue destinationViewController];
     }
+}
+
+- (IBAction)signUpBtnTapped:(id)sender {
+
+    [self performSegueWithIdentifier:@"signup" sender:sender];
 }
 
 @end

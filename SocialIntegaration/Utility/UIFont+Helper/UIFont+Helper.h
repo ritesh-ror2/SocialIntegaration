@@ -14,4 +14,5 @@
 
 + (UIFont *)fontWithRegularWithSize:(CGFloat)fontSize;
 
++ (UIFont *)fontWithLightWithSize:(CGFloat)fontSize;
 @end

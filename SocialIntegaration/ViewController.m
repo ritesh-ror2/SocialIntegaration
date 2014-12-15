@@ -58,6 +58,7 @@ BOOL hasTwitter = NO;
 
     [super viewDidLoad];
 
+    self.navigationController.navigationBar.hidden = YES;
     //right button
     UIBarButtonItem *barBtnEdit = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(composeMessage:)];
     self.navItem.rightBarButtonItem = barBtnEdit;
@@ -71,7 +72,7 @@ BOOL hasTwitter = NO;
     UIBarButtonItem *barBtnProfile = [[UIBarButtonItem alloc]initWithCustomView:[self addUserImgAtLeftSide]];
    self.navItem.leftBarButtonItem = barBtnProfile;
 
-    self.navController.navigationBar.translucent = NO;
+    self.navController.navigationBar.translucent = YES;// NO;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appIsInForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
@@ -79,7 +80,13 @@ BOOL hasTwitter = NO;
 
      NSLog(@"%f", self.view.frame.size.height);
     //animated loading view
-    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 180)/2, 70, 70)];
+    int yAxisOfLoader;
+    if (IS_IPHONE5) {
+        yAxisOfLoader = 142;
+    } else {
+        yAxisOfLoader = 150;
+    }
+    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - yAxisOfLoader)/2, 70, 70)];
     [self.view addSubview:self.loadingView];
     [self.view bringSubviewToFront:self.loadingView];
     self.loadingView.hidden = YES;
@@ -100,7 +107,7 @@ BOOL hasTwitter = NO;
     [super viewWillAppear:animated];
 
     self.navigationController.navigationBar.translucent = NO;
-
+    self.navigationController.navigationBar.hidden = YES;
     [self.arrySelectedIndex removeAllObjects];
     [self.arryTappedCell removeAllObjects];
     [self.tbleVwPostList reloadData];
@@ -147,6 +154,7 @@ BOOL hasTwitter = NO;
 
     [super viewDidAppear:animated];
 
+    self.navigationController.navigationBar.hidden = YES;
     if (sharedAppDelegate.isFirstTimeLaunch == YES) {
 
         self.navController.navigationBar.translucent = YES;
@@ -154,6 +162,8 @@ BOOL hasTwitter = NO;
         self.tbleVwPostList.alpha = 0.0;
         sharedAppDelegate.isFirstTimeLaunch = NO;
         [self performSelector:@selector(animationOfTimeline) withObject:nil afterDelay:0.0]; // animate
+    } else {
+        self.navigationController.navigationBar.hidden = NO;
     }
 
     [self appIsInForeground:nil];
@@ -250,11 +260,6 @@ BOOL hasTwitter = NO;
 - (void)animationOfTimeline {
 
     [self animationOfNavsarAndTabbar];
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:3.0];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    [self.imgVwBackground setAlpha:0];
-    [UIView commitAnimations];
 }
 
 - (void)showAnimationOfFeedTableView {
@@ -318,7 +323,7 @@ BOOL hasTwitter = NO;
             self.navController.navigationBar.hidden = NO;
 
         } completion:^(BOOL finished) {
-            self.navController.navigationBar.translucent = NO;
+            self.navController.navigationBar.translucent = YES;//NO;
 
             if (sharedAppDelegate.arryOfAllFeeds.count == 0) {
                     //[Constant hideNetworkIndicator];
@@ -1060,6 +1065,13 @@ Delegate to increase cell height when cell is tapped
         [Constant hideNetworkIndicator];
 
         if (isShowLoading == YES) {
+
+            [UIView beginAnimations:nil context:NULL];
+            [UIView setAnimationDuration:1.5];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [self.imgVwBackground setAlpha:0];
+            [UIView commitAnimations];
+
             [self.loadingView stopAnimation];
             [self.loadingView setHidden:YES];
         }
@@ -1087,12 +1099,20 @@ Delegate to increase cell height when cell is tapped
     }
 
     [self.tbleVwPostList reloadData];
+    [self performSelector:@selector(setTranslucentOfNavigationBar) withObject:nil afterDelay:1.0];
     if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
         [self showAnimationOfFeedTableView];
     } else {
         [self.tbleVwPostList setHidden:YES];
     }
 }
+
+- (void)setTranslucentOfNavigationBar {
+
+    self.navController.navigationBar.translucent = NO;
+
+}
+
 
 #pragma mark - Get more data of Fb news feed
 /**************************************************************************************************

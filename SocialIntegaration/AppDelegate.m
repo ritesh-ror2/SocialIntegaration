@@ -33,6 +33,22 @@
     self.arryOfInstagrame = [[NSMutableArray alloc]init];
     self.arryOfAllFeeds = [[NSMutableArray alloc]init];
 
+    BOOL isInstalled = [[NSUserDefaults standardUserDefaults]boolForKey:@"IsInstalled"];
+
+        // if(isInstalled == NO) {
+
+       /* UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        self.vwControllerWelcome = [storyboard instantiateViewControllerWithIdentifier:@"WelcomeViewController"];
+
+        self.window.rootViewController = self.vwControllerWelcome;
+        [[NSUserDefaults standardUserDefaults]setBool:@"YES" forKey:@"IsInstalled"];*/
+
+//    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
+//    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
+//    self.vwControllerWelcome = (WelcomeViewController*)[mainStoryboard instantiateViewControllerWithIdentifier: @"WelcomeViewController"];
+//    [navigationController pushViewController:self.vwControllerWelcome animated:NO];
+        // }
+
     return YES;
 }
 							

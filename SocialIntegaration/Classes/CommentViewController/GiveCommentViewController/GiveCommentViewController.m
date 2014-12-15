@@ -11,6 +11,7 @@
 #import "UserProfile.h"
 #import "UserProfile+DatabaseHelper.h"
 #import <Social/Social.h>
+#import "UIImageView+WebCache.h"
 #import <FacebookSDK/FacebookSDK.h>
 
 @interface GiveCommentViewController () <IGRequestDelegate, IGRequestDelegate> {
@@ -52,7 +53,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 
+    navBar.frame = CGRectMake(0, self.view.frame.size.height, navBar.frame.size.width, navBar.frame.size.height);
+
     self.txtVwGiveComment.delegate  = self;
+    [self setCommentOfpostDetail:self.userInfo];
+    [self setProfilePicOfPostUser:self.userInfo];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -80,6 +85,7 @@
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
 
+    scrollVwShowComment.contentOffset = CGPointMake(0, scrollVwShowComment.contentSize.height - (kbSize.height+44));
     if (IS_IOS8) {
         navBar.frame = CGRectMake(0, self.view.frame.size.height - (kbSize.height+44), navBar.frame.size.width, navBar.frame.size.height);
     } else {
@@ -91,6 +97,119 @@
 
     navBar.frame = CGRectMake(0, self.view.frame.size.height ,navBar.frame.size.width, navBar.frame.size.height);
     navBar.hidden = YES;
+    scrollVwShowComment.contentOffset = CGPointMake(0, 0);
+
+}
+
+
+- (void)setCommentOfpostDetail:(UserInfo *)objUserInfo {
+
+    NSString *string = objUserInfo.strUserPost;
+
+    int widthOfComment;
+    if (IS_IPHONE_6_IOS8) {
+        widthOfComment = [Constant widthOfCommentLblOfTimelineAndProfile] + 50;
+    } else if (IS_IPHONE_6P_IOS8) {
+        widthOfComment = iPhone6_Plus_lbl_width + 80;
+    } else {
+        widthOfComment = iPhone5_lbl_width - 10;
+    }
+
+    CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfComment, 400)
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                       context:nil];
+
+    lblComment.frame = CGRectMake(70, 25, widthOfComment, rect.size.height+10);
+    lblComment.text = objUserInfo.strUserPost;
+    lblName.text = objUserInfo.userName;
+
+    asyVwOfPost.hidden = YES;
+    btnShowImageOrVideo.hidden = YES;
+
+    int heightPostComment;
+    if (rect.size.height < 30){
+        heightPostComment = 30;
+    } else {
+        heightPostComment = rect.size.height+10;
+    }
+
+    if (objUserInfo.postImg.length != 0) {
+
+        asyVwOfPost.hidden = NO;
+        asyVwOfPost.frame = CGRectMake(0, heightPostComment + lblComment.frame.origin.y + 3, [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
+       if (![self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
+               // asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
+           [asyVwOfPost sd_setImageWithURL:[NSURL URLWithString:objUserInfo.postImg] placeholderImage:nil];
+           asyVwOfPost.backgroundColor = [UIColor clearColor];
+       } else {
+           imgVwLagrePostImage.frame = CGRectMake(0, heightPostComment + lblComment.frame.origin.y + 3,  [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
+           imgVwLagrePostImage.image = self.imgPostImg;
+       }
+
+        if ([self.userInfo.type isEqualToString:@"video"]) {
+            [asyVwOfPost sd_setImageWithURL:[NSURL URLWithString:objUserInfo.postImg] placeholderImage:nil];
+        }
+        btnShowImageOrVideo.frame = asyVwOfPost.frame;
+        imgVwBackground.frame = CGRectMake(0, 0, self.view.frame.size.width, heightPostComment + lblComment.frame.origin.y + [Constant heightOfCellInTableVw] + 15);
+    } else {
+
+        imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, heightPostComment + (lblComment.frame.origin.y + 45));
+    }
+
+        // imgVwBackground.backgroundColor = [UIColor lightGrayColor];
+
+    scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + 235));
+
+    NSLog(@"** %f", vwOfComment.frame.size.height);
+
+    if ([objUserInfo.type isEqualToString:@"video"]) {
+
+        btnShowImageOrVideo.hidden = NO;
+        [btnShowImageOrVideo setImage:[UIImage imageNamed:@"play-btn.png"] forState:UIControlStateNormal];
+        [self.view bringSubviewToFront:btnShowImageOrVideo];
+    }
+
+    imgVwProfile.frame = CGRectMake(10, imgVwBackground.frame.size.height+5, 45, 45);
+    self.txtVwGiveComment.frame = CGRectMake(80, imgVwBackground.frame.size.height, self.view.frame.size.width - 90, 150);
+    lblHeading.frame = CGRectMake(85, imgVwBackground.frame.size.height+5, 250, 21);
+}
+
+
+#pragma mark - Profile pic of post user
+/**************************************************************************************************
+ Function to set profile pic of post user
+ **************************************************************************************************/
+
+- (void)setProfilePicOfPostUser:(UserInfo *)userInfo  {
+
+    if ([userInfo.userSocialType isEqualToString:@"Facebook"]) {
+
+        dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(postImageQueue, ^{
+            NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:self.strPostUserProfileUrl]];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+                UIImage *img = [UIImage imageWithData:image];
+                UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"list-mask.png"]];
+                imgVwPostUser.image = imgProfile;
+            });
+        });
+    } else {
+
+        dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(postImageQueue, ^{
+            NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userInfo.userProfileImg]];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+                UIImage *img = [UIImage imageWithData:image];
+                UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"list-mask.png"]];
+                imgVwPostUser.image = imgProfile;
+            });
+        });
+    }
 }
 
 
@@ -105,15 +224,15 @@
 
         imgVwbackg.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
         [btnPost addTarget:self action:@selector(postOnFbBtnTapped:) forControlEvents:UIControlEventTouchUpInside];//
-        lblNavHeading.text = @"Facebook";
+        lblNavHeading.text = @"Comment";
     } else if ([self.userInfo.userSocialType isEqualToString:@"Twitter"]) {
 
-        lblNavHeading.text = @"Twitter";
+        lblNavHeading.text = @"Reply";
         imgVwbackg.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
         [btnPost addTarget:self action:@selector(postCommentOnTwitter) forControlEvents:UIControlEventTouchUpInside];
     } else {
 
-        lblNavHeading.text = @"Instagram";
+        lblNavHeading.text = @"Comment";
          imgVwbackg.backgroundColor =  [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
         [btnPost addTarget:self action:@selector(postCommentOnInstagram) forControlEvents:UIControlEventTouchUpInside];
     }

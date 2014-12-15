@@ -12,6 +12,8 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import <Accounts/Accounts.h>
 #import <Accounts/ACAccountCredential.h>
+#import "WelcomeViewController.h"
+
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -33,5 +35,7 @@
 
 @property (strong, nonatomic) NSString *nextFbUrl;
 @property (nonatomic) BOOL isFirstTimeLaunch;
+
+@property (nonatomic, strong) WelcomeViewController *vwControllerWelcome;
 
 @end
