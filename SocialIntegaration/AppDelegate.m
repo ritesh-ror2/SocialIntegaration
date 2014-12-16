@@ -44,6 +44,15 @@
         [navigationController pushViewController:self.vwControllerWelcome animated:NO];
     }
 
+    BOOL isLogined = [[NSUserDefaults standardUserDefaults]boolForKey:ISALREADYLOGIN];
+    if (isLogined == YES) {
+
+        UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
+        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
+        self.vwControllerLink = (LinkViewController*)[mainStoryboard instantiateViewControllerWithIdentifier: @"linkVwController"];
+        [navigationController pushViewController:self.vwControllerLink animated:NO];
+    }
+
     return YES;
 }
 							

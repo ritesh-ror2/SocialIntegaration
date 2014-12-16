@@ -23,6 +23,7 @@
 @property (nonatomic, weak) IBOutlet UILabel *lblUserPost;
 @property (nonatomic, weak) IBOutlet UILabel *lblStatus;
 
+
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwInstagramPost;
 
 @property (nonatomic, strong) NSString *strUserText;

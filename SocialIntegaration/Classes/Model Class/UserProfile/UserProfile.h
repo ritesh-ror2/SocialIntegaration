@@ -19,5 +19,6 @@
 @property (nonatomic, strong) NSString *status;
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) NSString *description;
 
 @end

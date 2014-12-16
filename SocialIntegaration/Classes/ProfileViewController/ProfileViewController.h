@@ -20,6 +20,7 @@
 
 @property (nonatomic, weak) IBOutlet UILabel *lblUserName;
 @property (nonatomic, weak) IBOutlet UILabel *lblUserFrdList;
+@property (nonatomic, weak) IBOutlet UILabel *lblStatus;
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwFeeds;
 

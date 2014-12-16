@@ -21,6 +21,9 @@
 
 + (int)heightOfCellInTableVw;
 + (int)widthOfCommentLblOfTimelineAndProfile;
++ (int)heightOfImageInDescriptiveVw;
++ (int)withOfImageInDescriptionView;
++ (int)widthOfIPhoneView;
 
 + (void)showNetworkIndicator;
 + (void)hideNetworkIndicator;

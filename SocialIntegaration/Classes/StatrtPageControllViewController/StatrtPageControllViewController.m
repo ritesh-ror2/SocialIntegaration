@@ -79,7 +79,7 @@
 
     UIView *vwPageControl;
      if (!IS_IPHONE5) {
-          vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 200, 60, 40)];
+          vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 220, 60, 40)];
      } else {
          vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 230, 60, 40)];
      }

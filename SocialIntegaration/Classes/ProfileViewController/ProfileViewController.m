@@ -53,6 +53,7 @@
     [super viewDidLoad];
 
     self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:70/256.0f green:106/256.0f blue:181/256.0f alpha:1.0];
+    [self.view sendSubviewToBack:self.imgVwFBBackground];
     self.arryOfFBUserFeed = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
@@ -102,8 +103,12 @@
     //[self.tbleVwFeeds reloadData];
 
     [self getFBUserInfo];
-    UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
-    [self setFBUserInfo:userProfile];
+    BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+    if (isFbLogin == YES) {
+
+        UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
+        [self setFBUserInfo:userProfile];
+    }
 }
 
 - (UIStatusBarStyle) preferredStatusBarStyle {
@@ -112,9 +117,10 @@
 
 - (void)setFrameForIPhone6and6Plus {
 
-    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 80)/2, self.imgVwProfileImg.frame.origin.y+35, 80, 80);
+    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 82)/2, self.imgVwProfileImg.frame.origin.y+35, 82, 82);
     self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 84)/2, self.imgVwBorderMask.frame.origin.y+35, 84, 84);
     self.lblUserName.frame = CGRectMake((self.view.frame.size.width - self.lblUserName.frame.size.width)/2, self.imgVwBorderMask.frame.origin.y+self.imgVwBorderMask.frame.size.height+10, self.lblUserName.frame.size.width, 21);
+    self.lblStatus.frame = CGRectMake((self.view.frame.size.width - self.lblStatus.frame.size.width)/2, self.lblUserName.frame.origin.y+self.lblUserName.frame.size.height+10, self.lblStatus.frame.size.width, self.lblStatus.frame.size.height);
 }
 
 #pragma mark - Get FB User Info
@@ -303,6 +309,8 @@
 - (void)setFBUserInfo:(UserProfile*)userProfile {
 
     self.lblUserName.text = userProfile.userName;
+    NSString *strDescription = [NSString stringWithFormat:@"Hi!! I am %@.", userProfile.userName];
+    self.lblStatus.text = strDescription;
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(postImageQueue, ^{

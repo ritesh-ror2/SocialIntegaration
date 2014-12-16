@@ -71,6 +71,7 @@
     if (self.isLoadingShow == NO) {
         [self showAnimationView];
     }
+
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
     if (isFbUserLogin == NO) {
 
@@ -103,6 +104,20 @@
  **************************************************************************************************/
 
 - (void)twitterNotification {
+
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        [Constant hideNetworkIndicator];
+        [self.loadingView stopAnimation];
+        [self.loadingView setHidden:YES];
+        return;
+    }
 
     BOOL isTwitter = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
     if (isTwitter == NO) {
@@ -197,6 +212,20 @@
  **************************************************************************************************/
 
 - (void)getFBUserNotification {
+
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        [Constant hideNetworkIndicator];
+        [self.loadingView stopAnimation];
+        [self.loadingView setHidden:YES];
+        return;
+    }
 
     NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
     NSArray *writePermissions = @[@"manage_notifications"];

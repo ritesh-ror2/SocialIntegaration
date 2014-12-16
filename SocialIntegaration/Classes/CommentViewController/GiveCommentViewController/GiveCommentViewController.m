@@ -137,7 +137,7 @@
     if (objUserInfo.postImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
-        asyVwOfPost.frame = CGRectMake(0, heightPostComment + lblComment.frame.origin.y + 3, [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
+        asyVwOfPost.frame = CGRectMake(64, heightPostComment + lblComment.frame.origin.y + 3, [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
        if (![self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
                // asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
            [asyVwOfPost sd_setImageWithURL:[NSURL URLWithString:objUserInfo.postImg] placeholderImage:nil];

@@ -45,7 +45,6 @@
 
     [super viewDidLoad];
 
-    self.navController.navigationBar.translucent = NO;
     self.arryTappedCell = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
 
@@ -65,7 +64,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
     self.navController.navigationBarHidden = NO;
+    self.navController.navigationBar.translucent = NO;
+
     self.noMoreResultsAvail = NO;
     [self.arryTappedCell removeAllObjects];
     [self.arrySelectedIndex removeAllObjects];
@@ -80,9 +82,10 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
-    if (sharedAppDelegate.arryOfFBNewsFeed.count == 0) {
-            // [Constant showAlert:@"Message" forMessage:ERROR_FB_SETTING];
-    }
+
+    self.navController.navigationBar.hidden = NO;
+    self.navController.navigationBar.translucent = NO;
+
     self.navItem.title = @"Facebook";
     [[NSUserDefaults standardUserDefaults]setInteger:self.index forKey:INDEX_OF_PAGE];
     [[NSUserDefaults standardUserDefaults]synchronize];

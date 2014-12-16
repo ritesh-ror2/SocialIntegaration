@@ -55,6 +55,9 @@
 
     [self performSegueWithIdentifier:@"linklogin" sender:sender];
 
+    [[NSUserDefaults standardUserDefaults]setBool:YES forKey:ISALREADYLOGIN];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+
   /*  UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LoginViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"loginuser"];
     [self.navigationController pushViewController:vwController animated:YES];*/

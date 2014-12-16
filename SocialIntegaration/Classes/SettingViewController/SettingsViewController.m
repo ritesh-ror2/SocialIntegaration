@@ -35,19 +35,44 @@
     [super viewDidLoad];
 
     self.navigationController.navigationBarHidden = YES;
-    
-    vwFB.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
-    vwTwitter.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
-    vwInstagram.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+
+    NSString *strFbImage;
+    NSString *strTwitterImg;
+    NSString *strinst;
+    if (IS_IPHONE5) {
+        strFbImage = @"facebook-bg1.png";
+        strTwitterImg = @"twitter-bg1.png";
+        strinst = @"instagram-bg1.png";
+    } else {
+        strFbImage = @"facebook-bg.png";
+        strTwitterImg = @"twitter-bg.png";
+        strinst = @"instagram-bg.png";
+    }
+    vwFB.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:strFbImage]]; //[UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+    vwTwitter.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:strTwitterImg]];//[UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
+    vwInstagram.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:strinst]];//[UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
     btnFb.hidden = YES;
     btnInstagram.hidden = YES;
     btnTwitter.hidden = YES;
     sharedAppDelegate.isFirstTimeLaunch = NO;
+    btnInstagram.frame = CGRectMake(0, vwInstagram.frame.origin.y, btnInstagram.frame.size.width, vwInstagram.frame.size.height);
+
 
     [self userLoginOrNot];
 
     if (IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
         [self setFrameOfViewsForiPhone6And6plus];
+    }
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        [Constant hideNetworkIndicator];
+        return;
     }
 }
 
@@ -59,24 +84,31 @@
     } else {
         yAxis = 223;
     }
-    vwTwitter.frame = CGRectMake (0, yAxis, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
 
+    imgVwTwitterCircle.image = [UIImage imageNamed:@"mask-border.png"];
+    imgVwFBCircle.image = [UIImage imageNamed:@"mask-border.png"];
+    imgVwInstagramCircle.image = [UIImage imageNamed:@"mask-border.png"];
+
+    btnTwitter.frame = CGRectMake(-60, yAxis-3, btnTwitter.frame.size.width, vwTwitter.frame.size.height);
+
+    vwTwitter.frame = CGRectMake (0, yAxis, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
     //twitter
-    imgVwTwitter.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwTwitter.frame.origin.y+5, 96, 96);
+    imgVwTwitter.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwTwitter.frame.origin.y+5, 98, 98);
     imgVwTwitterCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwTwitterCircle.frame.origin.y+5, 100, 100);
     btnTwitterAdd.frame = CGRectMake((self.view.frame.size.width - 64)/2, btnTwitterAdd.frame.origin.y+20, 64, 64);
     lblTwitterName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwTwitter.frame.origin.y + imgVwTwitter.frame.size.height + 5, lblTwitterName.frame.size.width, lblTwitterName.frame.size.height);
      lblTwitterTitle.frame = CGRectMake(lblTwitterTitle.frame.origin.x, lblTwitterName.frame.origin.y + lblTwitterName.frame.size.height + 5, lblTwitterTitle.frame.size.width, lblTwitterTitle.frame.size.height);
 
     //facebook
-    imgVwFB.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwFB.frame.origin.y, 96, 96);
+    //  btnFb.frame = CGRectMake(0, yAxis, btnFb.frame.size.width, vwFB.frame.size.height);
+    imgVwFB.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwFB.frame.origin.y, 98, 98);
     imgVwFBCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwFBCircle.frame.origin.y, 100, 100);
     btnFbAdd.frame = CGRectMake((self.view.frame.size.width - 64)/2, btnFbAdd.frame.origin.y+20, 64, 64);
     lblFBName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwFB.frame.origin.y + imgVwFB.frame.size.height + 5, lblFBName.frame.size.width,lblFBName.frame.size.height);
     lblFBTitle.frame = CGRectMake(lblFBTitle.frame.origin.x, lblFBName.frame.origin.y + lblFBName.frame.size.height + 5, lblFBTitle.frame.size.width, lblFBTitle.frame.size.height);
 
     //instagram
-    imgVwInstagram.frame = CGRectMake((self.view.frame.size.width - 96)/2, imgVwInstagram.frame.origin.y+5, 96, 96);
+    imgVwInstagram.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwInstagram.frame.origin.y+5, 98, 98);
     imgVwInstagramCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwInstagramCircle.frame.origin.y+5, 100, 100);
     btnInstagramAdd.frame = CGRectMake((self.view.frame.size.width - 64)/2, btnInstagramAdd.frame.origin.y+30, 64, 64);
     lblInstagramName.frame = CGRectMake(lblInstagramName.frame.origin.x, imgVwInstagram.frame.origin.y + imgVwInstagram.frame.size.height + 5, lblInstagramName.frame.size.width, lblInstagramName.frame.size.height);
@@ -377,18 +409,23 @@
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	parameters[@"access_token"] = sharedAppDelegate.fbSession.accessTokenData;
 
-	FBRequest *request = [FBRequest requestForGraphPath:@"me"];
-	[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-		if (error) {
+    NSLog(@"%@", sharedAppDelegate.fbSession.accessTokenData);
+    NSArray *writePermissions = @[@"publish_stream", @"publish_actions"];
+    [sharedAppDelegate.fbSession requestNewPublishPermissions:writePermissions defaultAudience:FBSessionDefaultAudienceEveryone  completionHandler:^(FBSession *session, NSError *error) {
 
-                //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
-            [Constant hideNetworkIndicator];
-		} else {
+        FBRequest *request = [FBRequest requestForGraphPath:@"me"];
+        [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            if (error) {
 
-            NSDictionary *dictInfo = (NSDictionary *)result;
-            [self getProfileImg:dictInfo];
-		}
-	}];
+                    //[Constant showAlert:ERROR_CONNECTING forMessage:ERROR_FB];
+                [Constant hideNetworkIndicator];
+            } else {
+
+                NSDictionary *dictInfo = (NSDictionary *)result;
+                [self getProfileImg:dictInfo];
+            }
+        }];
+    }];
 }
 
 #pragma mark - Get profile image
@@ -440,6 +477,8 @@
 - (void)setFBUserInfo:(UserProfile*)userProfile {
 
     [self addGestureOnFbView];
+        // [self setGradientColorOfFB];
+
     BOOL isFbUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
     [self hideFBBtn:isFbUserLogin];
 
@@ -472,11 +511,11 @@
         [UIView animateWithDuration:0.5 animations:^ {
 
             vwFB.frame = CGRectMake(60, vwFB.frame.origin.y, vwFB.frame.size.width, vwFB.frame.size.height);
-            btnFb.frame =  CGRectMake(0, btnFb.frame.origin.y, 60, vwFB.frame.size.height);
+            btnFb.frame =  CGRectMake(0, vwFB.frame.origin.y, 60, vwFB.frame.size.height);
         }];
     } else {
         vwFB.frame = CGRectMake(0, vwFB.frame.origin.y, vwFB.frame.size.width, vwFB.frame.size.height);
-        btnFb.frame =  CGRectMake(-60, btnFb.frame.origin.y, 60, vwFB.frame.size.height);
+        btnFb.frame =  CGRectMake(-60, vwFB.frame.origin.y, 60, vwFB.frame.size.height);
     }
 }
 
@@ -583,7 +622,8 @@
     userProfile.followers = [NSString stringWithFormat:@"%li",(long)[[dictData valueForKey:@"followers_count"]integerValue]];
     userProfile.type = @"Twitter";
     userProfile.userId  =  [NSString stringWithFormat:@"%lf",[[[dictData valueForKey:@"status"]valueForKey:@"id"] doubleValue]];
-
+    userProfile.description = [dictData objectForKey:@"description"];
+    
     [self setTwitterUserInfo:userProfile];
     [userProfile saveUserProfile];
 }
@@ -596,6 +636,7 @@
 - (void)setTwitterUserInfo:(UserProfile*)userProfile {
 
     [self addGestureOnTwitterView];
+        //[self setGradientColorOft];
 
     BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
     [self hideTwitterBtn:isTwitterUserLogin];
@@ -629,11 +670,11 @@
         [UIView animateWithDuration:0.5 animations:^ {
 
             vwTwitter.frame = CGRectMake(60, vwTwitter.frame.origin.y, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
-            btnTwitter.frame =  CGRectMake(0, btnTwitter.frame.origin.y, 60, vwTwitter.frame.size.height);
+            btnTwitter.frame =  CGRectMake(0, vwTwitter.frame.origin.y, 60, vwTwitter.frame.size.height);
         }];
     } else {
         vwTwitter.frame = CGRectMake(0, vwTwitter.frame.origin.y, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
-        btnTwitter.frame =  CGRectMake(-60, btnTwitter.frame.origin.y, 60, vwTwitter.frame.size.height);
+        btnTwitter.frame =  CGRectMake(-60, vwTwitter.frame.origin.y, 60, vwTwitter.frame.size.height);
     }
 }
 
@@ -798,6 +839,7 @@
         userProfile.userImg = [dictInfo valueForKey:@"profile_picture"];
         userProfile.userName = [dictInfo valueForKey:@"username"];
         userProfile.type = @"Instagram";
+        userProfile.description = [dictInfo valueForKey:@"bio"];
         [[NSUserDefaults standardUserDefaults]setValue:userProfile.userId forKey:@"InstagramId"];
         [[NSUserDefaults standardUserDefaults]synchronize];
 
@@ -864,11 +906,11 @@
         [UIView animateWithDuration:0.5 animations:^ {
 
             vwInstagram.frame = CGRectMake(60, vwInstagram.frame.origin.y, vwInstagram.frame.size.width, vwInstagram.frame.size.height);
-            btnInstagram.frame =  CGRectMake(0, btnInstagram.frame.origin.y, 60, vwInstagram.frame.size.height);
+            btnInstagram.frame =  CGRectMake(0, vwInstagram.frame.origin.y, 60, vwInstagram.frame.size.height);
         }];
     } else {
         vwInstagram.frame = CGRectMake(0, vwInstagram.frame.origin.y, vwInstagram.frame.size.width, vwInstagram.frame.size.height);
-        btnInstagram.frame =  CGRectMake(-60, btnInstagram.frame.origin.y, 60, vwInstagram.frame.size.height);
+        btnInstagram.frame =  CGRectMake(-60, vwInstagram.frame.origin.y, 60, vwInstagram.frame.size.height);
     }
 }
 

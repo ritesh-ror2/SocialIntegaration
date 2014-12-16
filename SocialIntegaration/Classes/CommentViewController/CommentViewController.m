@@ -197,8 +197,6 @@
         strBtnTitle = @"Post";
 
         [self fectchFBComment];
-        [self facebookConfiguration];
-
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
     } else if ([self.userInfo.userSocialType isEqualToString:@"Instagram"]) {
 
@@ -210,7 +208,6 @@
 
         [self setCommentOfpostDetail:self.userInfo];
         [self fetchInstagrameComment];
-        [self instagramConfiguration];
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:36/256.0f green:84/256.0f blue:130/256.0f alpha:1.0];
     } else {
 
@@ -220,9 +217,23 @@
 
         [self setCommentOfpostDetail:self.userInfo];
         [self fetchRetewwtOfTwitter];
-        [self twitterConfiguration];
-
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:109/256.0f green:171/256.0f blue:243/256.0f alpha:1.0];
+    }
+}
+
+#pragma mark - Set heading anr right button title
+/**************************************************************************************************
+ Function to set heading anr right button title
+ **************************************************************************************************/
+
+- (void)showActivityVw {
+
+    if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
+        [self facebookConfiguration];
+    } else if ([self.userInfo.userSocialType isEqualToString:@"Instagram"]) {
+        [self instagramConfiguration];
+    } else {
+        [self twitterConfiguration];
     }
 }
 
@@ -506,11 +517,17 @@
         heightPostImg = rect.size.height+10;
     }
 
-    if (objUserInfo.postImg.length != 0) {
+    asyVwOfPost.layer.cornerRadius = 5.0;
+    asyVwOfPost.layer.masksToBounds = YES;
+
+    imgVwLagrePostImage.layer.cornerRadius = 5.0;
+    imgVwLagrePostImage.layer.masksToBounds = YES;
+
+/*    if (objUserInfo.postImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
-        asyVwOfPost.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
-        imgVwLagrePostImage.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3,  [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
+        asyVwOfPost.frame = CGRectMake(64, heightPostImg + lblComment.frame.origin.y + 3, [Constant withOfImageInDescriptionView],  [Constant heightOfCellInTableVw]);
+        imgVwLagrePostImage.frame = CGRectMake(64, heightPostImg + lblComment.frame.origin.y + 3,  [Constant withOfImageInDescriptionView],  [Constant heightOfCellInTableVw]);
             // asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
         [asyVwOfPost sd_setImageWithURL:[NSURL URLWithString:objUserInfo.postImg] placeholderImage:nil];
         asyVwOfPost.backgroundColor = [UIColor clearColor];
@@ -525,13 +542,37 @@
         [self setFrameOfActivityView:lblComment.frame.size.height + lblComment.frame.origin.y + 10];
         int taggedUser =  [self setFramesOfTaggedUsers:lblComment.frame.size.height + lblComment.frame.origin.y + 40];
         imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 45) + taggedUser);
+    }*/
+
+    
+   if (objUserInfo.postImg.length != 0) {
+
+        asyVwOfPost.hidden = NO;
+        asyVwOfPost.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, [Constant widthOfIPhoneView],  [Constant widthOfIPhoneView]);
+        imgVwLagrePostImage.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3,  [Constant widthOfIPhoneView],  [Constant widthOfIPhoneView]);
+            // asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
+        [asyVwOfPost sd_setImageWithURL:[NSURL URLWithString:objUserInfo.postImg] placeholderImage:nil];
+        asyVwOfPost.backgroundColor = [UIColor clearColor];
+
+        btnShowImageOrVideo.frame = asyVwOfPost.frame;
+        [self setFrameOfActivityView:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 10];
+        int taggedUser =  [self setFramesOfTaggedUsers:asyVwOfPost.frame.size.height + asyVwOfPost.frame.origin.y + 35];
+        imgVwBackground.frame = CGRectMake(0, 0, self.view.frame.size.width, heightPostImg + lblComment.frame.origin.y + [Constant widthOfIPhoneView] + 45 + taggedUser);
+            //imgVwBackground.backgroundColor = [UIColor redColor];
+    } else {
+
+        [self setFrameOfActivityView:lblComment.frame.size.height + lblComment.frame.origin.y + 10];
+        int taggedUser =  [self setFramesOfTaggedUsers:lblComment.frame.size.height + lblComment.frame.origin.y + 40];
+        imgVwBackground.frame = CGRectMake(0, 0, self.view.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 45) + taggedUser);
     }
+
+    [self showActivityVw]; //show activity
 
     scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + 235));
 
     if (objUserInfo.postImg.length != 0) {
 
-        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+1, [Constant heightOfCellInTableVw], scrollVwShowComment.contentSize.height - (imgVwBackground.frame.size.height+45));
+        tbleVwComment.frame = CGRectMake(0, imgVwBackground.frame.size.height+1, [Constant widthOfIPhoneView], scrollVwShowComment.contentSize.height - (imgVwBackground.frame.size.height+45));
     } else {
 
         NSLog(@"%f", [UIScreen mainScreen].bounds.size.height);
@@ -1229,7 +1270,7 @@
                                     [btnLike setTitleColor:[UIColor colorWithRed:90/256.0f green:108/256.0f blue:168/256.0f alpha:1.0] forState:UIControlStateNormal];
                                     [btnLike removeTarget:self action:@selector(likePost:) forControlEvents:UIControlEventTouchUpInside];
                                     [btnLike addTarget:self action:@selector(unlikedPost) forControlEvents:UIControlEventTouchUpInside];
-                                    lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%li",lblFBOrInstLikeCount.text.integerValue +1];
+                                    lblFBOrInstLikeCount.text = [NSString stringWithFormat:@"%i",lblFBOrInstLikeCount.text.integerValue +1];
                                   }
                               }];
     }];

@@ -31,6 +31,12 @@
 		0A4414EF1A259275003A2C60 /* ShareCommentAndMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A4414EE1A259275003A2C60 /* ShareCommentAndMessageViewController.m */; };
 		0A4C03CB1A1B77DC001E96EF /* Liked-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A4C03CA1A1B77DC001E96EF /* Liked-active@2x.png */; };
 		0A4C03CF1A1B8015001E96EF /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A4C03CE1A1B8015001E96EF /* MessageViewController.m */; };
+		0A5C9CFD1A3F0EA400AECAA9 /* Setup2_iPhone6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A5C9CFA1A3F0EA400AECAA9 /* Setup2_iPhone6@2x.png */; };
+		0A5C9CFE1A3F0EA400AECAA9 /* Setup3_iPhone6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A5C9CFB1A3F0EA400AECAA9 /* Setup3_iPhone6@2x.png */; };
+		0A5C9CFF1A3F0EA400AECAA9 /* Setup4_iPhone6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A5C9CFC1A3F0EA400AECAA9 /* Setup4_iPhone6@2x.png */; };
+		0A6C020A1A40513F0001EC3A /* facebook-bg1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A6C02081A40513F0001EC3A /* facebook-bg1@2x.png */; };
+		0A6C020B1A40513F0001EC3A /* twitter-bg1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A6C02091A40513F0001EC3A /* twitter-bg1@2x.png */; };
+		0A6C020D1A4052300001EC3A /* instagram-bg1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A6C020C1A4052300001EC3A /* instagram-bg1@2x.png */; };
 		0A6F233C1A2DA80B004BA975 /* Like-InstActive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A6F233B1A2DA80B004BA975 /* Like-InstActive@2x.png */; };
 		0A6F233F1A2DB42F004BA975 /* play-btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A6F233D1A2DB42F004BA975 /* play-btn@2x.png */; };
 		0A6F23401A2DB42F004BA975 /* play-btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A6F233E1A2DB42F004BA975 /* play-btn.png */; };
@@ -239,6 +245,12 @@
 		0A4C03CA1A1B77DC001E96EF /* Liked-active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Liked-active@2x.png"; sourceTree = "<group>"; };
 		0A4C03CD1A1B8015001E96EF /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
 		0A4C03CE1A1B8015001E96EF /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
+		0A5C9CFA1A3F0EA400AECAA9 /* Setup2_iPhone6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Setup2_iPhone6@2x.png"; sourceTree = "<group>"; };
+		0A5C9CFB1A3F0EA400AECAA9 /* Setup3_iPhone6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Setup3_iPhone6@2x.png"; sourceTree = "<group>"; };
+		0A5C9CFC1A3F0EA400AECAA9 /* Setup4_iPhone6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Setup4_iPhone6@2x.png"; sourceTree = "<group>"; };
+		0A6C02081A40513F0001EC3A /* facebook-bg1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook-bg1@2x.png"; sourceTree = "<group>"; };
+		0A6C02091A40513F0001EC3A /* twitter-bg1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-bg1@2x.png"; sourceTree = "<group>"; };
+		0A6C020C1A4052300001EC3A /* instagram-bg1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "instagram-bg1@2x.png"; sourceTree = "<group>"; };
 		0A6F233B1A2DA80B004BA975 /* Like-InstActive@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Like-InstActive@2x.png"; sourceTree = "<group>"; };
 		0A6F233D1A2DB42F004BA975 /* play-btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play-btn@2x.png"; sourceTree = "<group>"; };
 		0A6F233E1A2DB42F004BA975 /* play-btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play-btn.png"; sourceTree = "<group>"; };
@@ -662,8 +674,8 @@
 			isa = PBXGroup;
 			children = (
 				0A7324311A0B4C0000F10476 /* Main.storyboard */,
-				0A8D130F1A136FED00112078 /* HomePageViewController */,
 				0A781B951A10F2A200685DBA /* AppDelegate */,
+				0A8D130F1A136FED00112078 /* HomePageViewController */,
 				0A7EE7BB1A1493B200E5E65A /* FeedPagesViewController */,
 				0A814BB41A275AC900F874D9 /* PageControllerClass */,
 				0AE0484E1A3AD2CD0030EF1F /* LoginViewController */,
@@ -737,12 +749,17 @@
 				0A8D13011A13688E00112078 /* messages-active@2x.png */,
 				0A8D13021A13688E00112078 /* profile-active@2x.png */,
 				0A814BAC1A27373200F874D9 /* more@2x.png */,
+				0A6C02081A40513F0001EC3A /* facebook-bg1@2x.png */,
+				0A6C02091A40513F0001EC3A /* twitter-bg1@2x.png */,
 				0A10D9DE1A3B14690070E50B /* Setup2@2x.png */,
 				0A10D9DF1A3B14690070E50B /* Setup3@2x.png */,
 				0A10D9E01A3B14690070E50B /* Setup4@2x.png */,
 				0A814BAD1A27373200F874D9 /* unfollow@2x.png */,
 				0A814BAE1A27373200F874D9 /* follow@2x.png */,
 				0AB16ADE1A2EE5F3007DE1BD /* camera@2x.png */,
+				0A5C9CFA1A3F0EA400AECAA9 /* Setup2_iPhone6@2x.png */,
+				0A5C9CFB1A3F0EA400AECAA9 /* Setup3_iPhone6@2x.png */,
+				0A5C9CFC1A3F0EA400AECAA9 /* Setup4_iPhone6@2x.png */,
 				0AB16AE21A2F37DF007DE1BD /* FBNoImage.png */,
 				0AE048581A3AE7570030EF1F /* login@2x.png */,
 				0AB16ADF1A2EE5F3007DE1BD /* person@2x.png */,
@@ -786,6 +803,7 @@
 				0A7EE7D11A14E2D300E5E65A /* mask_Link@2x.png */,
 				0A7EE7A11A1486FF00E5E65A /* facebook@2x.png */,
 				0A7EE7A21A1486FF00E5E65A /* instagram@2x.png */,
+				0A6C020C1A4052300001EC3A /* instagram-bg1@2x.png */,
 				0A7EE7A31A1486FF00E5E65A /* twitter@2x.png */,
 				0A8D12FA1A1367EF00112078 /* Activity@2x.png */,
 				0A8D12FB1A1367EF00112078 /* feed@2x.png */,
@@ -1361,6 +1379,7 @@
 				0A9236B61A0E103300857D82 /* Icon-60@3x.png in Resources */,
 				0A39339B1A1CC3F500B65473 /* arrow-blue@2x.png in Resources */,
 				0A9236BF1A0E103300857D82 /* Icon-Small-50.png in Resources */,
+				0A5C9CFE1A3F0EA400AECAA9 /* Setup3_iPhone6@2x.png in Resources */,
 				0A1E537E1A2CAFBC0031529E /* splash@2x.png in Resources */,
 				0A90EF021A15BD38005FD439 /* Cross@2x.png in Resources */,
 				0A9236BE1A0E103300857D82 /* Icon-72@2x.png in Resources */,
@@ -1374,6 +1393,7 @@
 				0A6F233F1A2DB42F004BA975 /* play-btn@2x.png in Resources */,
 				0A10D9E31A3B14690070E50B /* Setup4@2x.png in Resources */,
 				0AFCCF801A39DC2400E724D6 /* Comment@2x.png in Resources */,
+				0A6C020B1A40513F0001EC3A /* twitter-bg1@2x.png in Resources */,
 				0A4C03CB1A1B77DC001E96EF /* Liked-active@2x.png in Resources */,
 				0A7EE7CA1A14D86D00E5E65A /* Search@2x.png in Resources */,
 				0AE0484D1A3AD0030030EF1F /* inst_Camera@2x.png in Resources */,
@@ -1401,6 +1421,7 @@
 				0A7324331A0B4C0000F10476 /* Main.storyboard in Resources */,
 				0A7EE7A41A1486FF00E5E65A /* facebook@2x.png in Resources */,
 				0A814BB01A27373200F874D9 /* more@2x.png in Resources */,
+				0A6C020A1A40513F0001EC3A /* facebook-bg1@2x.png in Resources */,
 				0A6F233C1A2DA80B004BA975 /* Like-InstActive@2x.png in Resources */,
 				0A9236C41A0E103300857D82 /* iTunesArtwork@2x.png in Resources */,
 				0A9236B51A0E103300857D82 /* Icon-60@2x.png in Resources */,
@@ -1431,6 +1452,7 @@
 				0A8D13061A13688E00112078 /* settings-active@2x.png in Resources */,
 				0A3933911A1CAC4200B65473 /* Retweet_active@2x.png in Resources */,
 				0A8D130A1A1368BD00112078 /* settings@2x.png in Resources */,
+				0A5C9CFD1A3F0EA400AECAA9 /* Setup2_iPhone6@2x.png in Resources */,
 				0A9236B91A0E103300857D82 /* Icon-Small.png in Resources */,
 				0A82B3B71A19B6D4009F8E7E /* Favourite@2x.png in Resources */,
 				0A7629631A1A302200F65048 /* Favourite1@2x.png in Resources */,
@@ -1441,6 +1463,7 @@
 				0A10D9E21A3B14690070E50B /* Setup3@2x.png in Resources */,
 				0A73245F1A0B4E5600F10476 /* CustomTableCell.xib in Resources */,
 				0A8D13051A13688E00112078 /* profile-active@2x.png in Resources */,
+				0A6C020D1A4052300001EC3A /* instagram-bg1@2x.png in Resources */,
 				0A7629661A1A302200F65048 /* Retweet1@2x.png in Resources */,
 				0A39338F1A1CA6C000B65473 /* mask_message@2x.png in Resources */,
 				0AFCCF901A39DC2400E724D6 /* Like1@2x.png in Resources */,
@@ -1450,6 +1473,7 @@
 				0A73246F1A0B6C9300F10476 /* list-mask.png in Resources */,
 				0A9236B71A0E103300857D82 /* Icon-76.png in Resources */,
 				0A9236B11A0E103300857D82 /* Contents.json in Resources */,
+				0A5C9CFF1A3F0EA400AECAA9 /* Setup4_iPhone6@2x.png in Resources */,
 				0A9236B21A0E103300857D82 /* Icon-40.png in Resources */,
 				0A7EE7C91A14D86D00E5E65A /* Search-active@2x.png in Resources */,
 				0A8D12FF1A1367EF00112078 /* feed@2x.png in Resources */,

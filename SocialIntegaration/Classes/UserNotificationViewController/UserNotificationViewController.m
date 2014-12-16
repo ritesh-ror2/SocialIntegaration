@@ -11,6 +11,7 @@
 #import "UserNotification.h"
 #import "UserNotificationCustomCell.h"
 #import "HYCircleLoadingView.h"
+#import "Reachability.h"
 #import <Social/Social.h>
 
 @interface UserNotificationViewController () {
@@ -52,14 +53,13 @@
 
     self.navigationItem.hidesBackButton = YES;
 
-    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 170)/2, 70, 70)];
+    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 100)/2, (self.view.frame.size.height - 170)/2, 70, 70)];
     [self.view addSubview:self.loadingView];
     [self.view bringSubviewToFront:self.loadingView];
     self.loadingView.hidden = YES;
 
     tbleViewNotification.hidden = YES;
     tbleViewNotification.alpha = 0.0;
-    [self showAnimationView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -92,6 +92,21 @@
 
 - (void)showAnimationView {
 
+
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:ERROR_CONNECTING
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
+        [Constant hideNetworkIndicator];
+        [self.loadingView stopAnimation];
+        [self.loadingView setHidden:YES];
+        return;
+    }
+    
     BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
     BOOL isTwitter = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
     if(isFbLogin == YES || isTwitter == YES) {
@@ -129,6 +144,8 @@
 
     [timelineRequest performRequestWithHandler: ^(NSData *responseData, NSHTTPURLResponse*urlResponse, NSError *error) {
 
+    if (!error) {
+
         NSLog(@"%@ !#" , [error description]);
         id dataTwitte = [NSJSONSerialization
                          JSONObjectWithData:responseData
@@ -160,6 +177,7 @@
                 });
             }
         }
+    }
     }];
 }
 

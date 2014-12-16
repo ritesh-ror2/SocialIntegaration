@@ -13,7 +13,7 @@
 #import <Accounts/Accounts.h>
 #import <Accounts/ACAccountCredential.h>
 #import "WelcomeViewController.h"
-
+#import "LinkViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -37,5 +37,6 @@
 @property (nonatomic) BOOL isFirstTimeLaunch;
 
 @property (nonatomic, strong) WelcomeViewController *vwControllerWelcome;
+@property (nonatomic, strong) LinkViewController *vwControllerLink;
 
 @end

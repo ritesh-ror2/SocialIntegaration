@@ -51,11 +51,17 @@
     [self addSubview:welcomeScreenScrollVw];
 
     //page controller
+    int yAxis;
     if(IS_IPHONE5) {
-        welcomeScreenPageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, 165, welcomeScreenScrollVw.frame.size.width, 36)];
+        yAxis = 165;
+    } else if (IS_IPHONE_6_IOS8){
+        yAxis = 195;
     } else {
-         welcomeScreenPageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, 210, welcomeScreenScrollVw.frame.size.width, 36)];
+        yAxis = 220;
     }
+
+    welcomeScreenPageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(0, yAxis, welcomeScreenScrollVw.frame.size.width, 36)];
+
     welcomeScreenPageControl.currentPage = 0;
     welcomeScreenPageControl.currentPageIndicatorTintColor = [UIColor blackColor];
     welcomeScreenPageControl.pageIndicatorTintColor = [UIColor lightGrayColor];

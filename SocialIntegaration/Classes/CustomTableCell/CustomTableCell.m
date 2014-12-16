@@ -8,6 +8,7 @@
 
 #import "CustomTableCell.h"
 #import "Constant.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define IS_IPHONE_6_IOS8      ([UIScreen mainScreen].bounds.size.height == 667)
 #define IS_IPHONE_6P_IOS8 ([UIScreen mainScreen].bounds.size.height == 736)
@@ -29,7 +30,7 @@
 
     spinner.hidden = YES;
     spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    spinner.frame = CGRectMake(([Constant heightOfCellInTableVw] - 37)/2, 5, 37, 37);
+    spinner.frame = CGRectMake(([Constant widthOfIPhoneView] - 37)/2, 5, 37, 37);
     [self.contentView addSubview:spinner];
 }
 
@@ -314,30 +315,36 @@
 
     int heightWidthOfImg;
     if (IS_IPHONE_6_IOS8) {
-        heightWidthOfImg = iPhone6_Width;
+        heightWidthOfImg = iPhone6_Width_Img;
     } else if (IS_IPHONE5) {
-        heightWidthOfImg = iPhone5_Width; //iPhone6_Width;
+        heightWidthOfImg = iPhone5_Width_Img; //iPhone6_Width;
     } else {
-        heightWidthOfImg = iPhone6_Plus_Width;//iPhone6_Plus_Width;
+        heightWidthOfImg = iPhone6_Plus_Width_Img;//iPhone6_Plus_Width;
     }
-
+    if (imgVwPostImg.image != nil) {
+        imgVwPostImg.image = nil;
+        btnPlay.hidden = YES;
+    }
     if (objUserInfo.postImg.length != 0) { //set post image
 
-        imgVwPostImg.frame = CGRectMake(0,  lblText.frame.size.height + lblText.frame.origin.y + 10, heightWidthOfImg, heightWidthOfImg);
+        imgVwPostImg.frame = CGRectMake(64, lblText.frame.size.height + lblText.frame.origin.y + 10, heightWidthOfImg,  heightWidthOfImg/2);
         imgVwPostImg.hidden = NO;
+        imgVwPostImg.layer.cornerRadius = 5.0;
+        imgVwPostImg.layer.masksToBounds = YES;
+
         imgVwPostImg.backgroundColor = [UIColor clearColor];
         btnPlay.frame = imgVwPostImg.frame;
 
         [self setPostImage:objUserInfo];//user profile
         [self setFrameOfActivityView:imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y + 10];//frames of activity
-        imgVwBgColor.frame = CGRectMake(0, 0, imgVwPostImg.frame.size.width, imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y + 38);//image view frame that show gradient color
+        imgVwBgColor.frame = CGRectMake(0, 0, [Constant widthOfIPhoneView], imgVwPostImg.frame.size.height + imgVwPostImg.frame.origin.y + 38);//image view frame that show gradient color
 
         btnPlay.hidden = NO;
         [btnPlay setImage:[UIImage imageNamed:@"no.png"] forState:UIControlStateNormal];
     } else {
 
         [self setFrameOfActivityView:lblText.frame.size.height + lblText.frame.origin.y+7];
-        imgVwBgColor.frame = CGRectMake(0, 0,heightWidthOfImg, lblText.frame.size.height + lblText.frame.origin.y + 38);
+        imgVwBgColor.frame = CGRectMake(0, 0, [Constant widthOfIPhoneView], lblText.frame.size.height + lblText.frame.origin.y + 38);
     }
 }
 

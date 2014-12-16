@@ -235,13 +235,55 @@
     int heightCell;
 
     if (IS_IPHONE_6P_IOS8) {
-        heightCell = iPhone6_Plus_Width + 65;
+        heightCell = (iPhone6_Plus_Width_Img/2) + 65;
     } else if (IS_IPHONE_6_IOS8) {
-        heightCell = iPhone6_Width + 65;
+        heightCell = (iPhone6_Width_Img/2) + 65;
     } else {
-        heightCell = iPhone5_Width + 65;
+        heightCell = (iPhone5_Width_Img/2) + 65;
     }
     return heightCell;
+}
+
++ (int)withOfImageInDescriptionView {
+
+    int height;
+
+    if (IS_IPHONE_6P_IOS8) {
+        height = iPhone6_Plus_Width_Img;
+    } else if (IS_IPHONE_6_IOS8) {
+        height = iPhone6_Width_Img;
+    } else {
+        height = iPhone5_Width_Img;
+    }
+    return height;
+}
+
++ (int)heightOfImageInDescriptiveVw {
+
+    int height;
+
+    if (IS_IPHONE_6P_IOS8) {
+        height = iPhone6_Plus_Width_Img + 65;
+    } else if (IS_IPHONE_6_IOS8) {
+        height = iPhone6_Width_Img + 65;
+    } else {
+        height = iPhone5_Width_Img + 65;
+    }
+    return height;
+}
+
++ (int)widthOfIPhoneView {
+
+    int width;
+
+    if (IS_IPHONE_6P_IOS8) {
+        width = iPhone6_Plus_Width;
+    } else if (IS_IPHONE_6_IOS8) {
+        width = iPhone6_Width;
+    } else {
+        width = iPhone5_Width;
+    }
+    return width;
 }
 
 + (int)widthOfCommentLblOfTimelineAndProfile {

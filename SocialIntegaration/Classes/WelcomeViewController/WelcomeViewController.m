@@ -148,8 +148,12 @@
     lblTitle2.text = @"The latest posts are close to top.";
      [welcomeVw addSubview:lblTitle2];
 
-    UIImage *imgScroll1 = [UIImage imageNamed:@"Setup2.png"];
-
+    UIImage *imgScroll1;
+    if (IS_IPHONE5) {
+        imgScroll1 = [UIImage imageNamed:@"Setup2.png"];
+    } else {
+        imgScroll1 = [UIImage imageNamed:@"Setup2_iPhone6@2x.png"];
+    }
     UIImageView *imgVwOfWelcomeImg = [[UIImageView alloc]init];
     imgVwOfWelcomeImg.frame = CGRectMake((self.view.frame.size.width - imgScroll1.size.width)/2, self.view.frame.size.height - imgScroll1.size.height, imgScroll1.size.width, imgScroll1.size.height);
     imgVwOfWelcomeImg.image = imgScroll1;
@@ -181,8 +185,12 @@
     lblTitle2.text = @"The post won't be deleted just hidden from your timeline.";
     [welcomeVw addSubview:lblTitle2];
 
-    UIImage *imgScroll1 = [UIImage imageNamed:@"Setup3.png"];
-
+    UIImage *imgScroll1;
+    if (IS_IPHONE5) {
+        imgScroll1 = [UIImage imageNamed:@"Setup3.png"];
+    } else {
+        imgScroll1 = [UIImage imageNamed:@"Setup3_iPhone6@2x.png"];
+    }
     UIImageView *imgVwOfWelcomeImg = [[UIImageView alloc]init];
     imgVwOfWelcomeImg.frame = CGRectMake((self.view.frame.size.width - imgScroll1.size.width)/2, self.view.frame.size.height - imgScroll1.size.height, imgScroll1.size.width, imgScroll1.size.height);
     imgVwOfWelcomeImg.image = imgScroll1;
@@ -215,8 +223,12 @@
 
     [welcomeVw addSubview:lblTitle2];
 
-    UIImage *imgScroll1 = [UIImage imageNamed:@"Setup4.png"];
-
+    UIImage *imgScroll1;
+    if (IS_IPHONE5) {
+        imgScroll1 = [UIImage imageNamed:@"Setup4.png"];
+    } else {
+        imgScroll1 = [UIImage imageNamed:@"Setup4_iPhone6@2x.png"];
+    }
     UIImageView *imgVwOfWelcomeImg = [[UIImageView alloc]init];
     imgVwOfWelcomeImg.frame = CGRectMake((self.view.frame.size.width - imgScroll1.size.width)/2, self.view.frame.size.height - imgScroll1.size.height, imgScroll1.size.width, imgScroll1.size.height);
     imgVwOfWelcomeImg.image = imgScroll1;

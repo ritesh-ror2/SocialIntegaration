@@ -15,7 +15,7 @@
 - (void)saveUserProfile {
 
     sqlite3_stmt *insertStatement;
-    const char *sqlQuery = "INSERT INTO userProfile (userId, name, imageUrl, followers, following, tweet, post, type) VALUES (?, ?, ?, ? , ?, ?, ?, ?)";
+    const char *sqlQuery = "INSERT INTO userProfile (userId, name, imageUrl, followers, following, tweet, post, type, description) VALUES (?, ?, ?, ? , ?, ?, ?, ?, ?)";
     if (sqlite3_prepare_v2(([[Database connection] getDatabase]), sqlQuery, -1, &(insertStatement), NULL) != SQLITE_OK) {
         NSAssert1(0, @"Error: failed to prepare statement with message '%s'.", sqlite3_errmsg([[Database connection] getDatabase]));
     }
@@ -29,6 +29,7 @@
     sqlite3_bind_text(insertStatement, 6, [self.tweet UTF8String], -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(insertStatement, 7, [self.post UTF8String], -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(insertStatement, 8, [self.type UTF8String], -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(insertStatement, 9, [self.description UTF8String], -1, SQLITE_TRANSIENT);
 
     if (sqlite3_step(insertStatement) != SQLITE_ERROR) {// executing query
         sqlite3_finalize(insertStatement); // finalizing tatement
@@ -53,6 +54,7 @@
     sqlite3_bind_text(updateStatement, 5, [self.following UTF8String], -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(updateStatement, 6, [self.tweet UTF8String], -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(updateStatement, 7, [self.post UTF8String], -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(updateStatement, 8, [self.description UTF8String], -1, SQLITE_TRANSIENT);
 
     if (sqlite3_step(updateStatement) != SQLITE_ERROR) {// executing query
         sqlite3_finalize(updateStatement); // finalizing tatement
@@ -65,7 +67,7 @@
 
     sqlite3_stmt *selectStatement;
     UserProfile *objInfo;
-    NSString *querySearchData = @"SELECT userId, name, imageUrl, followers, following, tweet, post FROM userProfile WHERE type = ?";
+    NSString *querySearchData = @"SELECT userId, name, imageUrl, followers, following, tweet, post, description FROM userProfile WHERE type = ?";
 
     const char *sql = [querySearchData UTF8String];
 
@@ -99,6 +101,9 @@
 
         char *post = (char *)sqlite3_column_text(selectStatement, 6);
         objInfo.post  = [NSString stringWithUTF8String:(post == nil ? "": post)];
+
+        char *description = (char *)sqlite3_column_text(selectStatement, 7);
+        objInfo.description  = [NSString stringWithUTF8String:(description == nil ? "": description)];
     }
 
     sqlite3_finalize(selectStatement);

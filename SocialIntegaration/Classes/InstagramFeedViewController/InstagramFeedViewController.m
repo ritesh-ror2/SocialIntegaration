@@ -66,6 +66,7 @@
         //[Constant showAlert:@"Message" forMessage:@"No Feeds."];
         return;
     }
+
     [self.arrySelectedIndex removeAllObjects];
     [self.arryTappedCell removeAllObjects];
     [self.tbleVwInstagram reloadData];
@@ -84,6 +85,9 @@
     if (sharedAppDelegate.arryOfInstagrame.count == 0) {
             // [Constant showAlert:@"Message" forMessage:ERROR_INSTAGRAM];
     }
+    self.navController.navigationBar.hidden = NO;
+    self.navController.navigationBar.translucent = NO;
+
     self.navItem.title = @"Instagram";
     [[NSUserDefaults standardUserDefaults]setInteger:self.index forKey:INDEX_OF_PAGE];
     [[NSUserDefaults standardUserDefaults]synchronize];

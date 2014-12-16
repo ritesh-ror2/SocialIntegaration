@@ -45,7 +45,6 @@
 
     [super viewDidLoad];
 
-    self.navController.navigationBar.translucent = NO;
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
     self.arryTappedCell = [[NSMutableArray alloc]init];
 
@@ -75,6 +74,7 @@
     [self.tbleVwTwitter reloadData];
 
     self.navController.navigationBarHidden = NO;
+    self.navController.navigationBar.translucent = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -83,6 +83,9 @@
     if (sharedAppDelegate.arryOfTwittes.count == 0) {
             // [Constant showAlert:@"Message" forMessage:ERROR_TWITTER_SETTING];
     }
+    self.navController.navigationBar.hidden = NO;
+    self.navController.navigationBar.translucent = NO;
+    
     self.navItem.title = @"Twitter";
     [[NSUserDefaults standardUserDefaults]setInteger:self.index forKey:INDEX_OF_PAGE];
     [[NSUserDefaults standardUserDefaults]synchronize];

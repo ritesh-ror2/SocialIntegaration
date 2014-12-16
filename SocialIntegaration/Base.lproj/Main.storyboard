@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="wea-o4-Lm5">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="wea-o4-Lm5">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
@@ -379,8 +379,8 @@
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="diA-x9-Dks">
-                                                                    <rect key="frame" x="65" y="35" width="247" height="41"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                    <rect key="frame" x="65" y="35" width="237" height="41"/>
+                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
@@ -1212,10 +1212,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="facebook-bg.png" id="463-XH-h1K">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="312"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QHW-XO-TZl">
+                                <rect key="frame" x="60" y="164" width="200" height="69"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            </imageView>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="b8w-I4-9Cs">
                                 <rect key="frame" x="56" y="127" width="208" height="23"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
@@ -1282,7 +1285,7 @@
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="FNs-2C-vbF">
                                                             <rect key="frame" x="90" y="5" width="24" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <state key="normal" image="7E0010EA-ACAC-4FCC-8E6B-1B14F1303A63">
+                                                            <state key="normal" image="3DB02A64-A8D6-4D6F-BE2C-C77F3A97475B">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                         </button>
@@ -1330,6 +1333,10 @@
                                 <rect key="frame" x="110" y="26" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="facebook-bg.png" id="463-XH-h1K">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="312"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -1341,6 +1348,7 @@
                         <outlet property="imgVwBorderMask" destination="Tei-ib-anP" id="2Cz-Dm-0J3"/>
                         <outlet property="imgVwFBBackground" destination="463-XH-h1K" id="gtX-Vz-kzE"/>
                         <outlet property="imgVwProfileImg" destination="UIf-PL-neX" id="9gE-8N-m3B"/>
+                        <outlet property="lblStatus" destination="QHW-XO-TZl" id="is3-PA-E86"/>
                         <outlet property="lblUserFrdList" destination="mNh-aC-Fk4" id="phb-w1-O4h"/>
                         <outlet property="lblUserName" destination="b8w-I4-9Cs" id="f1i-up-aVX"/>
                         <outlet property="tbleVwFeeds" destination="O9v-yg-pVf" id="Zz4-gI-JLV"/>
@@ -1408,7 +1416,7 @@
                                 </state>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="mV1-u9-iZL">
-                                <rect key="frame" x="227" y="277" width="80" height="19"/>
+                                <rect key="frame" x="227" y="277" width="80.000000217598142" height="19"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1442,17 +1450,18 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="kfg-WT-mwo">
+                                <rect key="frame" x="112" y="29" width="96" height="96"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mask-border.png" id="ZPh-Yg-iCX">
+                                <rect key="frame" x="110" y="27" width="100" height="100"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                            </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="MgZ-aj-xAJ">
                                 <rect key="frame" x="23" y="133" width="274" height="23"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qYd-9T-dBm">
-                                <rect key="frame" x="60" y="164" width="200.00000178813931" height="69"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -1544,14 +1553,13 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="kfg-WT-mwo">
-                                <rect key="frame" x="112" y="29" width="96" height="96"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mask-border.png" id="ZPh-Yg-iCX">
-                                <rect key="frame" x="110" y="27" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                            </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qYd-9T-dBm">
+                                <rect key="frame" x="60" y="164" width="200.00000178813931" height="69"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -1660,6 +1668,14 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="CUL-vQ-kRd">
+                                <rect key="frame" x="112" y="29" width="96" height="96"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mask-border.png" id="sxQ-BN-Kpg">
+                                <rect key="frame" x="110" y="27" width="100" height="100"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                            </imageView>
                             <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="177" sectionHeaderHeight="22" sectionFooterHeight="22" id="ps9-KA-Bp8">
                                 <rect key="frame" x="0.0" y="311" width="320" height="257"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -1738,14 +1754,13 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="CUL-vQ-kRd">
-                                <rect key="frame" x="112" y="29" width="95" height="96"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mask-border.png" id="sxQ-BN-Kpg">
-                                <rect key="frame" x="110" y="27" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                            </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gnI-pU-ZbX">
+                                <rect key="frame" x="60" y="162" width="200.00000178813931" height="69"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -1759,6 +1774,7 @@
                         <outlet property="imgVwLine1" destination="1m4-Ig-Pko" id="qOx-x7-ahd"/>
                         <outlet property="imgVwLine2" destination="n7W-PU-nyg" id="33V-0p-xsQ"/>
                         <outlet property="imgVwProfileImg" destination="CUL-vQ-kRd" id="dU2-gv-KdN"/>
+                        <outlet property="lblStatus" destination="gnI-pU-ZbX" id="XBX-yT-c2P"/>
                         <outlet property="lblUserFollowersTitle" destination="ybF-Fb-jfo" id="cN6-0A-3cz"/>
                         <outlet property="lblUserFollowes" destination="oal-bx-0jD" id="ACY-4Y-eSt"/>
                         <outlet property="lblUserFollowing" destination="Zvz-fo-Fjd" id="CFE-j0-4HD"/>
@@ -1895,6 +1911,39 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="NTA-oM-Xsg">
+                                <rect key="frame" x="-60" y="0.0" width="60" height="173"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="0.0026840485490000001" blue="0.1218096" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" image="Cross.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteFBAccout:" destination="uRf-U3-3yK" eventType="touchUpInside" id="Qbt-VT-DYX"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="CY8-L0-YaJ">
+                                <rect key="frame" x="-60" y="173" width="60" height="173"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="0.0026840485490000001" blue="0.1218096" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" image="Cross.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteTwitterAccout:" destination="uRf-U3-3yK" eventType="touchUpInside" id="6jM-02-jhG"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="FJ9-dw-CtP">
+                                <rect key="frame" x="-60" y="346" width="60" height="173"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="0.0026840485490000001" blue="0.1218096" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" image="Cross.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteInstagramAccout:" destination="uRf-U3-3yK" eventType="touchUpInside" id="Y85-md-JZX"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" id="0SC-yQ-znc">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="173"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -1971,39 +2020,6 @@
                                     </label>
                                 </subviews>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="NTA-oM-Xsg">
-                                <rect key="frame" x="-60" y="0.0" width="60" height="173"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="0.0026840485490000001" blue="0.1218096" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" image="Cross.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="deleteFBAccout:" destination="uRf-U3-3yK" eventType="touchUpInside" id="Qbt-VT-DYX"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="CY8-L0-YaJ">
-                                <rect key="frame" x="-60" y="173" width="60" height="173"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="0.0026840485490000001" blue="0.1218096" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" image="Cross.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="deleteTwitterAccout:" destination="uRf-U3-3yK" eventType="touchUpInside" id="6jM-02-jhG"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="FJ9-dw-CtP">
-                                <rect key="frame" x="-60" y="346" width="60" height="173"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="0.0026840485490000001" blue="0.1218096" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" image="Cross.png">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="deleteInstagramAccout:" destination="uRf-U3-3yK" eventType="touchUpInside" id="Y85-md-JZX"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" id="91h-gZ-ffN">
                                 <rect key="frame" x="0.0" y="345" width="320" height="173"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
@@ -2283,7 +2299,7 @@
         <!--Link View Controller-->
         <scene sceneID="zxO-au-TRb">
             <objects>
-                <viewController id="kSW-Mm-L8a" customClass="LinkViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="linkVwController" id="kSW-Mm-L8a" customClass="LinkViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ld4-mf-o2Z">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -2327,7 +2343,7 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                             </imageView>
                             <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="ffu-lu-gOP">
-                                <rect key="frame" x="128" y="253" width="65" height="65"/>
+                                <rect key="frame" x="128" y="253" width="63" height="63"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="transparent-circle.png" id="496-Y1-AhK">
@@ -2335,15 +2351,15 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="yee-cl-7R0">
-                                <rect key="frame" x="128" y="420" width="65" height="65"/>
+                                <rect key="frame" x="128" y="421" width="63" height="63"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="transparent-circle.png" id="YV9-aH-n50">
-                                <rect key="frame" x="128" y="420" width="65" height="65"/>
+                                <rect key="frame" x="127" y="420" width="65" height="65"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </imageView>
                             <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="w5Q-Ow-J6o">
-                                <rect key="frame" x="128" y="87" width="65" height="65"/>
+                                <rect key="frame" x="128" y="88" width="63" height="63"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="transparent-circle.png" id="8A4-fd-WNO">
@@ -2818,7 +2834,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="7E0010EA-ACAC-4FCC-8E6B-1B14F1303A63" width="24" height="24">
+        <image name="3DB02A64-A8D6-4D6F-BE2C-C77F3A97475B" width="24" height="24">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPj9YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQsLzI4O1UkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
@@ -2931,7 +2947,7 @@ KBMtAAAAAAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAAEy8
         <image name="messages.png" width="28" height="18"/>
         <image name="more.png" width="40" height="8"/>
         <image name="person.png" width="20" height="20"/>
-        <image name="play-btn.png" width="200" height="200"/>
+        <image name="play-btn.png" width="100" height="100"/>
         <image name="play.png" width="24" height="24"/>
         <image name="plus.png" width="29" height="29"/>
         <image name="prev-arrow.png" width="12" height="20"/>

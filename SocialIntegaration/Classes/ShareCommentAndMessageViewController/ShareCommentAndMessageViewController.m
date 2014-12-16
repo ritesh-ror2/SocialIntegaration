@@ -108,7 +108,7 @@
     if (IS_IOS8) {
         self.toolBar.frame = CGRectMake(0, self.view.frame.size.height -(kbSize.height+44), self.toolBar.frame.size.width, self.toolBar.frame.size.height);
     } else {
-        self.toolBar.frame = CGRectMake(0, self.view.frame.size.height - kbSize.height, self.toolBar.frame.size.width, self.toolBar.frame.size.height);
+        self.toolBar.frame = CGRectMake(0, self.view.frame.size.height - (kbSize.height+44), self.toolBar.frame.size.width, self.toolBar.frame.size.height);
     }
 }
 

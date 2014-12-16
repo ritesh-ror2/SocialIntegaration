@@ -61,6 +61,10 @@
 #define IS_IOS8	(([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) ? YES : NO)
 
     //cell height
+#define iPhone5_Width_Img 250
+#define iPhone6_Width_Img 306
+#define iPhone6_Plus_Width_Img 344
+
 #define iPhone5_Width 320
 #define iPhone6_Width 375
 #define iPhone6_Plus_Width 414
@@ -69,6 +73,7 @@
 #define iPhone5_lbl_width 250
 #define iPhone6_lbl_width 250
 #define iPhone6_Plus_lbl_width 250
+#define ISALREADYLOGIN  @"isAlreadyLogin"
 
 
 #define IS_IPHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)

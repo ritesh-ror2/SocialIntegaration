@@ -111,9 +111,10 @@
 
 - (void)setFrameForIPhone6and6Plus {
 
-    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 80)/2, self.imgVwProfileImg.frame.origin.y+35, 80, 80);
+    self.imgVwProfileImg.frame = CGRectMake((self.view.frame.size.width - 82)/2, self.imgVwProfileImg.frame.origin.y+35, 82, 82);
     self.imgVwBorderMask.frame = CGRectMake((self.view.frame.size.width - 84)/2, self.imgVwBorderMask.frame.origin.y+35, 84, 84);
     self.lblUserName.frame = CGRectMake((self.view.frame.size.width - self.lblUserName.frame.size.width)/2, self.imgVwBorderMask.frame.origin.y+self.imgVwBorderMask.frame.size.height+10, self.lblUserName.frame.size.width, 21);
+    self.lblStatus.frame = CGRectMake((self.view.frame.size.width - self.lblStatus.frame.size.width)/2, self.lblUserName.frame.origin.y+self.lblUserName.frame.size.height+10, self.lblStatus.frame.size.width, self.lblStatus.frame.size.height);
 
     int xAxis;
     if (IS_IPHONE_6P_IOS8) {
@@ -323,7 +324,7 @@
     self.lblUserPost.text = userProfile.post;
     self.lblUserFollowes.text = userProfile.followers;
     self.lblUserFollowing.text = userProfile.following;
-    self.lblStatus.text = userProfile.status;
+    self.lblStatus.text = userProfile.description;
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
