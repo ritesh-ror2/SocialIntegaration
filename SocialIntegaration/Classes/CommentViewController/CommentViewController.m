@@ -125,7 +125,10 @@
     tbleVwComment.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
     [self addUserImgAtLeftSide];
-    [self getLikeCountOfFb];
+
+    if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
+        [self getLikeCountOfFb];
+    }
 }
 
 - (UIStatusBarStyle) preferredStatusBarStyle {
@@ -523,7 +526,7 @@
     imgVwLagrePostImage.layer.cornerRadius = 5.0;
     imgVwLagrePostImage.layer.masksToBounds = YES;
 
-/*    if (objUserInfo.postImg.length != 0) {
+    if (objUserInfo.postImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
         asyVwOfPost.frame = CGRectMake(64, heightPostImg + lblComment.frame.origin.y + 3, [Constant withOfImageInDescriptionView],  [Constant heightOfCellInTableVw]);
@@ -542,10 +545,9 @@
         [self setFrameOfActivityView:lblComment.frame.size.height + lblComment.frame.origin.y + 10];
         int taggedUser =  [self setFramesOfTaggedUsers:lblComment.frame.size.height + lblComment.frame.origin.y + 40];
         imgVwBackground.frame = CGRectMake(0, 0, imgVwBackground.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 45) + taggedUser);
-    }*/
-
+    }
     
-   if (objUserInfo.postImg.length != 0) {
+ /*   if (objUserInfo.postImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
         asyVwOfPost.frame = CGRectMake(0, heightPostImg + lblComment.frame.origin.y + 3, [Constant widthOfIPhoneView],  [Constant widthOfIPhoneView]);
@@ -564,11 +566,16 @@
         [self setFrameOfActivityView:lblComment.frame.size.height + lblComment.frame.origin.y + 10];
         int taggedUser =  [self setFramesOfTaggedUsers:lblComment.frame.size.height + lblComment.frame.origin.y + 40];
         imgVwBackground.frame = CGRectMake(0, 0, self.view.frame.size.width, lblComment.frame.size.height + (lblComment.frame.origin.y + 45) + taggedUser);
-    }
+    }*/
 
     [self showActivityVw]; //show activity
 
-    scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + 235));
+    if ((self.view.frame.size.height - (imgVwBackground.frame.size.height+64)) > 235) {
+         scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + (self.view.frame.size.height - (imgVwBackground.frame.size.height+64))));
+    } else {
+         scrollVwShowComment.contentSize = CGSizeMake(320, (imgVwBackground.frame.size.height + 235)); //235));
+    }
+
 
     if (objUserInfo.postImg.length != 0) {
 

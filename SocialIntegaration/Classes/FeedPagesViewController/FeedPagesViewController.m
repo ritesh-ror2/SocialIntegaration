@@ -75,6 +75,7 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
+        // self.navigationController.navigationBar.hidden = YES;
 
     [self performSelector:@selector(showPageControlOfTimeline) withObject:nil afterDelay:0.1];
 }
