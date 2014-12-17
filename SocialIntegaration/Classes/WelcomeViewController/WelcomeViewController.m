@@ -123,6 +123,16 @@
     welcomeVw.backgroundColor = [UIColor whiteColor];
 
     [welcomeVw addSubview:imgVwOfWelcomeImg];
+
+    UIImage *imgArrow = [UIImage imageNamed:@"swipe-arrow.png"];
+    UIImageView *imgVwOfArrow = [[UIImageView alloc]init];
+    imgVwOfArrow.frame = CGRectMake((self.view.frame.size.width - 40), self.view.frame.size.height - 63, imgArrow.size.width, imgArrow.size.height);
+    imgVwOfArrow.image = imgArrow;
+    imgVwOfArrow.contentMode = UIViewContentModeScaleAspectFit;
+    [welcomeVw addSubview:imgVwOfArrow];
+
+    welcomeVw.backgroundColor = [UIColor colorWithRed:245/256.0f green:245/256.0f blue:245/256.0f alpha:1.0];
+
 }
 
 - (void)viewForWelcomeSceen1:(UIView*)welcomeVw {
@@ -236,8 +246,8 @@
     [welcomeVw addSubview:imgVwOfWelcomeImg];
 
     UIButton *btnLogin = [UIButton buttonWithType:UIButtonTypeCustom];
-    [btnLogin setTitle:@"Login" forState:UIControlStateNormal];
-    [btnLogin setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [btnLogin setTitle:@"Log In" forState:UIControlStateNormal];
+    [btnLogin setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
     btnLogin.frame = CGRectMake(self.view.frame.size.width - 70, self.view.frame.size.height - 50 , 70, 44);
     //[btnLogin setBackgroundColor:[UIColor blackColor]];
     [btnLogin addTarget:self action:@selector(loginBtnTapp:) forControlEvents:UIControlEventTouchUpInside];

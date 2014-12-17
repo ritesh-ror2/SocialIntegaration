@@ -36,7 +36,6 @@
     self.navigationItem.title = @"ShowDetails";
     self.navigationController.navigationBarHidden = NO;
     [self.webViewVideo setHidden:YES];
-    [self.asyImgView setHidden:YES];
     self.navigationController.navigationBar.translucent = YES;
 
     if ([self.userInfo.type isEqualToString:@"video"]) { // video on web view
@@ -44,6 +43,13 @@
         NSURLRequest *urlRequest = [[NSURLRequest alloc]initWithURL:[NSURL URLWithString:self.userInfo.videoUrl]];
         [self.webViewVideo loadRequest:urlRequest];
         [self.webViewVideo setHidden:NO];
+    } else {
+        [self.imgVwLargeImg setHidden:NO];
+        if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
+            self.imgVwLargeImg.Image = self.imgLarge;
+        } else {
+            [self.imgVwLargeImg sd_setImageWithURL:[NSURL URLWithString:self.userInfo.postImg] placeholderImage:nil];
+        }
     }
 }
 

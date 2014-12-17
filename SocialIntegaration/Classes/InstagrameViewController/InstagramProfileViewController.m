@@ -392,7 +392,7 @@
                 return(rect.size.height + heightOfRowImg + 33);
             }
         }
-        return(rect.size.height + heightOfRowImg - 3);
+        return(rect.size.height + heightOfRowImg + 13);
     }
 
     for (NSString *index in self.arrySelectedIndex) {

@@ -16,6 +16,7 @@
 #import "GiveCommentViewController.h"
 #import "ShowImageOrVideoViewController.h"
 #import "ShowOtherUserProfileViewController.h"
+#import "PostStatusViewController.h"
 #import <Social/Social.h>
 
 @interface CommentViewController () <UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, IGRequestDelegate, IGRequestDelegate, UIAlertViewDelegate, NSURLConnectionDelegate> {
@@ -42,6 +43,7 @@
     UIActivityIndicatorView *activityIndicator;
     UIView *vwTaggedUser;
     int commentCount;
+    PostStatusViewController *vwController;
 }
 
 @property (nonatomic, strong) NSMutableArray *arryComment;
@@ -124,7 +126,7 @@
 
     tbleVwComment.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
-    [self addUserImgAtLeftSide];
+        // [self addUserImgAtLeftSide];
 
     if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
         [self getLikeCountOfFb];
@@ -141,7 +143,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)addUserImgAtLeftSide {
+/*- (void)addUserImgAtLeftSide {
 
     UserProfile *userProfile1 = [UserProfile getProfile:@"Facebook"];
 
@@ -162,7 +164,7 @@
 
     [imgVwNavigation addSubview:imgVwProile];
     [imgVwNavigation bringSubviewToFront:imgVwProile];
-}
+}*/
 
 - (void)viewWillAppear:(BOOL)animated {
 
@@ -180,6 +182,11 @@
     [self setProfilePicOfPostUser:self.userInfo];
 
     [Constant showNetworkIndicator];
+}
+
+- (IBAction)backBtnTapped:(id)sender {
+
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Set heading anr right button title
@@ -529,6 +536,8 @@
     if (objUserInfo.postImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
+        btnShowImageOrVideo.hidden = NO;
+
         asyVwOfPost.frame = CGRectMake(64, heightPostImg + lblComment.frame.origin.y + 3, [Constant withOfImageInDescriptionView],  [Constant heightOfCellInTableVw]);
         imgVwLagrePostImage.frame = CGRectMake(64, heightPostImg + lblComment.frame.origin.y + 3,  [Constant withOfImageInDescriptionView],  [Constant heightOfCellInTableVw]);
             // asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
@@ -1458,6 +1467,9 @@
     UIStoryboard *storyBoard = [UIStoryboard  storyboardWithName:@"Main" bundle:nil];
     ShowImageOrVideoViewController *viewController = [storyBoard instantiateViewControllerWithIdentifier:@"ShowImageOrVideo"];
     viewController.userInfo = self.userInfo;
+    if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
+        viewController.imgLarge = imgVwLagrePostImage.image;
+    }
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -1730,6 +1742,23 @@
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:strUrl]];
     connFBLagreImage = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+}
+
+- (IBAction)postBtnTapped:(id)sender {
+
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
+    vwController = (PostStatusViewController*)[mainStoryboard instantiateViewControllerWithIdentifier: @"PostStatusViewController"];
+    vwController.strPOstSocialType = self.userInfo.userSocialType;
+    [self.navigationController pushViewController:vwController animated:YES];
+        // [self performSegueWithIdentifier:@"poststatus" sender:nil];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+
+    NSString * segueIdentifier = [segue identifier];
+    if([segueIdentifier isEqualToString:@"poststatus"]){
+        vwController = [segue destinationViewController];
+    }
 }
 
 @end

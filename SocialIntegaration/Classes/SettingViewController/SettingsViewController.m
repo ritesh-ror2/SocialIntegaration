@@ -62,6 +62,9 @@
 
     if (IS_IPHONE_6_IOS8 || IS_IPHONE_6P_IOS8) {
         [self setFrameOfViewsForiPhone6And6plus];
+    } else {
+
+        vwTwitter.frame = CGRectMake (0, vwTwitter.frame.origin.y, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
     }
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
 
@@ -79,10 +82,16 @@
 - (void)setFrameOfViewsForiPhone6And6plus {
 
     int yAxis;
+    int increaseHeight;
+    int yAxisTwitter;
     if (IS_IPHONE_6_IOS8) {
-        yAxis = 200;
+        yAxis = 210;
+        increaseHeight = 10;
+        yAxisTwitter = 2;
     } else {
-        yAxis = 223;
+        yAxis = 235;
+        increaseHeight = 15;
+        yAxisTwitter = 0;
     }
 
     imgVwTwitterCircle.image = [UIImage imageNamed:@"mask-border.png"];
@@ -93,13 +102,14 @@
 
     vwTwitter.frame = CGRectMake (0, yAxis, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
     //twitter
-    imgVwTwitter.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwTwitter.frame.origin.y+5, 98, 98);
-    imgVwTwitterCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwTwitterCircle.frame.origin.y+5, 100, 100);
+    imgVwTwitter.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwTwitter.frame.origin.y+yAxisTwitter, 98, 98);
+    imgVwTwitterCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwTwitterCircle.frame.origin.y+yAxisTwitter, 100, 100);
     btnTwitterAdd.frame = CGRectMake((self.view.frame.size.width - 64)/2, btnTwitterAdd.frame.origin.y+20, 64, 64);
     lblTwitterName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwTwitter.frame.origin.y + imgVwTwitter.frame.size.height + 5, lblTwitterName.frame.size.width, lblTwitterName.frame.size.height);
      lblTwitterTitle.frame = CGRectMake(lblTwitterTitle.frame.origin.x, lblTwitterName.frame.origin.y + lblTwitterName.frame.size.height + 5, lblTwitterTitle.frame.size.width, lblTwitterTitle.frame.size.height);
 
     //facebook
+    vwFB.frame = CGRectMake (0, vwFB.frame.origin.y, vwFB.frame.size.width, vwFB.frame.size.height+increaseHeight);
     //  btnFb.frame = CGRectMake(0, yAxis, btnFb.frame.size.width, vwFB.frame.size.height);
     imgVwFB.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwFB.frame.origin.y, 98, 98);
     imgVwFBCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwFBCircle.frame.origin.y, 100, 100);

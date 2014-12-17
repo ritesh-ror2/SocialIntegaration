@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
-#import "AsyncImageView.h"
+#import "UIImageView+WebCache.h"
 
 @interface ShowImageOrVideoViewController : UIViewController
 
-@property (nonatomic, strong)UserInfo *userInfo;
-@property (nonatomic, strong)IBOutlet AsyncImageView *asyImgView;
-@property (nonatomic, strong)IBOutlet UIWebView *webViewVideo;
-@property (nonatomic, strong)IBOutlet UIImageView *imgVwLagre;
+@property (nonatomic, strong) UserInfo *userInfo;
+@property (nonatomic, strong) IBOutlet UIImageView *imgVwLargeImg;
+@property (nonatomic, strong) IBOutlet UIWebView *webViewVideo;
+@property (nonatomic, strong) UIImage *imgLarge;
 
 @end

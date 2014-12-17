@@ -85,7 +85,11 @@ BOOL hasTwitter = NO;
     self.arryTappedCell = [[NSMutableArray alloc]init];
 
     /// if (IS_IPHONE5) {
-        self.imgVwBackground.frame = CGRectMake((self.view.frame.size.width - self.imgVwBackground.frame.size.width)/2, (self.view.frame.size.height - self.imgVwBackground.frame.size.height)/2, self.imgVwBackground.frame.size.width, self.imgVwBackground.frame.size.height);
+        self.imgVwBackground.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    if (!IS_IPHONE5) {
+        self.imgVwBackground.image = [UIImage imageNamed:@"Splash-Screen2.png"];
+    }
+
     // }
     // self.loadingView = [[HYCircleLoadingView alloc]init];
     // [self.view addSubview:self.loadingView];
@@ -813,10 +817,10 @@ BOOL hasTwitter = NO;
 
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row];
 
-    NSString *string = objUserInfo.strUserPost;
+    NSString *string = [objUserInfo.strUserPost stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                    attributes:@{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:17.0]}
                                        context:nil];
 
     if (objUserInfo.postImg.length != 0) {
@@ -827,7 +831,7 @@ BOOL hasTwitter = NO;
                 return(rect.size.height + heightOfRowImg + 35);
             }
         }
-        return(rect.size.height + heightOfRowImg - 3);
+        return(rect.size.height + heightOfRowImg+13);
     }
 
     for (NSString *index in self.arrySelectedIndex) {

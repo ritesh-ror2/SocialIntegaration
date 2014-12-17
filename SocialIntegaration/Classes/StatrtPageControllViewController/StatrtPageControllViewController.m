@@ -78,11 +78,22 @@
     self.navigationPageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
 
     UIView *vwPageControl;
-     if (!IS_IPHONE5) {
-          vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 220, 60, 40)];
-     } else {
-         vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 230, 60, 40)];
-     }
+
+    if (!IS_IPHONE5) {
+        vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 220, 60, 40)];
+    } else {
+        vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 230, 60, 40)];
+    }
+   /* } else {
+        if (IS_IPHONE_6_IOS8) {
+            vwPageControl = [[UIView alloc]initWithFrame:CGRectMake((iPhone6_Plus_Width - 50)/2, 260, 50, 40)];
+        } else if (IS_IPHONE_6P_IOS8){
+            vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(210, 260, 60, 40)];
+        } else {
+            vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(160, 260, 60, 40)];
+        }
+    }*/
+
     [self.view addSubview:vwPageControl];
     [self.view bringSubviewToFront:vwPageControl];
 
@@ -107,6 +118,7 @@
 
         ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileView"];
         profileViewController.index = index;
+        profileViewController.navController = self.navigationController;
         return profileViewController;
     }
 

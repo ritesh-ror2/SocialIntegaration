@@ -45,7 +45,7 @@
     }
 
     BOOL isLogined = [[NSUserDefaults standardUserDefaults]boolForKey:ISALREADYLOGIN];
-    if (isLogined == YES) {
+      if (isLogined == YES) {
 
         UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];
         window.rootViewController = (UITabBarController*)[mainStoryboard instantiateViewControllerWithIdentifier: @"Tabbar"];

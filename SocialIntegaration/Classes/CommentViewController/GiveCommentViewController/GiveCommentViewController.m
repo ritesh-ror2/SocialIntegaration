@@ -98,9 +98,7 @@
     navBar.frame = CGRectMake(0, self.view.frame.size.height ,navBar.frame.size.width, navBar.frame.size.height);
     navBar.hidden = YES;
     scrollVwShowComment.contentOffset = CGPointMake(0, 0);
-
 }
-
 
 - (void)setCommentOfpostDetail:(UserInfo *)objUserInfo {
 
@@ -137,13 +135,14 @@
     if (objUserInfo.postImg.length != 0) {
 
         asyVwOfPost.hidden = NO;
-        asyVwOfPost.frame = CGRectMake(64, heightPostComment + lblComment.frame.origin.y + 3, [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
+        asyVwOfPost.frame = CGRectMake(64, heightPostComment + lblComment.frame.origin.y + 3, [Constant withOfImageInDescriptionView],  [Constant heightOfCellInTableVw]);
        if (![self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
                // asyVwOfPost.imageURL = [NSURL URLWithString:objUserInfo.postImg];
            [asyVwOfPost sd_setImageWithURL:[NSURL URLWithString:objUserInfo.postImg] placeholderImage:nil];
            asyVwOfPost.backgroundColor = [UIColor clearColor];
        } else {
-           imgVwLagrePostImage.frame = CGRectMake(0, heightPostComment + lblComment.frame.origin.y + 3,  [Constant heightOfCellInTableVw],  [Constant heightOfCellInTableVw]);
+           imgVwLagrePostImage.frame = CGRectMake(64, heightPostComment + lblComment.frame.origin.y + 3,  [Constant withOfImageInDescriptionView],  [Constant heightOfCellInTableVw]);
+           imgVwLagrePostImage.backgroundColor = [UIColor clearColor];
            imgVwLagrePostImage.image = self.imgPostImg;
        }
 

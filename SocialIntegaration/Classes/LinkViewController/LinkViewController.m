@@ -37,6 +37,7 @@
     [super viewDidLoad];
 
     self.navigationController.navigationBarHidden = YES;
+/*128*/
 
     btnFb.hidden = YES;
     btnInstagram.hidden = YES;
@@ -48,24 +49,9 @@
         [self setFrameOfViewsForiPhone6And6plus];
     } else {
 
-        BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
-        if (isFbLogin == YES)  {
-            vwFB.frame = CGRectMake (0, vwFB.frame.origin.y-50, vwFB.frame.size.width, vwFB.frame.size.height);
-        }
-
-        BOOL isTwitterLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
-        if (isTwitterLogin == YES)  {
-            vwTwitter.frame = CGRectMake (0, 0, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
-        } else {
-            vwTwitter.frame = CGRectMake (0, 112, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
-        }
-
-        BOOL isInstLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
-        if (isInstLogin == YES)  {
-            vwInstagram.frame = CGRectMake (0, 0, vwInstagram.frame.size.width,200);
-        } else {
-            vwInstagram.frame = CGRectMake (0, 195, vwInstagram.frame.size.width,200);
-        }
+        vwFB.frame = CGRectMake (0, vwFB.frame.origin.y, vwFB.frame.size.width, vwFB.frame.size.height+10);
+        vwTwitter.frame = CGRectMake (0, 118, vwTwitter.frame.size.width, vwTwitter.frame.size.height);
+        vwInstagram.frame = CGRectMake (0, 200, vwInstagram.frame.size.width,200);
     }
 
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
@@ -104,17 +90,29 @@
     int yAxisOfContent;
     int startFrameInst;
     int startFrameTwit;
+    int lessHeight;
+    int lessYaxisInst;
+    int yAxisOfTwitterContent;
+    int lessYAxisTwitter;
 
     if (IS_IPHONE_6_IOS8) {
         yAxis = 250;
         yAxisOfContent = 35;
-        startFrameInst = 230;
+        startFrameInst = 235;
         startFrameTwit = 128;
+        yAxisOfTwitterContent = 35;
+        lessHeight = 0;
+        lessYaxisInst = 8;
+        lessYAxisTwitter = 0;
     } else {
         yAxis = 280;
         yAxisOfContent = 55;
-        startFrameInst = 245;
-        startFrameTwit = 134;
+        startFrameInst = 256;
+        startFrameTwit = 145;
+        yAxisOfTwitterContent = 50;
+        lessHeight = -28;
+        lessYaxisInst = -5;
+        lessYAxisTwitter = 4;
     }
 
     imgVwTwitterCircle.image = [UIImage imageNamed:@"mask-border.png"];
@@ -122,45 +120,47 @@
     imgVwInstagramCircle.image = [UIImage imageNamed:@"mask-border.png"];
 
     BOOL isTwitterUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISTWITTERLOGIN];
-    if (isTwitterUserLogin == YES) {
-
-        if (IS_IPHONE_6_IOS8) {
-            vwTwitter.frame = CGRectMake (0, 30, vwTwitter.frame.size.width, vwTwitter.frame.size.height+20);
-        } else {
-            vwTwitter.frame = CGRectMake (0, 40, vwTwitter.frame.size.width, vwTwitter.frame.size.height-10);
-        }
-    } else {
-        vwTwitter.frame = CGRectMake (0, startFrameTwit, vwTwitter.frame.size.width, vwTwitter.frame.size.height-10);
-    }
+//    if (isTwitterUserLogin == YES) {
+//
+//        if (IS_IPHONE_6_IOS8) {
+//            vwTwitter.frame = CGRectMake (0, 30, vwTwitter.frame.size.width, vwTwitter.frame.size.height+20);
+//        } else {
+//            vwTwitter.frame = CGRectMake (0, 40, vwTwitter.frame.size.width, vwTwitter.frame.size.height-10);
+//        }
+//    }
+//    } else {
+        vwTwitter.frame = CGRectMake (0, startFrameTwit, vwTwitter.frame.size.width, vwTwitter.frame.size.height+lessHeight);
+//    }
     [self.view sendSubviewToBack:vwTwitter];
         //twitter
-    imgVwTwitter.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwTwitter.frame.origin.y+yAxisOfContent, 98, 98);
-    imgVwTwitterCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwTwitterCircle.frame.origin.y+yAxisOfContent, 100, 100);
-    btnTwitterAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnTwitterAdd.frame.origin.y+yAxisOfContent+yAxisOfContent+10, btnTwitterAdd.frame.size.width, btnTwitterAdd.frame.size.height);
+    imgVwTwitter.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwTwitter.frame.origin.y+yAxisOfTwitterContent+lessYAxisTwitter, 98, 98);
+    imgVwTwitterCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwTwitterCircle.frame.origin.y+yAxisOfTwitterContent+lessYAxisTwitter, 100, 100);
+    btnTwitterAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnTwitterAdd.frame.origin.y+yAxisOfContent+yAxisOfContent-5, btnTwitterAdd.frame.size.width, btnTwitterAdd.frame.size.height);
     lblTwitterName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwTwitter.frame.origin.y + imgVwTwitter.frame.size.height + 5, lblTwitterName.frame.size.width, lblTwitterName.frame.size.height);
     lblTwitterTitle.frame = CGRectMake(lblTwitterTitle.frame.origin.x, lblTwitterName.frame.origin.y + lblTwitterName.frame.size.height + 5, lblTwitterTitle.frame.size.width, lblTwitterTitle.frame.size.height);
 
-    BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
-    if (isFbLogin == YES) {  //facebook
-        vwFB.frame = CGRectMake (0, 0, vwFB.frame.size.width, vwFB.frame.size.height-10);
-    }
+        // BOOL isFbLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISFBLOGIN];
+        // if (isFbLogin == YES) {  //facebook
+    vwFB.frame = CGRectMake (0, 0, vwFB.frame.size.width, vwFB.frame.size.height+8);
+        //}
+    
         imgVwFB.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwFB.frame.origin.y, 98, 98);
         imgVwFBCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwFBCircle.frame.origin.y, 100, 100);
-        btnFbAdd.frame = CGRectMake((self.view.frame.size.width - btnTwitterAdd.frame.size.width)/2, btnFbAdd.frame.origin.y+70, btnFbAdd.frame.size.width, btnFbAdd.frame.size.height);
+        btnFbAdd.frame = CGRectMake((self.view.frame.size.width - btnFbAdd.frame.size.width)/2, btnFbAdd.frame.origin.y+60, btnFbAdd.frame.size.width, btnFbAdd.frame.size.height);
         lblFBName.frame = CGRectMake(lblFBName.frame.origin.x, imgVwFB.frame.origin.y + imgVwFB.frame.size.height + 5, lblFBName.frame.size.width,lblFBName.frame.size.height);
         lblFBTitle.frame = CGRectMake(lblFBTitle.frame.origin.x, lblFBName.frame.origin.y + lblFBName.frame.size.height + 5, lblFBTitle.frame.size.width, lblFBTitle.frame.size.height);
 
-    BOOL isInstUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
-    if (isInstUserLogin == YES) {
-        vwInstagram.frame = CGRectMake (0, 0, vwInstagram.frame.size.width, vwInstagram.frame.size.height+10);
-    } else {
-        vwInstagram.frame = CGRectMake (0,startFrameInst , vwInstagram.frame.size.width, vwInstagram.frame.size.height+20);
-    }
+        // BOOL isInstUserLogin = [[NSUserDefaults standardUserDefaults]boolForKey:ISINSTAGRAMLOGIN];
+        //   if (isInstUserLogin == YES) {
+        // vwInstagram.frame = CGRectMake (0, +5, vwInstagram.frame.size.width, vwInstagram.frame.size.height+10);
+        // } else {
+         vwInstagram.frame = CGRectMake (0,startFrameInst , vwInstagram.frame.size.width, vwInstagram.frame.size.height+30);
+        // }
 
         //instagram
-    imgVwInstagram.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwInstagram.frame.origin.y-yAxisOfContent+12, 98, 98);
-    imgVwInstagramCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwInstagramCircle.frame.origin.y-yAxisOfContent+12, 100, 100);
-    btnInstagramAdd.frame = CGRectMake((self.view.frame.size.width - btnInstagramAdd.frame.size.width)/2, btnInstagramAdd.frame.origin.y-20, btnInstagramAdd.frame.size.width, btnInstagramAdd.frame.size.height);
+    imgVwInstagram.frame = CGRectMake((self.view.frame.size.width - 98)/2, imgVwInstagram.frame.origin.y-yAxisOfContent+lessYaxisInst, 98, 98);
+    imgVwInstagramCircle.frame = CGRectMake((self.view.frame.size.width - 100)/2, imgVwInstagramCircle.frame.origin.y-yAxisOfContent+lessYaxisInst, 100, 100);
+    btnInstagramAdd.frame = CGRectMake((self.view.frame.size.width - btnInstagramAdd.frame.size.width)/2, btnInstagramAdd.frame.origin.y-10, btnInstagramAdd.frame.size.width, btnInstagramAdd.frame.size.height);
     lblInstagramName.frame = CGRectMake(lblInstagramName.frame.origin.x, imgVwInstagram.frame.origin.y + imgVwInstagram.frame.size.height +5, lblInstagramName.frame.size.width, lblInstagramName.frame.size.height);
     lblInstagramTitle.frame = CGRectMake(lblInstagramTitle.frame.origin.x, lblInstagramName.frame.origin.y + lblInstagramName.frame.size.height + 5, lblInstagramTitle.frame.size.width, lblInstagramTitle.frame.size.height);
 }

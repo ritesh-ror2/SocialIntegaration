@@ -47,7 +47,7 @@
 
     sharedAppDelegate.isFirstTimeLaunch = NO;
 
-    self.tbleVwInstagram.separatorColor = [UIColor clearColor];
+    self.tbleVwInstagram.separatorColor = [UIColor lightGrayColor];
 
     heightOfRowImg = [Constant heightOfCellInTableVw];
     widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
@@ -152,7 +152,7 @@
                 return(rect.size.height + heightOfRowImg + 33);
             }
         }
-        return(rect.size.height + heightOfRowImg - 3);
+        return(rect.size.height + heightOfRowImg + 13);
     }
 
     for (NSString *index in self.arrySelectedIndex) {

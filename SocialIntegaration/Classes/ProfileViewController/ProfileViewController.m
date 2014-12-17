@@ -398,7 +398,7 @@
                 return(rect.size.height + heightOfRowImg + 35);
             }
         }
-        return(rect.size.height + heightOfRowImg - 3);
+        return(rect.size.height + heightOfRowImg + 13);
     }
 
     for (NSString *index in self.arrySelectedIndex) {
@@ -414,11 +414,13 @@
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
 
+     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     CommentViewController *commentVw = [storyboard instantiateViewControllerWithIdentifier:@"CommentView"];
     commentVw.userInfo = objuserInfo;
     commentVw.postUserImg = imgName;
-    [[self navigationController] pushViewController:commentVw animated:YES];
+        //[self.navController pushViewController:commentVw animated:YES];
+   [[self navigationController] pushViewController:commentVw animated:YES];
 }
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
