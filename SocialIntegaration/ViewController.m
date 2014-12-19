@@ -549,6 +549,8 @@ BOOL hasTwitter = NO;
 
         for (NSDictionary *dictData in arryPost) {
 
+            NSLog(@"Facebook %@", dictData);
+            
             UserInfo *userInfo =[[UserInfo alloc]init];
 
             NSDictionary *fromUser = [dictData objectForKey:@"from"];

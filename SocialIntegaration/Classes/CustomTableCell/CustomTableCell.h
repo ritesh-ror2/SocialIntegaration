@@ -54,6 +54,9 @@
     IBOutlet UIImageView *imgVwOfLikeInstagram;
     UIActivityIndicatorView *spinner;
         //IBOutlet UITextView *txtVwMessage;
+
+    NSMutableData *responseFBData;
+    NSURLConnection *connFBLagreImage;
 }
 
 @property (nonatomic, strong) NSNumber *touchCount;

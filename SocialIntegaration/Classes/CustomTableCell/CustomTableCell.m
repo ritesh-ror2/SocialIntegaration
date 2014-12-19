@@ -308,6 +308,12 @@
 
 - (void)setValueOfFeeds:(UserInfo*)objUserInfo {
 
+
+    if ([objUserInfo.userSocialType isEqualToString:@"Facebook"] && [objUserInfo.type isEqualToString:@"photo"]) {
+
+        [self getLargeImageOfFacebook];
+    }
+
     NSString *stringName = [objUserInfo.userName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     CGRect rectName = [stringName boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 21)
                                        options:NSStringDrawingUsesLineFragmentOrigin
@@ -640,6 +646,62 @@
             });
 		}
 	});
+}
+
+#pragma mark - Get large image of facebook
+/**************************************************************************************************
+ Function to get large image of facebook
+ **************************************************************************************************/
+
+- (void)getLargeImageOfFacebook {
+
+    NSString *strUrl =  [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=normal",self.userInfo.objectIdFB];
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:strUrl]];
+    connFBLagreImage = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+}
+
+#pragma mark NSURLConnection Delegate Methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+
+    if(connection == connFBLagreImage) {
+        responseFBData = [[NSMutableData alloc] init];
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+
+    if (connection == connFBLagreImage) {
+        [responseFBData appendData:data];
+    }
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection
+                  willCacheResponse:(NSCachedURLResponse*)cachedResponse {
+        // Return nil to indicate not necessary to store a cached response for this connection
+    return nil;
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+
+        //  NSString *strData = [[NSString alloc]initWithData:responseFBData encoding:NSUTF8StringEncoding];
+
+    if (connection == connFBLagreImage) {
+
+        [Constant hideNetworkIndicator];
+        UIImage *image = [UIImage imageWithData:responseFBData];
+
+        if ([self.userInfo.type isEqualToString:@"video"]) {
+
+        } else {
+            imgVwPostImg.hidden = NO;
+            if (imgVwPostImg.image != nil) {
+                imgVwPostImg.image = nil;
+            }
+            imgVwPostImg.image = image;
+        }
+    }
 }
 
 #pragma mark - Like of Fb POst
