@@ -9,6 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "UserNotification.h"
 
+@protocol UserNotificationDelegate <NSObject>
+
+- (void)userProfileBtnTapped:(UserNotification*)userNotificationInfo;
+
+@end
+
+
 @interface UserNotificationCustomCell : UITableViewCell {
 
     IBOutlet UILabel *lblTitle;
@@ -16,8 +23,11 @@
     IBOutlet UILabel *lblType;
     IBOutlet UILabel *lblName;
     IBOutlet UIImageView *imgVwProfile;
+    IBOutlet UIButton *btnUserProfile;
 }
 
+@property (nonatomic, strong) UserNotification*userNotificationInfo;
+@property (unsafe_unretained) id <UserNotificationDelegate> delegate;
 
 - (void)setNotificationIntableView:(UserNotification *)userNotification;
 

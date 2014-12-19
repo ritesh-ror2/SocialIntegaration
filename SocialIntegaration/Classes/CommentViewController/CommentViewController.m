@@ -210,11 +210,12 @@
         imgVwNavigation.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
     } else if ([self.userInfo.userSocialType isEqualToString:@"Instagram"]) {
 
-        [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateNormal];
-        [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateSelected];
-        [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateHighlighted];
+//        [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateNormal];
+//        [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateSelected];
+//        [btnRight setImage:[UIImage imageNamed:@"inst_Camera.png"] forState:UIControlStateHighlighted];
 
         lblHeading.text = @"Instagram";
+        [btnRight setTitle:@"Post" forState:UIControlStateNormal];
 
         [self setCommentOfpostDetail:self.userInfo];
         [self fetchInstagrameComment];

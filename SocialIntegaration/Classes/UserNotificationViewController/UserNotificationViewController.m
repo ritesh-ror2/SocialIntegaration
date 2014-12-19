@@ -12,9 +12,10 @@
 #import "UserNotificationCustomCell.h"
 #import "HYCircleLoadingView.h"
 #import "Reachability.h"
+#import "ShowOtherUserProfileViewController.h"
 #import <Social/Social.h>
 
-@interface UserNotificationViewController () {
+@interface UserNotificationViewController () <UserNotificationDelegate> {
 
     BOOL hasFacebook;
 }
@@ -53,7 +54,7 @@
 
     self.navigationItem.hidesBackButton = YES;
 
-    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 100)/2, (self.view.frame.size.height - 170)/2, 70, 70)];
+    self.loadingView = [[HYCircleLoadingView alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 70)/2, (self.view.frame.size.height - 70)/2, 70, 70)];
     [self.view addSubview:self.loadingView];
     [self.view bringSubviewToFront:self.loadingView];
     self.loadingView.hidden = YES;
@@ -68,7 +69,21 @@
         // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+}
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
+}
+
 - (void)viewDidAppear:(BOOL)animated {
+
+    self.navigationItem.title = @"Notification";
+    self.navigationController.navigationBarHidden = NO;
 
     [super viewDidAppear:animated];
 
@@ -204,6 +219,8 @@
         userNotif.notifType = @"Twitter";
         userNotif.userImg = [dictUser objectForKey:@"profile_image_url"];
 
+        userNotif.dicOthertUser = dictUser;
+
         [self.arryNotifiTwitter addObject:userNotif];
     }
 
@@ -292,7 +309,10 @@
     [tbleViewNotification reloadData];
 
     if (self.arryNotifi.count != 0){
+
         [self showAnimationOfActivity];
+        self.loadingView.hidden = YES;
+        [self.loadingView stopAnimation];
     }
 }
 
@@ -324,6 +344,7 @@
 
     cell = (UserNotificationCustomCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     [cell setNotificationIntableView:[self.arryNotifi objectAtIndex:indexPath.row]];
+    cell.delegate = self;
     return cell;
 }
 
@@ -340,6 +361,19 @@
                                        context:nil];
     
     return (rect.size.height+45);
+}
+
+#pragma mark - User profile btn tapped
+/**************************************************************************************************
+ Function to show other user profile
+ **************************************************************************************************/
+
+- (void)userProfileBtnTapped:(UserNotification*)userNotification {
+
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+    vwController.userNotification = userNotification;
+    [self.navigationController pushViewController:vwController animated:YES];
 }
 
 @end

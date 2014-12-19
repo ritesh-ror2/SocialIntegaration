@@ -25,6 +25,9 @@
 
     int heightOfRowImg;
     int widthOfCommentLbl;
+    UserProfile *userProfile;
+
+    NSInteger indexPost;
 }
 
 @property (nonatomic, strong) NSMutableArray *arrySelfTweets;
@@ -76,7 +79,7 @@
         [self.lblUserTweet setFont:[UIFont fontWithRegularWithSize:14]];
         */
     }
-    self.tbleVwTweeterFeeds.separatorColor = [UIColor lightGrayColor];
+    self.tbleVwTweeterFeeds.separatorColor = [UIColor clearColor];
     heightOfRowImg = [Constant heightOfCellInTableVw];
     widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }
@@ -93,6 +96,14 @@
         //>>>>>>> 8bb65de51a914a175ec2eb603298f2f67e902f45
     [super viewWillDisappear:animated];
     [self.arryTappedCell removeAllObjects];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -178,7 +189,7 @@
     } else {
 
         self.tbleVwTweeterFeeds.hidden = NO;
-        UserProfile *userProfile = [UserProfile getProfile:@"Twitter"];
+        userProfile = [UserProfile getProfile:@"Twitter"];
         [self showProfile:userProfile];
         [self getUserTweets:userProfile.userId];
     }
@@ -250,20 +261,20 @@
  Function to show user profile information
  **************************************************************************************************/
 
-- (void)showProfile:(UserProfile *)userProfile {
+- (void)showProfile:(UserProfile *)userProfile1 {
 
-    self.lblUserName.text = userProfile.userName;
-    self.lblStatus.text = userProfile.description;
-    self.lblUserTweet.text = userProfile.tweet;
-    self.lblUserFollowes.text =  userProfile.followers;
-    self.lblUserFollowing.text = userProfile.following;
-    self.lblStatus.text = userProfile.description;
+    self.lblUserName.text = userProfile1.userName;
+    self.lblStatus.text = userProfile1.description;
+    self.lblUserTweet.text = userProfile1.tweet;
+    self.lblUserFollowes.text =  userProfile1.followers;
+    self.lblUserFollowing.text = userProfile1.following;
+    self.lblStatus.text = userProfile1.description;
 
     dispatch_queue_t postImageQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
     dispatch_async(postImageQueue, ^{
 
-        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile1.userImg]];
 
         dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -315,6 +326,7 @@
 
             NSString *strDate = [Constant convertDateOfTwitterInDatabaseFormate:[dictData objectForKey:@"created_at"]];
             userInfo.time = [Constant convertDateOFTwitter:strDate];
+
             [self.arrySelfTweets addObject:userInfo];
             [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
         }
@@ -353,7 +365,7 @@
 
     if(indexPath.row < [self.arrySelfTweets count]){
 
-    [cell setValueInSocialTableViewCustomCell:[self.arrySelfTweets objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES];
+    [cell setValueInSocialTableViewCustomCell:[self.arrySelfTweets objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES withProfile:YES];
     }
     return cell;
 }
@@ -367,7 +379,7 @@
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                    attributes:@{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:17.0]}
                                        context:nil];
 
     if (objUserInfo.postImg.length != 0) {
@@ -425,7 +437,17 @@
     UIApplication *app = [UIApplication sharedApplication];
     app.networkActivityIndicatorVisible = NO;
 
+    [self.arrySelectedIndex removeAllObjects];
+
+    [self.tbleVwTweeterFeeds beginUpdates];
+    NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:indexPost inSection:0];
+    [self.tbleVwTweeterFeeds reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tbleVwTweeterFeeds endUpdates];
+
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
+
+    [self.arryTappedCell replaceObjectAtIndex:indexPost withObject:[NSNumber numberWithBool:NO]];
+    indexPost = cellIndex;
 
     if (isSelected == YES) {
         [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];

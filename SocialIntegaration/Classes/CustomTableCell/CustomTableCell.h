@@ -28,7 +28,10 @@
     IBOutlet UILabel *lblTime;
     IBOutlet UIImageView *imgVwOfUserProfile;
     IBOutlet UIImageView *imgVwPostImg;
+    IBOutlet UIImageView *imgVwSeperatorLine;
+
     IBOutlet UIButton *btnPlay;
+    IBOutlet UIButton *btnName;
 
     IBOutlet UIImageView *imgVwOfLikeFb;
     IBOutlet UIImageView *imgVwOfComentFb;
@@ -64,6 +67,6 @@
 
 #pragma mark - Function
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(NSMutableArray *)arrySelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline ;
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(NSMutableArray *)arrySelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline withProfile:(BOOL)isProfile;
 
 @end

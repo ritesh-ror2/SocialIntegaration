@@ -124,6 +124,11 @@
                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="wzO-23-vNH">
+                        <rect key="frame" x="60" y="200" width="270" height="1"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </imageView>
                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="SbR-pq-3aM">
                         <rect key="frame" x="205" y="192" width="30" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
@@ -166,10 +171,22 @@
                         <rect key="frame" x="64" y="94" width="250" height="125"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                     </imageView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="OF3-Ok-dA9">
+                        <rect key="frame" x="64" y="10" width="223" height="30"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" red="1" green="0.0026840485490000001" blue="0.1218096" alpha="1" colorSpace="calibratedRGB"/>
+                        <state key="normal">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                        <connections>
+                            <action selector="profileBtnTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="CMY-nz-fAd"/>
+                        </connections>
+                    </button>
                 </subviews>
             </tableViewCellContentView>
             <connections>
                 <outlet property="btnFavourate" destination="Fi3-lA-VcU" id="MVR-Qp-PkN"/>
+                <outlet property="btnName" destination="OF3-Ok-dA9" id="q1j-z4-zUE"/>
                 <outlet property="btnPlay" destination="eVE-vB-Vx1" id="Y40-gY-Fcd"/>
                 <outlet property="btnProfile" destination="xrG-3d-ahO" id="cdd-EJ-5qd"/>
                 <outlet property="btnReply" destination="fRS-B7-E2c" id="Bgh-Q4-a2A"/>
@@ -180,6 +197,7 @@
                 <outlet property="imgVwOfLikeInstagram" destination="vdH-1l-Rgn" id="GRE-RK-NgU"/>
                 <outlet property="imgVwOfUserProfile" destination="nzz-CV-LQp" id="etE-Ae-Th9"/>
                 <outlet property="imgVwPostImg" destination="ppY-XH-nLs" id="PMX-FK-tBC"/>
+                <outlet property="imgVwSeperatorLine" destination="wzO-23-vNH" id="l2l-9o-JV1"/>
                 <outlet property="lblCommentFb" destination="DTA-JA-iAK" id="XFL-Ee-O2o"/>
                 <outlet property="lblFavourate" destination="hCS-d6-mBc" id="zFA-0Q-zFs"/>
                 <outlet property="lblFbLikeCount" destination="AAk-CU-kgQ" id="VII-5l-ZHl"/>

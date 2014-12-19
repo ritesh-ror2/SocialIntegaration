@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UserInfo.h"
+#import "UserNotification.h"
 
 @interface ShowOtherUserProfileViewController : UIViewController {
 
@@ -32,5 +33,6 @@
 @property (nonatomic, strong) UINavigationController *navController;
 
 @property (nonatomic, strong) UserInfo *userInfo;
+@property (nonatomic, strong) UserNotification *userNotification;
 
 @end

@@ -23,6 +23,7 @@
 @interface ProfileViewController () <CustomTableCellDelegate> {
 
     int heightOfRowImg;
+    NSInteger indexPost;
     int widthOfCommentLbl;
 }
 
@@ -51,8 +52,10 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-
-    self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:70/256.0f green:106/256.0f blue:181/256.0f alpha:1.0];
+        //
+    [self setNeedsStatusBarAppearanceUpdate];
+    self.imgVwBorderStatus.backgroundColor = [UIColor colorWithRed:68/256.0f green:88/256.0f blue:156/256.0f alpha:1.0];
+    // self.imgVwFBBackground.backgroundColor = [UIColor colorWithRed:70/256.0f green:106/256.0f blue:181/256.0f alpha:1.0];
     [self.view sendSubviewToBack:self.imgVwFBBackground];
     self.arryOfFBUserFeed = [[NSMutableArray alloc]init];
     self.arrySelectedIndex = [[NSMutableArray alloc]init];
@@ -75,7 +78,7 @@
         [self setFrameForIPhone6and6Plus];
      }
 
-    self.tbleVwFeeds.separatorColor = [UIColor lightGrayColor];
+    self.tbleVwFeeds.separatorColor = [UIColor clearColor];
 
     heightOfRowImg = [Constant heightOfCellInTableVw];
     widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
@@ -89,6 +92,20 @@
 - (void)viewWillDisappear:(BOOL)animated {
 
     [super viewWillDisappear:animated];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+
+    [self setNeedsStatusBarAppearanceUpdate];
+
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+}
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -109,10 +126,6 @@
         UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
         [self setFBUserInfo:userProfile];
     }
-}
-
-- (UIStatusBarStyle) preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
 }
 
 - (void)setFrameForIPhone6and6Plus {
@@ -355,7 +368,6 @@
         arryObjects = [[NSBundle mainBundle]loadNibNamed:@"CustomTableCell" owner:nil options:nil];
         cell = [arryObjects objectAtIndex:0];
         cell.customCellDelegate = self;
-
     }
 
     BOOL isSelected = NO;
@@ -365,12 +377,12 @@
     if(indexPath.row < [self.arryOfFBUserFeed count]){
 
             //  self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES];
+        [cell setValueInSocialTableViewCustomCell: [self.arryOfFBUserFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES withProfile:YES ];
     } else {
 
         if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
 
-            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:YES];
+            [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:YES withProfile:YES];
             cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
         }
     }
@@ -387,7 +399,7 @@
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                    attributes:@{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:17.0]}
                                        context:nil];
 
     if (objUserInfo.postImg.length != 0) {
@@ -413,7 +425,6 @@
 #pragma mark - Custom cell Delegates
 
 - (void)didSelectRowWithObject:(UserInfo *)objuserInfo withFBProfileImg:(NSString *)imgName {
-
      
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     CommentViewController *commentVw = [storyboard instantiateViewControllerWithIdentifier:@"CommentView"];
@@ -428,7 +439,19 @@
     UIApplication *app = [UIApplication sharedApplication];
     app.networkActivityIndicatorVisible = NO;
 
+    [self.arrySelectedIndex removeAllObjects];
+
+    [self.tbleVwFeeds beginUpdates];
+    NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:indexPost inSection:0];
+    [self.tbleVwFeeds reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tbleVwFeeds endUpdates];
+    
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
+
+    [self.arryTappedCell replaceObjectAtIndex:indexPost withObject:[NSNumber numberWithBool:NO]];
+
+    indexPost = cellIndex;
+
 
     if (isSelected == YES) {
         [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];

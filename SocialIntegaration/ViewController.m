@@ -17,6 +17,7 @@
 #import "ShowOtherUserProfileViewController.h"
 #import "Reachability.h"
 #import "HYCircleLoadingView.h"
+#import "SettingsViewController.h"
 #import "ShareCommentAndMessageViewController.h"
 
 NSString *const kSocialServices = @"SocialServices";
@@ -39,6 +40,10 @@ NSString *const kFBSetup = @"FBSetup";
 
     int heightOfRowImg;
     int widthOfCommentLbl;
+    NSInteger indexPost;
+    NSString *strSocialType;
+
+    SettingsViewController *vwControllerSetting;
 }
 
 @property (nonatomic)BOOL noMoreResultsAvail;
@@ -70,9 +75,12 @@ BOOL hasTwitter = NO;
         self.tbleVwPostList.alpha = 0.0;
     } else {
 
-        self.tbleVwPostList.hidden = NO;
-        self.tbleVwPostList.alpha = 1.0;
-        self.imgVwBackground.hidden = YES;
+        if (sharedAppDelegate.arryOfAllFeeds != 0) {
+
+            self.tbleVwPostList.hidden = NO;
+            self.tbleVwPostList.alpha = 1.0;
+            self.imgVwBackground.hidden = YES;
+        }
     }
 
     //left button
@@ -95,7 +103,7 @@ BOOL hasTwitter = NO;
     // [self.view addSubview:self.loadingView];
     // [self.view bringSubviewToFront:self.loadingView];
     // self.loadingView.hidden = YES;
-    self.tbleVwPostList.separatorColor = [UIColor lightGrayColor];
+    self.tbleVwPostList.separatorColor = [UIColor clearColor];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -159,7 +167,14 @@ BOOL hasTwitter = NO;
         }
         [self hideNavBar:NO];
     }
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
+}
+
 
 - (void)viewDidAppear:(BOOL)animated {
 
@@ -177,9 +192,13 @@ BOOL hasTwitter = NO;
 
         self.navigationController.navigationBar.hidden = NO;
         self.navController.navigationBar.translucent = NO;
-        self.tbleVwPostList.hidden = NO;
-        self.tbleVwPostList.alpha = 1.0;
-        self.imgVwBackground.hidden = YES;
+
+        if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
+
+            self.tbleVwPostList.hidden = NO;
+            self.tbleVwPostList.alpha = 1.0;
+            self.imgVwBackground.hidden = YES;
+        }
     }
 
     [self appIsInForeground:nil];
@@ -220,24 +239,48 @@ BOOL hasTwitter = NO;
  Function to show login user image in left side
  **************************************************************************************************/
 
-- (UIImageView *)addUserImgAtLeftSide {
+- (UIView *)addUserImgAtLeftSide {
+
+    UIView *vwProfile = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 35, 35)];
 
     //add mask image
     UserProfile *userProfile = [UserProfile getProfile:@"Facebook"];
 
     if (userProfile != nil) {
 
-            NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
-            UIImage *img = [UIImage imageWithData:image];
-            UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"list-mask.png"]];
-            UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
-            imgVwProile.frame = CGRectMake(0, 0, 35, 35);
-            return imgVwProile;
+        NSData *image = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:userProfile.userImg]];
+        UIImage *img = [UIImage imageWithData:image];
+        UIImage *imgProfile = [Constant maskImage:img withMask:[UIImage imageNamed:@"list-mask.png"]];
+        UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
+        imgVwProile.frame = CGRectMake(0, 0, 35, 35);
+        imgVwProile.userInteractionEnabled = YES;
+        [vwProfile addSubview:imgVwProile];
+    } else {
+
+        UIImage *imgProfile = [Constant maskImage:[UIImage imageNamed: @"user-selected.png"] withMask:[UIImage imageNamed:@"list-mask.png"]];
+
+        UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
+        imgVwProile.frame = CGRectMake(0, 0, 35, 35);
+        imgVwProile.userInteractionEnabled = YES;
+        [vwProfile addSubview:imgVwProile];
     }
-    UIImage *imgProfile = [Constant maskImage:[UIImage imageNamed: @"user-selected.png"] withMask:[UIImage imageNamed:@"list-mask.png"]];
-    UIImageView *imgVwProile = [[UIImageView alloc]initWithImage:imgProfile];
-    imgVwProile.frame = CGRectMake(0, 0, 35, 35);
-    return imgVwProile;
+
+    UIButton*btnProfileSetting = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 35, 35)];
+    [btnProfileSetting addTarget:self action:@selector(userProfileSettingBtnTapped) forControlEvents:UIControlEventTouchUpInside];
+    btnProfileSetting.backgroundColor = [UIColor clearColor];
+    [vwProfile addSubview:btnProfileSetting];
+    [vwProfile bringSubviewToFront:btnProfileSetting];
+
+
+    return vwProfile;
+}
+
+- (void)userProfileSettingBtnTapped {
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    vwControllerSetting = (SettingsViewController *)[storyboard instantiateViewControllerWithIdentifier:@"SettingsView"];
+    [self.navigationController pushViewController:vwControllerSetting animated:YES];
+
 }
 
 /*- (void)appIsInBackground:(NSNotification *)notification {
@@ -770,6 +813,8 @@ BOOL hasTwitter = NO;
         cell.customCellDelegate = self;
     }
 
+      NSLog(@"123456");
+    
     BOOL isSelected = NO;
     if (self.arryTappedCell.count != 0 && indexPath.row < self.arryTappedCell.count) {
         isSelected = [[self.arryTappedCell objectAtIndex:indexPath.row]boolValue];
@@ -777,14 +822,14 @@ BOOL hasTwitter = NO;
     if(indexPath.row < [sharedAppDelegate.arryOfAllFeeds count]){
 
         self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:NO];
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfAllFeeds objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:NO withProfile:NO];
     } else {
 
         if (sharedAppDelegate.arryOfAllFeeds.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:NO];
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:NO withProfile:NO];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
 
                 [self getMoreDataOfFBFeed];
@@ -864,10 +909,21 @@ Delegate to increase cell height when cell is tapped
  **************************************************************************************************/
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
-    
-    [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
 
-    NSLog(@"****%i*** %i", self.arryTappedCell.count, sharedAppDelegate.arryOfAllFeeds.count);
+    [self.arrySelectedIndex removeAllObjects];
+
+    [self.tbleVwPostList beginUpdates];
+    NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:indexPost inSection:0];
+    [self.tbleVwPostList reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tbleVwPostList endUpdates];
+
+    [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
+    [self.arryTappedCell replaceObjectAtIndex:indexPost withObject:[NSNumber numberWithBool:NO]];
+    
+    indexPost = cellIndex;
+    strSocialType = objuserInfo.userSocialType;
+
+    NSLog(@"****%@***", self.arryTappedCell);
 
     if (self.arryTappedCell.count != 0) {
         if (isSelected == YES) {

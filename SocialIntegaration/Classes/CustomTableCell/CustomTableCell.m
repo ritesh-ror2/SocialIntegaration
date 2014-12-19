@@ -32,6 +32,8 @@
     spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     spinner.frame = CGRectMake(([Constant widthOfIPhoneView] - 37)/2, 5, 37, 37);
     [self.contentView addSubview:spinner];
+
+    imgVwSeperatorLine.hidden = NO;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -129,6 +131,7 @@
     if (isDisplay == YES) {
 
         [imgVwOfComentFb setHidden:NO];
+        [imgVwSeperatorLine setHidden:NO];
         [imgVwOfLikeFb setHidden:NO];
         [lblCommentFb setHidden:NO];
         [lblLike setHidden:NO];
@@ -136,6 +139,7 @@
         [btnMoreFb setHidden:NO];
 
         [self setGradientColorOfFB];
+        imgVwSeperatorLine.backgroundColor = [UIColor lightGrayColor];
         lblText.textColor = [UIColor whiteColor];
         lblName.textColor = [UIColor whiteColor];
         btnMoreTweet.titleLabel.textColor = [UIColor whiteColor];
@@ -144,11 +148,14 @@
     } else {
 
         [imgVwOfComentFb setHidden:YES];
+        [imgVwSeperatorLine setHidden:NO];
         [imgVwOfLikeFb setHidden:YES];
         [lblCommentFb setHidden:YES];
         [lblLike setHidden:YES];
         [lblFbLikeCount setHidden:YES];
         [imgVwBgColor setHidden:YES];
+        imgVwSeperatorLine.backgroundColor = [UIColor lightGrayColor];
+
         [btnMoreFb setHidden:YES];
 
         self.contentView.backgroundColor =  [UIColor whiteColor];
@@ -187,6 +194,8 @@
         [lblTweet setHidden:NO];
         [btnMoreTweet setHidden:NO];
         [lblFavourate setHidden:NO];
+        [imgVwSeperatorLine setHidden:NO];
+        imgVwSeperatorLine.backgroundColor = [UIColor lightGrayColor];
 
         lblText.textColor = [UIColor whiteColor];
         lblName.textColor = [UIColor whiteColor];
@@ -203,6 +212,8 @@
         [lblTweet setHidden:YES];
         [lblFavourate setHidden:YES];
         [imgVwBgColor setHidden:YES];
+        [imgVwSeperatorLine setHidden:NO];
+        imgVwSeperatorLine.backgroundColor = [UIColor lightGrayColor];
 
         self.contentView.backgroundColor =  [UIColor whiteColor];
         lblText.textColor = [UIColor darkGrayColor];
@@ -240,6 +251,8 @@
         [lblLike setHidden:NO];
         [lblInstCommentCount setHidden:NO];
         [lblInstLikeCount setHidden:NO];
+        [imgVwSeperatorLine setHidden:NO];
+        imgVwSeperatorLine.backgroundColor = [UIColor lightGrayColor];
 
         lblText.textColor = [UIColor whiteColor];
         lblName.textColor = [UIColor whiteColor];
@@ -255,6 +268,9 @@
         [lblLike setHidden:YES];
         [lblInstCommentCount setHidden:YES];
         [lblInstLikeCount setHidden:YES];
+        [imgVwSeperatorLine setHidden:NO];
+        imgVwSeperatorLine.backgroundColor = [UIColor lightGrayColor];
+
 
         self.contentView.backgroundColor =  [UIColor whiteColor];
         lblText.textColor = [UIColor darkGrayColor];
@@ -292,7 +308,16 @@
 
 - (void)setValueOfFeeds:(UserInfo*)objUserInfo {
 
+    NSString *stringName = [objUserInfo.userName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    CGRect rectName = [stringName boundingRectWithSize:CGSizeMake([Constant widthOfCommentLblOfTimelineAndProfile], 21)
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Medium" size:17.0]}
+                                       context:nil];
+
     lblName.text = objUserInfo.userName;
+    lblName.frame = CGRectMake(63,lblName.frame.origin.y ,rectName.size.width, 21);
+    btnName.frame = lblName.frame;
+
     lblTime.text =  [Constant  calculateTimesBetweenTwoDates:objUserInfo.time];
 
 
@@ -332,6 +357,8 @@
         imgVwPostImg.layer.cornerRadius = 5.0;
         imgVwPostImg.layer.masksToBounds = YES;
 
+        imgVwSeperatorLine.frame = CGRectMake(60, rect.size.height + [Constant heightOfCellInTableVw] + 12, [Constant widthOfIPhoneView] - 60, 1.0);
+
         imgVwPostImg.backgroundColor = [UIColor clearColor];
         btnPlay.frame = imgVwPostImg.frame;
 
@@ -344,6 +371,8 @@
     } else {
 
         [self setFrameOfActivityView:lblText.frame.size.height + lblText.frame.origin.y+7];
+        imgVwSeperatorLine.frame = CGRectMake(60, rect.size.height + 65 - 1, [Constant widthOfIPhoneView] - 60, 1.0);
+
         imgVwBgColor.frame = CGRectMake(0, 0, [Constant widthOfIPhoneView], lblText.frame.size.height + lblText.frame.origin.y + 38);
     }
 }
@@ -356,7 +385,7 @@
     } else {
         [imgVwOfLikeFb setImage:[UIImage imageNamed:@"Like_fb.png"]];
     }
-    [self getLikeCountOfFb];
+    // [self getLikeCountOfFb];
 
     if ([self.userInfo.retweeted isEqualToString:@"1"]) {
         [btnRetweet setImage:[UIImage imageNamed:@"Retweet_active.png"] forState:UIControlStateNormal];//selected
@@ -376,7 +405,12 @@
  Function to set values in feed list
  **************************************************************************************************/
 
-- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(NSMutableArray *)arrySelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline {
+- (void)setValueInSocialTableViewCustomCell:(UserInfo *)objUserInfo forRow:(NSInteger)row withSelectedCell:(NSMutableArray *)arrySelected withPagging:(BOOL)isPagging withOtherTimeline:(BOOL)isOtherTimeline withProfile:(BOOL)isProfile  {//withPreviousIndex:(NSInteger)index withType:(NSString *)type
+
+    imgVwSeperatorLine.hidden = NO;
+    if(isProfile == YES) {
+        btnName.hidden = YES;
+    }
 
     if (isPagging == YES) {
         spinner.hidden = NO;
@@ -401,6 +435,7 @@
 
         [self setIconWhenActivityHasUsedByUser:objUserInfo]; //set activity icon
 
+
         BOOL iRowSelected = NO;
         if (arrySelected.count != 0) {
             for (NSString*iValue in arrySelected) {
@@ -415,8 +450,11 @@
         }
         if (iRowSelected == YES) {  //BOOL isSelected = [[arrySelectedCell objectAtIndex:row]boolValue];
 
+            imgVwSeperatorLine.frame = CGRectMake(60, imgVwBgColor.frame.size.height + imgVwBgColor.frame.origin.y, [Constant widthOfIPhoneView] - 60, 1.0);
+
             self.isAlreadyTapped = YES;
             imgVwBgColor.hidden = NO;
+            [self sendSubviewToBack:imgVwBgColor];
 
             if ([objUserInfo.userSocialType isEqualToString: @"Facebook"]) {
                 [self facebookCellConfiguration:YES];
@@ -426,6 +464,12 @@
                 [self instagramCellConfiguration:YES];
             }
         } else {
+
+            if (self.userInfo.postImg.length == 0) {
+                    //imgVwSeperatorLine.frame = CGRectMake(60, lblText.frame.size.height + lblText.frame.origin.y+13, [Constant widthOfIPhoneView] - 60, 1.0);
+            } else {
+                    // imgVwSeperatorLine.frame = CGRectMake(60,  rect.size.height + [Constant heightOfCellInTableVw] + 12, [Constant widthOfIPhoneView] - 60, 1.0);
+            }
             self.isAlreadyTapped = NO;
             imgVwBgColor.hidden = YES;
         }
@@ -603,7 +647,7 @@
  Function to get like of fb post
  **************************************************************************************************/
 
-- (void)getLikeCountOfFb {
+/*- (void)getLikeCountOfFb {
 
     NSDictionary *dictMessage = @{@"summary": @"true"};
 
@@ -623,6 +667,6 @@
                                   lblFbLikeCount.text = strLikeCount;
                               }
                           }];
-}
+}*/
 
 @end

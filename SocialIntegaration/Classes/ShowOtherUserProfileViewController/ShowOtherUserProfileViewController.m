@@ -34,12 +34,23 @@
 
     [super viewDidLoad];
 
-    if ([self.userInfo.userSocialType isEqualToString:@"Facebook"]) {
+    NSString *name;
+    NSString *notificationType;
 
-        lblName.text = self.userInfo.userName;
-        [self showProfileImageOfFb:self.userInfo];
+    if (self.userInfo != nil) {
+        name = self.userInfo.userName;
+        notificationType = self.userInfo.userSocialType;
+    } else {
+        name = self.userNotification.name;
+        notificationType = self.userNotification.notifType;
+    }
+
+    if ([notificationType isEqualToString:@"Facebook"]) {
+
+        lblName.text = name;
+        [self showProfileImageOfFb];
         imgVwBgImg.image = [UIImage imageNamed:@"facebook-bg.png"];
-    } else  if ([self.userInfo.userSocialType isEqualToString:@"Twitter"]) {
+    } else  if ([notificationType isEqualToString:@"Twitter"]) {
 
         [self setTwitterUserInformation];
         imgVwBgImg.image = [UIImage imageNamed:@"twitter-bg.png"];
@@ -74,7 +85,14 @@
 
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.translucent = NO;
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
 }
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
+}
+
 
 #pragma mark - Set frame for iphone6 and 6+
 
@@ -92,8 +110,10 @@
     lblFolloweCount.frame = CGRectMake(xAxis, lblFolloweCount.frame.origin.y, lblFolloweCount.frame.size.width, lblFolloweCount.frame.size.height);
     lblFollower.frame = CGRectMake(xAxis, lblFollower.frame.origin.y, lblFollower.frame.size.width, lblFollower.frame.size.height);
 
-    imgVwLine1.frame = CGRectMake(xAxis - 15 , 227, 1, 30);
-    imgVwLine2.frame = CGRectMake(xAxis + lblFollower.frame.size.width + 15 , 227, 1, 30);
+        // imgVwLine1.frame = CGRectMake(xAxis - 15 , 227, 1, 30);
+        // imgVwLine2.frame = CGRectMake(xAxis + lblFollower.frame.size.width + 15 , 227, 1, 30);
+    imgVwLine1.frame = CGRectMake(xAxis - 15 , imgVwLine1.frame.origin.y, 1, 30);
+    imgVwLine2.frame = CGRectMake(xAxis + lblFollower.frame.size.width + 15 , imgVwLine2.frame.origin.y, 1, 30);
 }
 
 #pragma mark - Show Twitter user information
@@ -112,8 +132,12 @@
     imgVwLine1.hidden = NO;
     imgVwLine2.hidden = NO;
 
-    NSDictionary *dictOtherUser = self.userInfo.dicOthertUser;
-
+    NSDictionary *dictOtherUser;
+    if (self.userInfo != nil) {
+        dictOtherUser = self.userInfo.dicOthertUser;
+    } else {
+        dictOtherUser = self.userNotification.dicOthertUser;
+    }
     [self setProfileImageOfTwitterAndInstagram:[dictOtherUser objectForKey:@"profile_image_url"]];
     lblFolloeingCount.text = [NSString stringWithFormat:@"%li",(long)[[dictOtherUser objectForKey:@"friends_count"] integerValue]];
     lblFolloweCount.text = [NSString stringWithFormat:@"%li",(long)[[dictOtherUser objectForKey:@"followers_count"]integerValue]];
@@ -136,7 +160,12 @@
 
     if ([btnRequestOrFollow.titleLabel.text isEqualToString:@"Unfollow"]) {
 
-        NSDictionary *dictOtherUser = self.userInfo.dicOthertUser;
+        NSDictionary *dictOtherUser;
+        if (self.userInfo != nil) {
+            dictOtherUser = self.userInfo.dicOthertUser;
+        } else {
+            dictOtherUser = self.userNotification.dicOthertUser;
+        }
 
         NSString *strUserId = [NSString stringWithFormat:@"%li",(long)[[dictOtherUser valueForKey:@"id"]integerValue]];
         NSDictionary *param = @{@"user_id": strUserId};
@@ -165,7 +194,12 @@
         return;
     } else if ([btnRequestOrFollow.titleLabel.text isEqualToString:@"Follow"]) {
 
-        NSDictionary *dictOtherUser = self.userInfo.dicOthertUser;
+        NSDictionary *dictOtherUser;
+        if (self.userInfo != nil) {
+            dictOtherUser = self.userInfo.dicOthertUser;
+        } else {
+            dictOtherUser = self.userNotification.dicOthertUser;
+        }
 
         NSString *strUserId = [NSString stringWithFormat:@"%li",(long)[[dictOtherUser valueForKey:@"id"]integerValue]];
         NSDictionary *param = @{@"user_id": strUserId, @"follow":@"true"};
@@ -279,10 +313,16 @@
  Function to show Fb user profile image
  **************************************************************************************************/
 
-- (void)showProfileImageOfFb:(UserInfo *)objUserInfo {
+- (void)showProfileImageOfFb {
 
+    NSString *strId;
+    if (self.userInfo != nil) {
+        strId = self.userInfo.fromId;
+    } else {
+        strId = self.userNotification.fromId;
+    }
         // load profile picture
-	NSURL *jsonURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?redirect=false&type=normal&width=110&height=110", objUserInfo.fromId]];
+	NSURL *jsonURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?redirect=false&type=normal&width=110&height=110", strId]];
 	dispatch_queue_t profileURLQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 	dispatch_async(profileURLQueue, ^{
 

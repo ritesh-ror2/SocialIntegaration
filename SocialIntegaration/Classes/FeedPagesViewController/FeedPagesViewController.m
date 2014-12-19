@@ -43,12 +43,16 @@
     // Change the size of page view controller
     self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
-    [self setupNavigationPageControl];
+        // self.navigationPageControl.selectedDotColor = [UIColor blackColor];
+        // self.navigationPageControl.dotColor = [UIColor lightGrayColor];
+
+    [self setupNavigationPageControlFeeds];
 
     [self addChildViewController:_pageViewController];
     [self.view addSubview:_pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
     [self.pageViewController becomeFirstResponder];
+
 
     /*NSArray *subviews = self.pageViewController.view.subviews;
     UIPageControl *thisControl = nil;
@@ -70,14 +74,21 @@
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
+    [self performSelector:@selector(showPageControlOfTimeline) withObject:nil afterDelay:0.1];
+
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+}
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
         // self.navigationController.navigationBar.hidden = YES;
-
-    [self performSelector:@selector(showPageControlOfTimeline) withObject:nil afterDelay:0.1];
 }
 
 #pragma mark - Show page control on timeline
@@ -87,8 +98,8 @@
 
     [self setupNavigationPageControl];
         //UIPageControl *pageControl = [UIPageControl appearance];
-    self.navigationPageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
-    self.navigationPageControl.currentPageIndicatorTintColor = [UIColor blackColor];
+        // self.navigationPageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
+        // self.navigationPageControl.currentPageIndicatorTintColor = [UIColor blackColor];
 
     [self autoConfigureNavigationPageControlWithPageViewController:self.pageViewController];
 

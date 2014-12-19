@@ -22,6 +22,7 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
+    [self setNeedsStatusBarAppearanceUpdate];
 
     // Create page view controller
     self.pageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"PageViewController"];
@@ -35,13 +36,14 @@
          NSArray *viewControllers = @[vwController];
         [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
             // Change the size of page view controller
-        self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-12);
+        self.pageViewController.view.frame = CGRectMake(0, -20, self.view.frame.size.width, self.view.frame.size.height+8);
 
         [self addChildViewController:_pageViewController];
         [self.view addSubview:_pageViewController.view];
         [self.pageViewController didMoveToParentViewController:self];
         [self.pageViewController becomeFirstResponder];
     });
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -53,17 +55,20 @@
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
+    [self setNeedsStatusBarAppearanceUpdate];
 
     [UIApplication sharedApplication].statusBarHidden = NO;
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
-        // self.pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-30);
+
+        //[self performSelector:@selector(preferredStatusBarStyle) withObject:nil afterDelay:0.1];
+    [self performSelector:@selector(showPageControlOfprofile) withObject:nil afterDelay:0.1];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
 
     [super viewDidAppear:animated];
 
-    [self performSelector:@selector(showPageControlOfprofile) withObject:nil afterDelay:0.1];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (UIStatusBarStyle) preferredStatusBarStyle {
@@ -72,17 +77,20 @@
 
 - (void)showPageControlOfprofile {
 
-    [self setupNavigationPageControl];
+    [self setupNavigationPageControlProfile];
 
-    self.navigationPageControl.pageIndicatorTintColor = [UIColor colorWithWhite:1.0 alpha:0.3];
-    self.navigationPageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+    
+        //  self.navigationPageControl.pageIndicatorTintColor = [UIColor colorWithWhite:1.0 alpha:0.3];
+        //  self.navigationPageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
 
     UIView *vwPageControl;
 
     if (!IS_IPHONE5) {
-        vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 220, 60, 40)];
+        vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 210, 60, 40)];
     } else {
-        vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 230, 60, 40)];
+        vwPageControl = [[UIView alloc]initWithFrame:CGRectMake(0, 210, 60, 40)];
     }
    /* } else {
         if (IS_IPHONE_6_IOS8) {

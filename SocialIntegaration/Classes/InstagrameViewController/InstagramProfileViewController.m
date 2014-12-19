@@ -20,6 +20,7 @@
 
     int heightOfRowImg;
     int widthOfCommentLbl;
+    NSInteger indexPost;
 }
 
 @property (nonatomic, strong) NSMutableArray *arryOfInstagrame;
@@ -59,7 +60,7 @@
         self.btnEdit.frame = self.btnFollowing.frame;
     }
 
-    self.tbleVwInstagramPost.separatorColor = [UIColor lightGrayColor];
+    self.tbleVwInstagramPost.separatorColor = [UIColor clearColor];
     heightOfRowImg = [Constant heightOfCellInTableVw];
     widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 }
@@ -381,7 +382,7 @@
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                    attributes:@{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:17.0]}
                                        context:nil];
 
     if (objUserInfo.postImg.length != 0) {
@@ -425,8 +426,18 @@
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
+    [self.arrySelectedIndex removeAllObjects];
+
+    [self.tbleVwInstagramPost beginUpdates];
+    NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:indexPost inSection:0];
+    [self.tbleVwInstagramPost reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tbleVwInstagramPost endUpdates];
+
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
-        //your code here
+
+    [self.arryTappedCell replaceObjectAtIndex:indexPost withObject:[NSNumber numberWithBool:NO]];
+    indexPost = cellIndex;
+
     if (self.arryTappedCell.count != 0) {
         if (isSelected == YES) {
             [self.arryTappedCell insertObject:[NSNumber numberWithBool:YES] atIndex:cellIndex];

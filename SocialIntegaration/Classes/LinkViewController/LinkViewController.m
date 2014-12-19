@@ -72,7 +72,6 @@
     [super viewDidAppear:animated];
 
     [UIApplication sharedApplication].statusBarHidden = NO;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     self.navigationController.navigationBarHidden = YES;
     btnFb.hidden = NO;
     btnInstagram.hidden = NO;
@@ -175,9 +174,7 @@
 
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
-
     [UIApplication sharedApplication].statusBarHidden = NO;
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -728,8 +725,10 @@
     } else {
 
         [Constant hideNetworkIndicator];
-        UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
-        [alertVw show];
+
+        [self login];
+        /*UIAlertView *alertVw = [[UIAlertView alloc]initWithTitle:@"Instagrame" message:@"Are You want to open Instagrame through safari." delegate:self cancelButtonTitle:@"YES" otherButtonTitles:@"NO",nil];
+        [alertVw show];*/
     }
 }
 

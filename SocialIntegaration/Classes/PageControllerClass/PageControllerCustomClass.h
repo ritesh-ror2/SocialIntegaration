@@ -7,16 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FXPageControl.h"
 
 @interface PageControllerCustomClass : UIViewController
 
-@property (nonatomic, strong) UIPageControl *navigationPageControl;
-@property (nonatomic, strong) UIPageControl *origanalPageControl;
+@property (nonatomic, strong) FXPageControl *navigationPageControl;
+@property (nonatomic, strong) FXPageControl *origanalPageControl;
 
-- (void)configureNavigationPageControlWithPageControl:(UIPageControl*) pageControl;
+- (void)configureNavigationPageControlWithPageControl:(FXPageControl*) pageControl;
 - (void)autoConfigureNavigationPageControlWithPageViewController:(UIPageViewController*) pageViewController;
 - (void)updateNavigationPageControl;
 - (void)setupNavigationPageControl;
+- (void)setupNavigationPageControlProfile;
+- (void)setupNavigationPageControlFeeds;
 - (void)setupNavigationPageControlFrame:(UIView *)vwPageController;
 - (void)setPageNumber:(int)pageNumber;
 

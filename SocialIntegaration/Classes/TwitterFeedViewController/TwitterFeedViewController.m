@@ -18,6 +18,8 @@
 
     int heightOfRowImg;
     int widthOfCommentLbl;
+
+    NSInteger indexPost;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwTwitter;
@@ -58,7 +60,7 @@
         UserInfo *userInfoSince = [sharedAppDelegate.arryOfTwittes objectAtIndex:0];
         self.since_Id = userInfoSince.statusId.intValue;
     }
-    self.tbleVwTwitter.separatorColor = [UIColor lightGrayColor];
+    self.tbleVwTwitter.separatorColor = [UIColor clearColor];
     self.tbleVwTwitter.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
     
     heightOfRowImg = [Constant heightOfCellInTableVw];
@@ -75,6 +77,12 @@
 
     self.navController.navigationBarHidden = NO;
     self.navController.navigationBar.translucent = NO;
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+}
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -232,14 +240,14 @@
 
     if(indexPath.row < [sharedAppDelegate.arryOfTwittes count]){
 
-            [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES];
+            [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES withProfile:NO];
     } else {
 
         if (sharedAppDelegate.arryOfTwittes.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:YES];
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:YES withProfile:NO];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
                 [self paggingInTwitter];
             }
@@ -259,10 +267,10 @@
     }
     UserInfo *objUserInfo = [sharedAppDelegate.arryOfTwittes objectAtIndex:indexPath.row];
 
-    NSString *string = objUserInfo.strUserPost;
+    NSString *string = [objUserInfo.strUserPost stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                    attributes:@{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:17.0]}
                                        context:nil];
 
     if (objUserInfo.postImg.length != 0) {
@@ -318,7 +326,18 @@
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
+    [self.arrySelectedIndex removeAllObjects];
+
+    [self.tbleVwTwitter beginUpdates];
+    NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:indexPost inSection:0];
+    [self.tbleVwTwitter reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tbleVwTwitter endUpdates];
+
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
+
+    [self.arryTappedCell replaceObjectAtIndex:indexPost withObject:[NSNumber numberWithBool:NO]];
+
+    indexPost = cellIndex;
 
     NSLog(@"****%@***", self.arrySelectedIndex);
 

@@ -13,8 +13,9 @@
 #import "UserNotificationCustomCell.h"
 #import "UserNotification.h"
 #import "HYCircleLoadingView.h"
+#import "ShowOtherUserProfileViewController.h"
 
-@interface ActivityViewController ()
+@interface ActivityViewController () <UserNotificationDelegate>
 
 @property (nonatomic) BOOL isLoadingShow;
 @property (nonatomic, strong) HYCircleLoadingView *loadingView;
@@ -62,6 +63,18 @@
     
     [super didReceiveMemoryWarning];
         // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [super viewWillAppear:animated];
+    
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+}
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -200,6 +213,7 @@
         userNotif.notifType = @"Twitter";
         userNotif.userImg = [dictUser objectForKey:@"profile_image_url"];
 
+        userNotif.dicOthertUser = dictUser;
         [self.arryActivityTwitter addObject:userNotif];
     }
 
@@ -307,6 +321,19 @@
     }
 }
 
+#pragma mark - User profile btn tapped
+/**************************************************************************************************
+ Function to show other user profile
+ **************************************************************************************************/
+
+- (void)userProfileBtnTapped:(UserNotification*)userNotification {
+
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ShowOtherUserProfileViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"OtherUser"];
+    vwController.userNotification = userNotification;
+    [self.navigationController pushViewController:vwController animated:YES];
+}
+
 - (void)showAnimationOfActivity {
 
     [UIView beginAnimations:nil context:NULL];
@@ -335,6 +362,7 @@
 
     cell = (UserNotificationCustomCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     [cell setNotificationIntableView:[self.arryActivity objectAtIndex:indexPath.row]];
+    cell.delegate = self;
     return cell;
 }
 

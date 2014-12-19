@@ -17,5 +17,6 @@
 @property (nonatomic, strong) NSString *notifType;
 @property (nonatomic, strong) NSString *userImg;
 @property (nonatomic, strong) NSString *fromId;
+@property (nonatomic, strong) NSDictionary *dicOthertUser;
 
 @end

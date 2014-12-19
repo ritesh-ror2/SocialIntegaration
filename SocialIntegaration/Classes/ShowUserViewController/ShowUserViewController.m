@@ -70,6 +70,13 @@
             [self searchOnInstagram:self.strSearchText];
         }
     }
+
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+}
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
 }
 
 #pragma mark - Remove background of search bar

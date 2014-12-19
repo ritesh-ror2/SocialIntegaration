@@ -20,6 +20,8 @@
 
     int heightOfRowImg;
     int widthOfCommentLbl;
+
+    NSInteger indexPost;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *tbleVwFB;
@@ -53,7 +55,7 @@
     heightOfRowImg = [Constant heightOfCellInTableVw];
     widthOfCommentLbl = [Constant widthOfCommentLblOfTimelineAndProfile];
 
-    self.tbleVwFB.separatorColor = [UIColor lightGrayColor];
+    self.tbleVwFB.separatorColor = [UIColor clearColor];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -77,6 +79,13 @@
         [self.arryTappedCell addObject:[NSNumber numberWithBool:NO]];
     }
     [self.tbleVwFB reloadData];
+
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+}
+
+- (UIStatusBarStyle) preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -123,14 +132,14 @@
     if(indexPath.row < [sharedAppDelegate.arryOfFBNewsFeed count]){
 
         self.noMoreResultsAvail = NO;
-        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES];
+        [cell setValueInSocialTableViewCustomCell: [sharedAppDelegate.arryOfFBNewsFeed objectAtIndex:indexPath.row]forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:NO withOtherTimeline:YES withProfile:NO];
     } else {
 
         if (sharedAppDelegate.arryOfFBNewsFeed.count != 0) {
 
             if (self.noMoreResultsAvail == NO) {
 
-                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:YES];
+                [cell setValueInSocialTableViewCustomCell:nil forRow:indexPath.row withSelectedCell:self.arrySelectedIndex withPagging:YES withOtherTimeline:YES withProfile:NO];
                 cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0);
                 [self getMoreDataOfFeed];
             } else {
@@ -159,7 +168,7 @@
     NSString *string = objUserInfo.strUserPost;
     CGRect rect = [string boundingRectWithSize:CGSizeMake(widthOfCommentLbl, 400)
                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}
+                                    attributes:@{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:17.0]}
                                        context:nil];
 
     if (objUserInfo.postImg.length != 0) {
@@ -215,7 +224,18 @@
 
 - (void)tappedOnCellToShowActivity:(UserInfo *)objuserInfo withCellIndex:(NSInteger)cellIndex withSelectedPrNot:(BOOL)isSelected {
 
+    [self.arrySelectedIndex removeAllObjects];
+
+    [self.tbleVwFB beginUpdates];
+    NSIndexPath *indexPath1 = [NSIndexPath indexPathForRow:indexPost inSection:0];
+    [self.tbleVwFB reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self.tbleVwFB endUpdates];
+
     [self.arrySelectedIndex addObject:[NSNumber numberWithInteger:cellIndex]];
+
+    [self.arryTappedCell replaceObjectAtIndex:indexPost withObject:[NSNumber numberWithBool:NO]];
+
+    indexPost = cellIndex;
 
     if (self.arryTappedCell.count != 0) {
         if (isSelected == YES) {

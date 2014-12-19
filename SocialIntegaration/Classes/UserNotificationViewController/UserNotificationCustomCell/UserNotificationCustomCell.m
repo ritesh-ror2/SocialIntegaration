@@ -11,6 +11,7 @@
 #import "Constant.h"
 
 @implementation UserNotificationCustomCell
+@synthesize delegate;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 
@@ -37,6 +38,12 @@
 
 - (void)setNotificationIntableView:(UserNotification *)userNotification {
 
+    if (self.userNotificationInfo != nil) {
+        self.userNotificationInfo = nil;
+    }
+
+    self.userNotificationInfo = userNotification;
+    
     lblName.text = userNotification.name;
 
     NSString *strSubstring = [userNotification.title substringToIndex: userNotification.title.length - 1];
@@ -130,6 +137,17 @@
             });
 		}
 	});
+}
+
+/**************************************************************************************************
+ Delegate to handle when profile image is tapped
+ **************************************************************************************************/
+
+- (IBAction)profileBtnTapped:(id)sender {
+
+    if ([self.delegate respondsToSelector:@selector(userProfileBtnTapped:)]) {
+        [self.delegate userProfileBtnTapped:self.userNotificationInfo];
+    }
 }
 
 @end
