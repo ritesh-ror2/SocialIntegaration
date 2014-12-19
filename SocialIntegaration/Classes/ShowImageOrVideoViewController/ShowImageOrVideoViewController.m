@@ -7,6 +7,7 @@
 //
 
 #import "ShowImageOrVideoViewController.h"
+#import "FXPageControl.h"
 
 @interface ShowImageOrVideoViewController () <UIWebViewDelegate, NSURLConnectionDelegate> {
 
@@ -33,6 +34,14 @@
 
     [super viewDidLoad];
 
+    NSArray *arryVws = self.navigationController.navigationBar.subviews;
+
+    for (UIView *vw in arryVws) {
+        if ([vw isKindOfClass:[FXPageControl class]]) {
+            [vw setHidden:YES];
+        }
+    }
+
     self.navigationItem.title = @"ShowDetails";
     self.navigationController.navigationBarHidden = NO;
     [self.webViewVideo setHidden:YES];
@@ -51,6 +60,10 @@
             [self.imgVwLargeImg sd_setImageWithURL:[NSURL URLWithString:self.userInfo.postImg] placeholderImage:nil];
         }
     }
+    self.scrollVwImg.backgroundColor=[UIColor whiteColor];
+    self.scrollVwImg.minimumZoomScale = 1.0;
+    self.scrollVwImg.maximumZoomScale = 3.0;
+    [self.scrollVwImg setZoomScale:1.0];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -68,6 +81,13 @@
 
 - (UIStatusBarStyle) preferredStatusBarStyle {
     return UIStatusBarStyleDefault;
+}
+
+#pragma mark - ImageVwDelegates
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+
+    return self.imgVwLargeImg;
 }
 
 @end

@@ -61,8 +61,6 @@
   /*  UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LoginViewController *vwController = [storyBoard instantiateViewControllerWithIdentifier:@"loginuser"];
     [self.navigationController pushViewController:vwController animated:YES];*/
-
-        // [self performSegueWithIdentifier:@"Tabbar" sender:sender];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

@@ -55,10 +55,22 @@
     self.txtVwFB.layer.borderWidth = 1.0;
     self.txtVwTwitter.layer.borderWidth = 1.0;
 
-    pageControl.currentPage = 0;
+    CGSize navBarSize = self.navigationController.navigationBar.bounds.size;
+    CGPoint origin = CGPointMake((navBarSize.width-60)/2, (80/2));
+
+    pageControl = [[FXPageControl alloc]initWithFrame:CGRectMake(origin.x, origin.y, 60, 30)];
+    pageControl.defersCurrentPageDisplay = YES;
+    pageControl.selectedDotShape = FXPageControlDotShapeCircle;
+    pageControl.selectedDotSize = 5.0;
+    pageControl.dotSize = 5.0;
     pageControl.numberOfPages = 2;
-    pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:0.8 alpha:1.0];
-    pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
+    pageControl.dotSpacing = 5.0;
+    pageControl.wrapEnabled = YES;
+    pageControl.selectedDotColor = [UIColor whiteColor];
+    pageControl.dotColor = [UIColor colorWithWhite:1.0 alpha:0.4];
+    pageControl.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:pageControl];
+    [self.view bringSubviewToFront:pageControl];
 
     self.arryUsers = [[NSMutableArray alloc]init];
 

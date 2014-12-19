@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) UserInfo *userInfo;
 @property (nonatomic, strong) IBOutlet UIImageView *imgVwLargeImg;
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollVwImg;
 @property (nonatomic, strong) IBOutlet UIWebView *webViewVideo;
 @property (nonatomic, strong) UIImage *imgLarge;
 

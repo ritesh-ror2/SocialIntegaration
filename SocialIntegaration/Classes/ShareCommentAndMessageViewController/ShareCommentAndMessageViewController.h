@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UserProfile.h"
 #import "UserProfile+DatabaseHelper.h"
+#import "FXPageControl.h"
 
 @interface ShareCommentAndMessageViewController : UIViewController {
 
@@ -24,7 +25,7 @@
 
     IBOutlet UILabel *lblComment;
     IBOutlet UILabel *lblCommentTwitter;
-    IBOutlet UIPageControl *pageControl;
+    IBOutlet FXPageControl *pageControl;
 }
 
 @property (nonatomic, strong) IBOutlet UIToolbar *toolBar;

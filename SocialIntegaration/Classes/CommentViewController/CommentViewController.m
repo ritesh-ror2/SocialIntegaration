@@ -1745,6 +1745,8 @@
     connFBLagreImage = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
+#pragma mark - POst btn tapped
+
 - (IBAction)postBtnTapped:(id)sender {
 
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle: nil];

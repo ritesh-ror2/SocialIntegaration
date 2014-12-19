@@ -11,7 +11,7 @@
 #import "FeedPagesViewController.h"
 
 @implementation AppDelegate
-
+//newtimeline
 @synthesize fbSession,hasFacebook,instagram,InstagramId,undoManager,window;
 @synthesize arryOfInstagrame, arryOfFBNewsFeed, arryOfTwittes, arryOfAllFeeds;
 
